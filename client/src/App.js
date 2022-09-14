@@ -11,15 +11,20 @@ import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import Container from "@mui/material/Container";
 import MenuBar from "./components/MenuBar/MenuBar";
 import CssBaseline from "@mui/material/CssBaseline";
-import JobGrid from "./components/JobGrid/JobGrid";
 import SignUp from "./components/UserAccount/SignUp/SignUp";
 import SignIn from "./components/UserAccount/SignIn/SignIn";
 import ProfileForm from "./components/UserAccount/ProfileForm/ProfileForm";
+import Preferences from "./components/UserAccount/Profile/Preferences";
+import LandingPage from "./components/LandingPage/LandingPage";
+import Footer from "./components/Footer/Footer";
 
 let theme = createTheme({
 	palette: {
 		primary: {
-			main: "#0F6FFF",
+			main: "#027CFF",
+		},
+		secondary: {
+			main: "#AACBFF",
 		},
 	},
 	components: {
@@ -60,6 +65,20 @@ let theme = createTheme({
 			},
 		},
 	},
+	typography: {
+		fontFamily: [
+			"-apple-system",
+			"BlinkMacSystemFont",
+			'"Segoe UI"',
+			"Roboto",
+			'"Helvetica Neue"',
+			"Arial",
+			"sans-serif",
+			'"Apple Color Emoji"',
+			'"Segoe UI Emoji"',
+			'"Segoe UI Symbol"',
+		].join(","),
+	},
 });
 
 theme = responsiveFontSizes(theme);
@@ -69,15 +88,15 @@ function App() {
 		<ThemeProvider theme={theme}>
 			<BrowserRouter>
 				<CssBaseline />
-
 				<Routes>
 					<Route path="/" element={<WithMenuBarLayout />}>
-						<Route index element={<JobGrid />} />
+						<Route index element={<LandingPage />} />
 					</Route>
 					<Route path="/account" element={<NoMenuBarLayout />}>
 						<Route path="signup" element={<SignUp />} />
 						<Route path="login" element={<SignIn />} />
 						<Route path="build-profile" element={<ProfileForm />} />
+						<Route path="profile" element={<Preferences />} />
 					</Route>
 				</Routes>
 			</BrowserRouter>
@@ -97,9 +116,10 @@ function WithMenuBarLayout() {
 	return (
 		<>
 			<MenuBar />
-			<Container>
+			<Container maxWidth="md">
 				<Outlet />
 			</Container>
+			<Footer />
 		</>
 	);
 }

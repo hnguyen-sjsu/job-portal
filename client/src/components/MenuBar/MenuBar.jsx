@@ -13,6 +13,8 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 
+import appLogo from "../../assets/app-logo.svg";
+
 function MenuBar(props) {
 	const { window } = props;
 
@@ -76,7 +78,7 @@ function MenuBar(props) {
 					>
 						<MenuIcon />
 					</IconButton>
-
+					<img src={appLogo} height={40} />
 					<Typography
 						variant="h6"
 						component="div"
@@ -84,7 +86,7 @@ function MenuBar(props) {
 							flexGrow: 1,
 						}}
 					>
-						Job Portal
+						Job Finder
 					</Typography>
 					<Box sx={{ display: { xs: "none", sm: "block" } }}>
 						{linkItems.map((item, idx) => (

@@ -19,10 +19,47 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Input from "@mui/material/Input";
 
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 function ProfileForm() {
+	const undefinedEducationHistory = {
+		schoolName: "",
+		degree: "",
+		major: "",
+		startDate: "",
+		endDate: "",
+		description: "",
+	};
+
+	const undefinedWorkExperience = {
+		companyName: "",
+		jobTitle: "",
+		location: "",
+		startDate: "",
+		endDate: "",
+		description: "",
+		isCurrentJob: false,
+	};
+
 	const [activeStep, setActiveStep] = useState(0);
+
+	const [userProfile, setUserProfile] = useState({
+		userId: "",
+		email: "",
+		phoneNumber: "209-324",
+		location: "",
+		bio: "",
+		resumeUrl: "",
+	});
+
+	const [educationItems, setEducationItems] = useState([]);
+	const [experienceItems, setExperienceItems] = useState([]);
+	const [skills, setSkills] = useState([]);
 
 	const yearsOfExperience = [
 		"< 1 year",
@@ -34,22 +71,32 @@ function ProfileForm() {
 		"> 5 years",
 	];
 
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setUserProfile({
+			...userProfile,
+			[name]: value,
+		});
+	};
+
 	const Profile = () => (
-		<Container disableGutters>
+		<Container disableGutters component="form">
 			<Typography variant="h4" fontWeight="bold" gutterBottom>
 				Tell us about yourself
 			</Typography>
 			<Grid container spacing={2}>
 				<Grid item xs={12} sm={6}>
 					<Stack spacing={1}>
-						<InputLabel htmlFor="phoneNumber" required>
+						<InputLabel htmlFor="phoneNumber">
 							Phone Number
 						</InputLabel>
 						<TextField
 							placeholder="Enter your contact phone number"
-							name="location"
+							id="phoneNumber"
+							name="phoneNumber"
 							size="small"
-							required
+							value={userProfile.phoneNumber}
+							onChange={handleChange}
 						/>
 					</Stack>
 				</Grid>
@@ -60,9 +107,12 @@ function ProfileForm() {
 						</InputLabel>
 						<TextField
 							placeholder="Enter your location"
+							id="location"
 							name="location"
 							size="small"
 							required
+							value={userProfile.location}
+							onChange={handleChange}
 						/>
 					</Stack>
 				</Grid>
@@ -92,9 +142,7 @@ function ProfileForm() {
 				</Grid>
 				<Grid item xs={12}>
 					<Stack spacing={1}>
-						<InputLabel htmlFor="schoolName" required>
-							School
-						</InputLabel>
+						<InputLabel htmlFor="schoolName">School</InputLabel>
 						<TextField
 							placeholder="Enter the school name"
 							name="schoolName"
@@ -104,9 +152,7 @@ function ProfileForm() {
 				</Grid>
 				<Grid item xs={6}>
 					<Stack spacing={1}>
-						<InputLabel htmlFor="degree" required>
-							Degree
-						</InputLabel>
+						<InputLabel htmlFor="degree">Degree</InputLabel>
 						<TextField
 							placeholder="Your degree"
 							name="degree"
@@ -116,9 +162,7 @@ function ProfileForm() {
 				</Grid>
 				<Grid item xs={6}>
 					<Stack spacing={1}>
-						<InputLabel htmlFor="major" required>
-							Major
-						</InputLabel>
+						<InputLabel htmlFor="major">Major</InputLabel>
 						<TextField
 							placeholder="Major"
 							name="major"
@@ -128,19 +172,31 @@ function ProfileForm() {
 				</Grid>
 				<Grid item xs={6}>
 					<Stack spacing={1}>
-						<InputLabel htmlFor="companyStartDate" required>
+						<InputLabel htmlFor="educationStartDate">
 							Start Date
 						</InputLabel>
+						{/* <DatePicker
+							disableFuture
+							openTo="month"
+							views={["year", "month"]}
+							renderInput={(params) => (
+								<TextField
+									{...params}
+									size="small"
+									placeholder="mm/yyyy"
+								/>
+							)}
+						/> */}
 						<TextField
 							placeholder="MM/YYYY"
-							name="companyName"
+							name="educationStartDate"
 							size="small"
 						/>
 					</Stack>
 				</Grid>
 				<Grid item xs={6}>
 					<Stack spacing={1}>
-						<InputLabel htmlFor="companyEndDate" required>
+						<InputLabel htmlFor="educationEndDate">
 							End Date (or expected)
 						</InputLabel>
 						<TextField
@@ -152,17 +208,17 @@ function ProfileForm() {
 				</Grid>
 				<Grid item xs={12}>
 					<Stack spacing={1}>
-						<InputLabel htmlFor="workDescription" required>
+						<InputLabel htmlFor="schoolDescription">
 							Description
 						</InputLabel>
 						<TextField
-							name="workDescription"
+							name="schoolDescription"
 							multiline
 							minRows={2}
 						/>
 					</Stack>
 				</Grid>
-				<Grid item xs={12} textAlign="right" spacing={2}>
+				<Grid item xs={12} textAlign="right">
 					<Divider />
 					<Button startIcon={<AddRoundedIcon fontSize="small" />}>
 						Add Another Education History
@@ -201,7 +257,7 @@ function ProfileForm() {
 		</Container>
 	);
 
-	const skills = ["ReactJS", "Python", "Java"];
+	// const skills = ["ReactJS", "Python", "Java"];
 
 	const SkillsExperience = () => (
 		<Container disableGutters>
@@ -254,9 +310,7 @@ function ProfileForm() {
 				</Grid>
 				<Grid item xs={12}>
 					<Stack spacing={1}>
-						<InputLabel htmlFor="title" required>
-							Title
-						</InputLabel>
+						<InputLabel htmlFor="title">Title</InputLabel>
 						<TextField
 							placeholder="Your position/title"
 							name="title"
@@ -266,7 +320,7 @@ function ProfileForm() {
 				</Grid>
 				<Grid item xs={6}>
 					<Stack spacing={1}>
-						<InputLabel htmlFor="companyName" required>
+						<InputLabel htmlFor="companyName">
 							Company Name
 						</InputLabel>
 						<TextField
@@ -278,7 +332,7 @@ function ProfileForm() {
 				</Grid>
 				<Grid item xs={6}>
 					<Stack spacing={1}>
-						<InputLabel htmlFor="companyLocation" required>
+						<InputLabel htmlFor="companyLocation">
 							Location
 						</InputLabel>
 						<TextField
@@ -296,7 +350,7 @@ function ProfileForm() {
 				</Grid>
 				<Grid item xs={6}>
 					<Stack spacing={1}>
-						<InputLabel htmlFor="companyStartDate" required>
+						<InputLabel htmlFor="companyStartDate">
 							Start Date
 						</InputLabel>
 						<TextField
@@ -308,7 +362,7 @@ function ProfileForm() {
 				</Grid>
 				<Grid item xs={6}>
 					<Stack spacing={1}>
-						<InputLabel htmlFor="companyEndDate" required>
+						<InputLabel htmlFor="companyEndDate">
 							End Date
 						</InputLabel>
 						<TextField
@@ -320,7 +374,7 @@ function ProfileForm() {
 				</Grid>
 				<Grid item xs={12}>
 					<Stack spacing={1}>
-						<InputLabel htmlFor="workDescription" required>
+						<InputLabel htmlFor="workDescription">
 							Description
 						</InputLabel>
 						<TextField
@@ -330,7 +384,7 @@ function ProfileForm() {
 						/>
 					</Stack>
 				</Grid>
-				<Grid item xs={12} textAlign="right" spacing={2}>
+				<Grid item xs={12} textAlign="right">
 					<Divider />
 					<Button startIcon={<AddRoundedIcon fontSize="small" />}>
 						Add Another Work Experience
@@ -360,10 +414,10 @@ function ProfileForm() {
 	);
 
 	const steps = [
-		{ title: "Profile", component: <Profile /> },
-		{ title: "Skills & Experience", component: <SkillsExperience /> },
-		{ title: "Resume/CV", component: <Resume /> },
-		{ title: "Review & Submit", component: <ReviewAndSubmit /> },
+		{ title: "Profile" },
+		{ title: "Skills & Experience" },
+		{ title: "Resume/CV" },
+		{ title: "Review & Submit" },
 	];
 
 	const totalSteps = () => {
@@ -371,7 +425,7 @@ function ProfileForm() {
 	};
 
 	const isLastStep = () => {
-		return activeStep == totalSteps() - 1;
+		return activeStep === totalSteps() - 1;
 	};
 
 	const handleBack = () => {
@@ -387,8 +441,11 @@ function ProfileForm() {
 	};
 
 	return (
-		<>
-			<Container maxWidth="sm" style={{ paddingTop: "32px" }}>
+		<LocalizationProvider dateAdapter={AdapterDateFns}>
+			<Container
+				maxWidth="sm"
+				style={{ paddingTop: "32px", paddingBottom: "32px" }}
+			>
 				<Stepper activeStep={activeStep} alternativeLabel>
 					{steps.map((step) => (
 						<Step key={step.title}>
@@ -396,9 +453,13 @@ function ProfileForm() {
 						</Step>
 					))}
 				</Stepper>
-				<Box style={{ paddingTop: "32px" }}>
-					{steps[activeStep].component}
-				</Box>
+				{/* <Box style={{ paddingTop: "32px" }}> */}
+				{/* {steps[activeStep].component} */}
+				{/* </Box> */}
+				<Profile />
+				<SkillsExperience />
+				<Resume />
+				<ReviewAndSubmit />
 				<Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
 					<Button
 						variant="contained"
@@ -430,7 +491,7 @@ function ProfileForm() {
 					)}
 				</Box>
 			</Container>
-		</>
+		</LocalizationProvider>
 	);
 }
 

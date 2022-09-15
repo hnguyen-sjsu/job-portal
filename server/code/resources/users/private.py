@@ -7,4 +7,5 @@ class Protected(Resource):
     @classmethod
     @jwt_required()
     def get(cls):
+        print(get_jwt_identity())
         return {"user": get_jwt_identity()}, 200

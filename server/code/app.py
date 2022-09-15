@@ -11,12 +11,13 @@ from resources.users.register import Register
 from resources.users.login import Login
 from resources.users.private import Protected
 from resources.users.logout import Logout
+from resources.users.delete import Delete
+from resources.jobs.add import Add
+from resources.jobs.get import GetAll, GetTen, GetAllByUID
+from resources.jobs.delete import DeleteJob
+from resources.jobs.remove_expired_jobs import remove_expired_jobs
 from dotenv import load_dotenv
-from flask_jwt_extended import create_access_token
-from flask_jwt_extended import get_jwt
-from flask_jwt_extended import get_jwt_identity
-from flask_jwt_extended import JWTManager
-from flask_jwt_extended import set_access_cookies
+from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, JWTManager, set_access_cookies
 
 
 app = Flask(__name__)
@@ -30,6 +31,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["JWT_COOKIE_SECURE"] = False
 app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
+app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=1)
 
@@ -40,8 +42,15 @@ def create_tables():
     db.create_all()
 
 
+@app.before_request
+def clean_up_database():
+    removed_jobs = remove_expired_jobs()
+    print(removed_jobs)
+
 # Using an `after_request` callback, we refresh any token that is within 30
 # minutes of expiring. Change the timedeltas to match the needs of your application.
+
+
 @app.after_request
 def refresh_expiring_jwts(response):
 
@@ -68,15 +77,21 @@ def refresh_expiring_jwts(response):
 # Customize error message when no token is present
 @jwt.unauthorized_loader
 def my_expired_token_callback(response):
-    return {"message": "Please provide a valid token"}, 401
+    return {"message": "Please provide a valid token to access this route."}, 401
 
 
-# API endpoints
-api.add_resource(User, '/hello')  # http://127.0.0.1:5000/hello
-api.add_resource(Register, '/register')  # http://127.0.0.1:5000/hello
-api.add_resource(Login, '/login')  # http://127.0.0.1:5000/login
-api.add_resource(Logout, '/logout')  # http://127.0.0.1:5000/logout
-api.add_resource(Protected, '/protected')  # http://127.0.0.1:5000/protected
+# API endpoints start with http://localhost:5000/...
+api.add_resource(User, '/get-all-users')
+api.add_resource(Register, '/register')
+api.add_resource(Login, '/login')
+api.add_resource(Delete, '/delete')
+api.add_resource(Logout, '/logout')
+api.add_resource(Protected, '/protected')
+api.add_resource(GetAll, '/job/get-all')
+api.add_resource(GetTen, '/job/get-ten')
+api.add_resource(GetAllByUID, '/job/get-posted-jobs')
+api.add_resource(Add, '/job/post')
+api.add_resource(DeleteJob, '/job/delete')
 
 
 if __name__ == '__main__':

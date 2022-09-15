@@ -40,13 +40,15 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=30)
 # create the tables if not exists
 @app.before_first_request
 def create_tables():
+    removed_jobs = remove_expired_jobs()
+    print(removed_jobs)
     db.create_all()
 
 
-@app.before_request
-def clean_up_database():
-    removed_jobs = remove_expired_jobs()
-    print(removed_jobs)
+# @app.before_request
+# def clean_up_database():
+#     removed_jobs = remove_expired_jobs()
+#     print(removed_jobs)
 
 # Using an `after_request` callback, we refresh any token that is within 30
 # minutes of expiring. Change the timedeltas to match the needs of your application.

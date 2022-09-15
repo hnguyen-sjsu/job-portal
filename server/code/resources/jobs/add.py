@@ -64,6 +64,13 @@ class Add(Resource):
     def post(cls):
 
         data = Add.parser.parse_args()
+
+        if data['salary_min'] > data['salary_max']:
+            return {"message": "salary_min cannot be greater than salary_max"}, 400
+
+        if data['days_until_expired'] < 0:
+            return {"message": "days_until_expired cannot be less than 0"}, 400
+
         uid = get_jwt_identity()
 
         new_job = Job(company_name=data["company_name"],

@@ -63,7 +63,8 @@ class Job(db.Model):
 
     @classmethod
     def find_all(cls):
-        jobs = cls.query.all()  # Return all jobs in the database
+        jobs = cls.query.filter(
+            cls.time_expired > datetime.datetime.utcnow()).all()
         for job in jobs:
             job.time_created = job.time_created.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -73,7 +74,8 @@ class Job(db.Model):
     def find_ten(cls, offset):
         # Return 10 jobs in the database starting from index (offset + 1)
         # The front end should keep track of the offset and increment it by 10 each time the user scrolls down or presses load more.
-        jobs = cls.query.offset(offset).limit(10).all()
+        jobs = cls.query.filter(cls.time_expired > datetime.datetime.utcnow()).offset(
+            offset).limit(10).all()
         for job in jobs:
             job.time_created = job.time_created.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -81,13 +83,16 @@ class Job(db.Model):
 
     @classmethod
     def find_all_by_uid(cls, _uid):
-        jobs = cls.query.filter_by(uid=_uid).all()
+        jobs = cls.query.filter(
+            cls.time_expired > datetime.datetime.utcnow()).filter_by(uid=_uid).all()
 
         return jobs
 
     @classmethod
     def find_by_id(cls, id):
-        job = cls.query.filter_by(id=id).first()
+        job = cls.query.filter(
+            cls.time_expired > datetime.datetime.utcnow()).filter_by(id=id).first()
+
         return job
 
     @classmethod

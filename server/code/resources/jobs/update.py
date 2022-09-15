@@ -63,4 +63,7 @@ class UpdateJob(Resource):
         # Call update method on Job model and pass in data
         job_to_update = Job.update(**attributes_to_update)
 
+        if job_to_update is None:
+            return {"message": "Internal Server Error"}, 500
+
         return {"updated_job": job_to_update.to_dict()}, 200

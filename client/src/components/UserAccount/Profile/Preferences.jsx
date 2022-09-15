@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -15,8 +15,13 @@ import InputBase from "@mui/material/InputBase";
 import MobileStepper from "@mui/material/MobileStepper";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import { UserContext } from "../../../providers/AuthProvider";
 
 function Preferences() {
+	const { user } = useContext(UserContext);
+
+	console.log(user);
+
 	const [jobTypes, setJobTypes] = useState([
 		{ title: "Full Time", selected: false },
 		{ title: "Part Time", selected: false },
@@ -52,6 +57,7 @@ function Preferences() {
 		{ title: "Retail", selected: false },
 		{ title: "Healthcare", selected: false },
 		{ title: "Technology", selected: false },
+		{ title: "Software", selected: false },
 		{ title: "Manufacturing", selected: false },
 		{ title: "Food", selected: false },
 		{ title: "Finance and Insurance", selected: false },
@@ -129,34 +135,13 @@ function Preferences() {
 		</Stack>
 	);
 
-	const SkillPreference = (props) => (
-		<Stack spacing={2} {...props}>
-			<Typography variant="h6">What are you best skills?</Typography>
-			<InputLabel htmlFor="txtSkill">Add your skills</InputLabel>
-			<Stack direction="row" spacing={1}>
-				<InputBase
-					sx={{ ml: 1, flex: 1 }}
-					placeholder="Enter your skill"
-				/>
-				<Button>Add</Button>
-			</Stack>
-
-			<Grid container spacing={1}>
-				{skills.map((skill, index) => (
-					<Grid item>
-						<Chip
-							label={skill}
-							variant="contained"
-							color="primary"
-							onDelete={() => {}}
-						/>
-					</Grid>
-				))}
-			</Grid>
+	const ReviewSection = (props) => (
+		<Stack {...props}>
+			<Typography variant="h6" fontWeight="bold">
+				Click Submit to save your preferences.
+			</Typography>
 		</Stack>
 	);
-
-	const stepsLength = 4;
 
 	const [activeStep, setActiveStep] = useState(0);
 
@@ -185,6 +170,14 @@ function Preferences() {
 				/>
 			),
 		},
+		{
+			title: "You're almost there!",
+			component: (
+				<ReviewSection
+					style={{ display: activeStep === 3 ? "block" : "none" }}
+				/>
+			),
+		},
 	];
 
 	const handleNext = () => {
@@ -199,14 +192,22 @@ function Preferences() {
 		<>
 			<Grid container>
 				<Grid item xs={12} sm={4} md={6}>
-					<Typography variant="h5" fontWeight="bold">
-						{steps[activeStep].title}
-					</Typography>
+					<Container maxWidth="sm">
+						<Typography
+							variant="h5"
+							fontWeight="bold"
+							color="inherit"
+						>
+							{steps[activeStep].title}
+						</Typography>
+					</Container>
 				</Grid>
 				<Grid item xs={12} sm={8} md={6} style={{ height: "100vh" }}>
-					{steps.map((step) => (
-						<>{step.component}</>
-					))}
+					<Container maxWidth="sm">
+						{steps.map((step) => (
+							<>{step.component}</>
+						))}
+					</Container>
 					<MobileStepper
 						variant="progress"
 						steps={steps.length}

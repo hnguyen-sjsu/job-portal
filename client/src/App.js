@@ -17,6 +17,7 @@ import ProfileForm from "./components/UserAccount/ProfileForm/ProfileForm";
 import Preferences from "./components/UserAccount/Profile/Preferences";
 import LandingPage from "./components/LandingPage/LandingPage";
 import Footer from "./components/Footer/Footer";
+import AuthProvider from "./providers/AuthProvider";
 
 let theme = createTheme({
 	palette: {
@@ -85,28 +86,37 @@ theme = responsiveFontSizes(theme);
 
 function App() {
 	return (
-		<ThemeProvider theme={theme}>
-			<BrowserRouter>
-				<CssBaseline />
-				<Routes>
-					<Route path="/" element={<WithMenuBarLayout />}>
-						<Route index element={<LandingPage />} />
-					</Route>
-					<Route path="/account" element={<NoMenuBarLayout />}>
-						<Route path="signup" element={<SignUp />} />
-						<Route path="login" element={<SignIn />} />
-						<Route path="build-profile" element={<ProfileForm />} />
-						<Route path="profile" element={<Preferences />} />
-					</Route>
-				</Routes>
-			</BrowserRouter>
-		</ThemeProvider>
+		<AuthProvider>
+			<ThemeProvider theme={theme}>
+				<BrowserRouter>
+					<CssBaseline />
+					<Routes>
+						<Route path="/" element={<WithMenuBarLayout />}>
+							<Route index element={<LandingPage />} />
+						</Route>
+						<Route path="/account" element={<NoMenuBarLayout />}>
+							<Route path="signup" element={<SignUp />} />
+							<Route path="login" element={<SignIn />} />
+							<Route
+								path="build-profile"
+								element={<ProfileForm />}
+							/>
+							<Route
+								path="preferences"
+								element={<Preferences />}
+							/>
+						</Route>
+					</Routes>
+				</BrowserRouter>
+			</ThemeProvider>
+		</AuthProvider>
 	);
 }
 
 function NoMenuBarLayout() {
 	return (
 		<>
+			<MenuBar showOptions={false} />
 			<Outlet />
 		</>
 	);
@@ -115,7 +125,7 @@ function NoMenuBarLayout() {
 function WithMenuBarLayout() {
 	return (
 		<>
-			<MenuBar />
+			<MenuBar showOptions={true} />
 			<Container maxWidth="md">
 				<Outlet />
 			</Container>

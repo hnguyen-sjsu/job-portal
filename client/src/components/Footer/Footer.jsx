@@ -75,13 +75,18 @@ export default function Footer() {
 					<Grid item xs={12} sm={8} md={6}>
 						<Grid container spacing={2}>
 							{sections.map((section) => (
-								<Grid item xs={12} sm={4}>
+								<Grid
+									item
+									xs={12}
+									sm={4}
+									key={"footer-item-" + section.title}
+								>
 									<Stack>
 										<Typography fontWeight="bold">
 											{section.title}
 										</Typography>
 										{section.items.map((item) => (
-											<Typography>
+											<Typography key={item.title}>
 												{item.title}
 											</Typography>
 										))}

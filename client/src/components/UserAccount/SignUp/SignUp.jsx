@@ -29,21 +29,24 @@ function SignUp() {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log(loginInfo);
-		// const url = "http://localhost:5000/register";
-		// const userInfo = { ...loginInfo, full_name: loginInfo.fullName };
-		// const params = { withCredentials: true };
 
-		// axios
-		// 	.post(url, userInfo, params)
-		// 	.then((res) => {
-		// 		navigate("/account/login");
-		// 		console.log(res);
-		// 	})
-		// 	.catch((err) => {
-		// 		console.error(err.response.data);
-		// 	});
-		// alert("Submit clicked");
+		const url = "http://localhost:5000/register";
+		const userInfo = {
+			...loginInfo,
+			full_name: loginInfo.fullName,
+			role: "applicant",
+		};
+		const params = { withCredentials: true };
+
+		axios
+			.post(url, userInfo, params)
+			.then((res) => {
+				navigate("/account/login");
+				console.log(res);
+			})
+			.catch((err) => {
+				console.error(err.response.data);
+			});
 	};
 
 	return (

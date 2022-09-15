@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -10,130 +10,160 @@ import googleLogo from "../../../assets/google-icon.svg";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import loginImage from "../../../assets/login-concept-illustration_114360-757.jpg";
+import { UserContext } from "../../../providers/AuthProvider";
+
 function SignIn() {
-  let navigate = useNavigate();
-  const [loginInfo, setLoginInfo] = useState({
-    email: "",
-    password: "",
-  });
+	const { signIn } = useContext(UserContext);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setLoginInfo({
-      ...loginInfo,
-      [name]: value,
-    });
-  };
+	let navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+	const [loginInfo, setLoginInfo] = useState({
+		email: "",
+		password: "",
+	});
 
-    const url = "http://localhost:5000/login";
-    const user = { ...loginInfo };
-    const params = { withCredentials: true };
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setLoginInfo({
+			...loginInfo,
+			[name]: value,
+		});
+	};
 
-    axios
-      .post(url, user, params)
-      .then((res) => {
-        // Set isLogin to true to access protected route
-        navigate("/");
-        console.log(res);
-      })
-      .catch((err) => {
-        console.error(err.response.data);
-      });
-  };
+	const handleSubmit = (e) => {
+		e.preventDefault();
 
-  return (
-    <>
-      <Grid container className="signin-container">
-        <Grid item xs={0} md={6} alignItems="center">
-          <Grid container style={{ margin: "16px" }}>
-            <Grid item>
-              <Typography variant="h4" fontWeight="bold">
-                Find the job that best describes you
-              </Typography>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Stack style={{ margin: "16px" }}>
-            <Typography variant="h4" fontWeight="bold">
-              Login
-            </Typography>
-            <Typography variant="h6">
-              Your next career opportunity start here!
-            </Typography>
-            <Stack
-              component="form"
-              spacing={2}
-              style={{ paddingTop: "32px" }}
-              autoComplete="false"
-              onSubmit={handleSubmit}
-            >
-              <TextField
-                variant="outlined"
-                id="email"
-                placeholder="Email address"
-                type="email"
-                size="small"
-                name="email"
-                value={loginInfo.email}
-                onChange={handleChange}
-                required
-              />
-              <TextField
-                variant="outlined"
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Password"
-                size="small"
-                value={loginInfo.password}
-                onChange={handleChange}
-                required
-              />
-              <Link
-                to="/account/reset-password"
-                className=".uncolored-link"
-                style={{ textAlign: "right" }}
-              >
-                Forgot password?
-              </Link>
-              <Button
-                type="submit"
-                variant="contained"
-                disableElevation
-                // href="/account/build-profile"
-              >
-                Login
-              </Button>
+		// signIn(loginInfo).then((response) => {
+		// 	console.log("Login successfully");
+		// });
 
-              <Stack direction="row" spacing={1} justifyContent="center">
-                <Typography>Not registered?</Typography>
-                <div className=".uncolored-link">
-                  <Link to="/account/signup">Create an Account</Link>
-                </div>
-              </Stack>
-              <Divider />
-              <Button
-                startIcon={
-                  <>
-                    <img height={18} width={18} src={googleLogo} />
-                  </>
-                }
-                variant="outlined"
-                disableElevation
-                className="google-button"
-              >
-                Login with Google
-              </Button>
-            </Stack>
-          </Stack>
-        </Grid>
-      </Grid>
-    </>
-  );
+		// signIn(loginInfo);
+		// navigate("/account/preferences");
+		const url = "http://localhost:5000/login";
+		const user = { ...loginInfo };
+		const params = {
+			withCredentials: true,
+		};
+
+		axios
+			.post(url, user, params)
+			.then((res) => {
+				// Set isLogin to true to access protected route
+				// navigate("/");
+				console.log(res);
+			})
+			.catch((err) => {
+				console.error(err.response.data);
+			});
+	};
+
+	return (
+		<>
+			<Grid container className="signin-container">
+				<Grid item xs={0} md={6} alignItems="center">
+					<Grid container style={{ margin: "16px" }}>
+						<Grid item>
+							<Stack alignItems="center">
+								<Typography variant="h4" fontWeight="bold">
+									Find the job that best describes you
+								</Typography>
+								<img
+									src={loginImage}
+									style={{ height: "35vw" }}
+								/>
+							</Stack>
+						</Grid>
+					</Grid>
+				</Grid>
+				<Grid item xs={12} md={6}>
+					<Stack style={{ margin: "16px" }}>
+						<Typography variant="h4" fontWeight="bold">
+							Login
+						</Typography>
+						<Typography variant="h6">
+							Your next career opportunity start here!
+						</Typography>
+						<Stack
+							component="form"
+							spacing={2}
+							style={{ paddingTop: "32px" }}
+							autoComplete="false"
+							onSubmit={handleSubmit}
+						>
+							<TextField
+								variant="outlined"
+								id="email"
+								placeholder="Email address"
+								type="email"
+								size="small"
+								name="email"
+								value={loginInfo.email}
+								onChange={handleChange}
+								required
+							/>
+							<TextField
+								variant="outlined"
+								id="password"
+								name="password"
+								type="password"
+								placeholder="Password"
+								size="small"
+								value={loginInfo.password}
+								onChange={handleChange}
+								required
+							/>
+							<Link
+								to="/account/reset-password"
+								className=".uncolored-link"
+								style={{ textAlign: "right" }}
+							>
+								Forgot password?
+							</Link>
+							<Button
+								type="submit"
+								variant="contained"
+								disableElevation
+								// href="/account/build-profile"
+							>
+								Login
+							</Button>
+
+							<Stack
+								direction="row"
+								spacing={1}
+								justifyContent="center"
+							>
+								<Typography>Not registered?</Typography>
+								<div className=".uncolored-link">
+									<Link to="/account/signup">
+										Create an Account
+									</Link>
+								</div>
+							</Stack>
+							<Divider />
+							<Button
+								startIcon={
+									<>
+										<img
+											height={18}
+											width={18}
+											src={googleLogo}
+										/>
+									</>
+								}
+								variant="outlined"
+								disableElevation
+								className="google-button"
+							>
+								Login with Google
+							</Button>
+						</Stack>
+					</Stack>
+				</Grid>
+			</Grid>
+		</>
+	);
 }
 
 export default SignIn;

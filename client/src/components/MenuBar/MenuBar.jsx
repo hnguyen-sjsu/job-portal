@@ -16,7 +16,7 @@ import Typography from "@mui/material/Typography";
 import appLogo from "../../assets/app-logo.svg";
 
 function MenuBar(props) {
-	const { window } = props;
+	const { window, showOptions } = props;
 
 	const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -69,15 +69,17 @@ function MenuBar(props) {
 				}}
 			>
 				<Toolbar>
-					<IconButton
-						color="inherit"
-						aria-label="open drawer"
-						edge="start"
-						onClick={handleDrawerToggle}
-						sx={{ mr: 2, display: { sm: "none" } }}
-					>
-						<MenuIcon />
-					</IconButton>
+					{showOptions && (
+						<IconButton
+							color="inherit"
+							aria-label="open drawer"
+							edge="start"
+							onClick={handleDrawerToggle}
+							sx={{ mr: 2, display: { sm: "none" } }}
+						>
+							<MenuIcon />
+						</IconButton>
+					)}
 					<img src={appLogo} height={40} />
 					<Typography
 						variant="h6"
@@ -88,28 +90,30 @@ function MenuBar(props) {
 					>
 						Job Finder
 					</Typography>
-					<Box sx={{ display: { xs: "none", sm: "block" } }}>
-						{linkItems.map((item, idx) => (
-							<Button key={idx} color="inherit">
-								{item.title}
+					{showOptions && (
+						<Box sx={{ display: { xs: "none", sm: "block" } }}>
+							{linkItems.map((item, idx) => (
+								<Button key={idx} color="inherit">
+									{item.title}
+								</Button>
+							))}
+							<Button
+								color="inherit"
+								disableElevation
+								href="/account/login"
+							>
+								Login
 							</Button>
-						))}
-						<Button
-							color="inherit"
-							disableElevation
-							href="/account/login"
-						>
-							Login
-						</Button>
-						<Button
-							color="primary"
-							variant="contained"
-							disableElevation
-							href="/account/signup"
-						>
-							Create Account
-						</Button>
-					</Box>
+							<Button
+								color="primary"
+								variant="contained"
+								disableElevation
+								href="/account/signup"
+							>
+								Create Account
+							</Button>
+						</Box>
+					)}
 				</Toolbar>
 			</AppBar>
 			<Box component="nav">

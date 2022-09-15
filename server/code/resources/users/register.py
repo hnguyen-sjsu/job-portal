@@ -20,6 +20,11 @@ class Register(Resource):
                         required=True,
                         help="Full name cannot be left blank")
 
+    parser.add_argument("role",
+                        type=str,
+                        required=True,
+                        help="role cannot be left blank")
+
     @classmethod
     def post(cls):
 
@@ -31,6 +36,11 @@ class Register(Resource):
 
         # Hash password before saving into database
         data['password'] = hash_password(data['password'])
+
+        # Validate role
+        data['role'] = data['role'].lower()
+        if data['role'] not in ['employer', 'applicant']:
+            return {'message': 'Role must be either employer or applicant'}, 400
 
         # Instantiate an UserModel object to save to database
         user = UserModel(**data)

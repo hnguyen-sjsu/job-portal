@@ -9,6 +9,7 @@ class GetAll(Resource):
     @jwt_required()
     def get(cls):
         jobs = Job.find_all()
+
         return {"jobs": [job.to_dict() for job in jobs]}, 200
 
 
@@ -23,9 +24,8 @@ class GetTen(Resource):
     @jwt_required()
     def get(cls):
         data = GetTen.parser.parse_args()
-
         jobs = Job.find_ten(offset=data['offset'])
-        print(jobs)
+
         return {"jobs": [job.to_dict() for job in jobs]}, 200
 
 
@@ -36,4 +36,5 @@ class GetAllByUID(Resource):
     def get(cls):
         uid = get_jwt_identity()
         jobs = Job.find_all_by_uid(uid)
+
         return {"jobs": [job.to_dict() for job in jobs]}, 200

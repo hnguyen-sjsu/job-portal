@@ -80,17 +80,29 @@ class Job(db.Model):
         return jobs
 
     @classmethod
-    def find_all_by_uid(cls, uid):
-        jobs = cls.query.filter_by(uid=uid).all()
-        for job in jobs:
-            job.time_created = job.time_created.strftime("%Y-%m-%d %H:%M:%S")
+    def find_all_by_uid(cls, _uid):
+        jobs = cls.query.filter_by(uid=_uid).all()
 
         return jobs
 
     @classmethod
     def find_by_id(cls, id):
         job = cls.query.filter_by(id=id).first()
-        if job:
-            job.time_created = job.time_created.strftime("%Y-%m-%d %H:%M:%S")
-
         return job
+
+    @classmethod
+    def update(cls, **kwargs):
+        job = cls.find_by_id(kwargs['job_id'])
+
+        if job:
+            for key, value in kwargs.items():
+                if key == 'days_until_expired':
+                    job.time_expired = job.time_expired + \
+                        datetime.timedelta(days=value)
+                else:
+                    setattr(job, key, value)
+
+            job.save_to_db()
+            return job
+
+        return None

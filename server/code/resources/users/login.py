@@ -1,9 +1,10 @@
 from security import hash_password
 from flask_restful import Resource, reqparse
 from models.user_model import UserModel
-from flask_jwt_extended import create_access_token
-from flask_jwt_extended import set_access_cookies
+from flask_jwt_extended import create_access_token, set_access_cookies
 from response_message_code import response_message_code
+from flask import Response
+import json
 
 
 class Login(Resource):
@@ -17,6 +18,7 @@ class Login(Resource):
                         type=str,
                         required=True,
                         help="Password cannot be left blank")
+
     """
     Return a dictionary that contains user login information such as email, password, etc.
     Perform basic validation on email and password.
@@ -36,9 +38,20 @@ class Login(Resource):
             response = response_message_code("Wrong password", 403)
             return response
 
-        response = response_message_code("Login Successful", 200)
-        # response.access_control_allow_credentials = True
-        access_token = create_access_token(identity=data)
+        response = Response(
+            response=json.dumps({
+                "user_info": {
+                    "uid": user.id,
+                    "email": user.email,
+                    "full_name": user.full_name,
+                    "role": user.role
+                }
+            }),
+            status=200,
+            mimetype="application/json"
+        )
+
+        access_token = create_access_token(identity=user.id)
         set_access_cookies(response, access_token)
 
         return response

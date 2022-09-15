@@ -66,7 +66,7 @@ const GetStartedSection = () => {
 			</Typography>
 			<Grid container>
 				{steps.map((step) => (
-					<Grid item xs={4}>
+					<Grid item xs={4} key={step.title}>
 						<Stack alignItems="center" spacing={2}>
 							<Avatar sx={{ bgcolor: step.color }}>
 								{step.icon}
@@ -89,10 +89,20 @@ export default function LandingPage() {
 			primaryText: "Start Here",
 			subtitle: "A place where talents meet recruiters.",
 			actions: [
-				<Button variant="contained" color="primary" disableElevation>
+				<Button
+					key="find-jobs-btn"
+					variant="contained"
+					color="primary"
+					disableElevation
+				>
 					Find Jobs
 				</Button>,
-				<Button variant="outlined" color="primary" disableElevation>
+				<Button
+					key="find-talents-btn"
+					variant="outlined"
+					color="primary"
+					disableElevation
+				>
 					Find Talents
 				</Button>,
 			],
@@ -104,7 +114,12 @@ export default function LandingPage() {
 			primaryText: "Impress recruiters",
 			subtitle: "Let your skills shine your profile.",
 			actions: [
-				<Button variant="contained" color="primary" disableElevation>
+				<Button
+					key="get-started-btn"
+					variant="contained"
+					color="primary"
+					disableElevation
+				>
 					Get Started
 				</Button>,
 			],

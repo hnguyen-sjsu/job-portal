@@ -31,7 +31,11 @@ function SignUp() {
 		e.preventDefault();
 
 		const url = "http://localhost:5000/register";
-		const userInfo = { ...loginInfo, full_name: loginInfo.fullName };
+		const userInfo = {
+			...loginInfo,
+			full_name: loginInfo.fullName,
+			role: "applicant",
+		};
 		const params = { withCredentials: true };
 
 		axios

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -10,8 +10,14 @@ import googleLogo from "../../../assets/google-icon.svg";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import loginImage from "../../../assets/login-concept-illustration_114360-757.jpg";
+import { UserContext } from "../../../providers/AuthProvider";
+
 function SignIn() {
+	const { signIn } = useContext(UserContext);
+
 	let navigate = useNavigate();
+
 	const [loginInfo, setLoginInfo] = useState({
 		email: "",
 		password: "",
@@ -28,15 +34,23 @@ function SignIn() {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
+		// signIn(loginInfo).then((response) => {
+		// 	console.log("Login successfully");
+		// });
+
+		// signIn(loginInfo);
+		// navigate("/account/preferences");
 		const url = "http://localhost:5000/login";
 		const user = { ...loginInfo };
-		const params = { withCredentials: true };
+		const params = {
+			withCredentials: true,
+		};
 
 		axios
 			.post(url, user, params)
 			.then((res) => {
 				// Set isLogin to true to access protected route
-				navigate("/");
+				// navigate("/");
 				console.log(res);
 			})
 			.catch((err) => {
@@ -50,9 +64,15 @@ function SignIn() {
 				<Grid item xs={0} md={6} alignItems="center">
 					<Grid container style={{ margin: "16px" }}>
 						<Grid item>
-							<Typography variant="h4" fontWeight="bold">
-								Find the job that best describes you
-							</Typography>
+							<Stack alignItems="center">
+								<Typography variant="h4" fontWeight="bold">
+									Find the job that best describes you
+								</Typography>
+								<img
+									src={loginImage}
+									style={{ height: "35vw" }}
+								/>
+							</Stack>
 						</Grid>
 					</Grid>
 				</Grid>

@@ -23,6 +23,8 @@ build/
 .idea/
 docs/_build/
 .vscode
+test.py
+data.db
 
 # Coverage reports
 htmlcov/

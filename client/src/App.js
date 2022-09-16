@@ -1,5 +1,7 @@
 import "./App.css";
 
+import { useContext } from "react";
+
 import {
 	ThemeProvider,
 	createTheme,
@@ -17,7 +19,7 @@ import ProfileForm from "./components/UserAccount/ProfileForm/ProfileForm";
 import Preferences from "./components/UserAccount/Profile/Preferences";
 import LandingPage from "./components/LandingPage/LandingPage";
 import Footer from "./components/Footer/Footer";
-import AuthProvider from "./providers/AuthProvider";
+import AuthProvider, { UserContext } from "./providers/AuthProvider";
 
 let theme = createTheme({
 	palette: {
@@ -85,6 +87,8 @@ let theme = createTheme({
 theme = responsiveFontSizes(theme);
 
 function App() {
+	const { user } = useContext(UserContext);
+
 	return (
 		<AuthProvider>
 			<ThemeProvider theme={theme}>

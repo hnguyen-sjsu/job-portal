@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -14,8 +14,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 
 import appLogo from "../../assets/app-logo.svg";
+import { UserContext } from "../../providers/AuthProvider";
 
 function MenuBar(props) {
+	const { user, signOut } = useContext(UserContext);
+
 	const { window, showOptions } = props;
 
 	const [mobileOpen, setMobileOpen] = useState(false);
@@ -47,12 +50,16 @@ function MenuBar(props) {
 						</ListItemButton>
 					</ListItem>
 				))}
-				<ListItem disablePadding>
-					<ListItemButton>Login</ListItemButton>
-				</ListItem>
-				<ListItem disablePadding>
-					<ListItemButton>Create Account</ListItemButton>
-				</ListItem>
+				{!user && (
+					<ListItem disablePadding>
+						<ListItemButton>Login</ListItemButton>
+					</ListItem>
+				)}
+				{!user && (
+					<ListItem disablePadding>
+						<ListItemButton>Create Account</ListItemButton>
+					</ListItem>
+				)}
 			</List>
 		</Box>
 	);
@@ -97,21 +104,37 @@ function MenuBar(props) {
 									{item.title}
 								</Button>
 							))}
-							<Button
-								color="inherit"
-								disableElevation
-								href="/account/login"
-							>
-								Login
-							</Button>
-							<Button
-								color="primary"
-								variant="contained"
-								disableElevation
-								href="/account/signup"
-							>
-								Create Account
-							</Button>
+							{!user && (
+								<Button
+									color="inherit"
+									disableElevation
+									href="/account/login"
+								>
+									Login
+								</Button>
+							)}
+							{!user && (
+								<Button
+									color="primary"
+									variant="contained"
+									disableElevation
+									href="/account/signup"
+								>
+									Create Account
+								</Button>
+							)}
+							{user && (
+								<Button
+									color="primary"
+									variant="contained"
+									disableElevation
+									onClick={() => {
+										signOut();
+									}}
+								>
+									Logout
+								</Button>
+							)}
 						</Box>
 					)}
 				</Toolbar>

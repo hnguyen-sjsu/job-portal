@@ -3,12 +3,12 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import InputLabel from "@mui/material/InputLabel";
+import LinearProgress from "@mui/material/LinearProgress";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
 import googleLogo from "../../../assets/google-icon.svg";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 
 import loginImage from "../../../assets/login-concept-illustration_114360-757.jpg";
 import { UserContext } from "../../../providers/AuthProvider";
@@ -23,6 +23,8 @@ function SignIn() {
 		password: "",
 	});
 
+	const [loading, setLoading] = useState(false);
+
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setLoginInfo({
@@ -33,33 +35,23 @@ function SignIn() {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-
-		// signIn(loginInfo).then((response) => {
-		// 	console.log("Login successfully");
-		// });
-
-		// signIn(loginInfo);
-		// navigate("/account/preferences");
-		const url = "http://localhost:5000/login";
-		const user = { ...loginInfo };
-		const params = {
-			withCredentials: true,
-		};
-
-		axios
-			.post(url, user, params)
-			.then((res) => {
-				// Set isLogin to true to access protected route
-				// navigate("/");
-				console.log(res);
-			})
-			.catch((err) => {
-				console.error(err.response.data);
-			});
+		setLoading(true);
+		signIn(loginInfo).then((response) => {
+			console.log("Login successfully", response);
+			setTimeout(() => {
+				setLoading(false);
+				if (response) {
+					navigate("/");
+				}
+			}, 3000);
+		});
 	};
 
 	return (
 		<>
+			<Box sx={{ width: "100%", display: loading ? "block" : "none" }}>
+				<LinearProgress />
+			</Box>
 			<Grid container className="signin-container">
 				<Grid item xs={0} md={6} alignItems="center">
 					<Grid container style={{ margin: "16px" }}>
@@ -101,6 +93,7 @@ function SignIn() {
 								value={loginInfo.email}
 								onChange={handleChange}
 								required
+								disabled={loading}
 							/>
 							<TextField
 								variant="outlined"
@@ -112,6 +105,7 @@ function SignIn() {
 								value={loginInfo.password}
 								onChange={handleChange}
 								required
+								disabled={loading}
 							/>
 							<Link
 								to="/account/reset-password"
@@ -124,7 +118,7 @@ function SignIn() {
 								type="submit"
 								variant="contained"
 								disableElevation
-								// href="/account/build-profile"
+								disabled={loading}
 							>
 								Login
 							</Button>

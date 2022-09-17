@@ -95,4 +95,7 @@ class ResetPassword(Resource):
         user.password = hash_password(data["new_password"])
         user.save_to_db()
 
+        # delete the token from password_reset table
+        reset_token.delete_from_db()
+
         return {"message": "Password has been updated"}, 200

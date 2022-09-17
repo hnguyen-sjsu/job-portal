@@ -8,17 +8,17 @@ class Register(Resource):
     parser.add_argument("email",
                         type=str,
                         required=True,
-                        help="Email cannot be left blank")
+                        help="email cannot be left blank")
 
     parser.add_argument("password",
                         type=str,
                         required=True,
-                        help="Password cannot be left blank")
+                        help="password cannot be left blank")
 
     parser.add_argument("full_name",
                         type=str,
                         required=True,
-                        help="Full name cannot be left blank")
+                        help="full_name cannot be left blank")
 
     parser.add_argument("role",
                         type=str,

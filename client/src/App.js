@@ -120,7 +120,6 @@ function App() {
 function NoMenuBarLayout() {
 	return (
 		<>
-			<MenuBar showOptions={false} />
 			<Outlet />
 		</>
 	);

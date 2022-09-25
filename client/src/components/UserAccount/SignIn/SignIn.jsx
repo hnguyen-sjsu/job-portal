@@ -10,7 +10,7 @@ import Box from "@mui/material/Box";
 import googleLogo from "../../../assets/google-icon.svg";
 import { Link, useNavigate } from "react-router-dom";
 
-import loginImage from "../../../assets/login-concept-illustration_114360-757.jpg";
+import logoImg from "../../../assets/app-logo.svg";
 import { UserContext } from "../../../providers/AuthProvider";
 
 function SignIn() {
@@ -54,22 +54,26 @@ function SignIn() {
 			</Box>
 			<Grid container className="signin-container">
 				<Grid item xs={0} md={6} alignItems="center">
-					<Grid container style={{ margin: "16px" }}>
+					<Grid container>
 						<Grid item>
-							<Stack alignItems="center">
+							<Stack
+								alignItems="center"
+								justifyContent="center"
+								className="left-wizard-container"
+							>
+								<img src={logoImg} className="logo-img" />
 								<Typography variant="h4" fontWeight="bold">
 									Find the job that best describes you
 								</Typography>
-								<img
-									src={loginImage}
-									style={{ height: "35vw" }}
-								/>
 							</Stack>
 						</Grid>
 					</Grid>
 				</Grid>
 				<Grid item xs={12} md={6}>
-					<Stack style={{ margin: "16px" }}>
+					<Stack
+						className="right-wizard-container"
+						justifyContent={{ sm: "flex-start", md: "center" }}
+					>
 						<Typography variant="h4" fontWeight="bold">
 							Login
 						</Typography>

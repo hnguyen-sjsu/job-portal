@@ -72,7 +72,7 @@ function MenuBar(props) {
 				elevation={0}
 				position="sticky"
 				sx={{
-					backdropFilter: "blur(50px)",
+					backdropFilter: "blur(200px)",
 				}}
 			>
 				<Toolbar>
@@ -128,11 +128,8 @@ function MenuBar(props) {
 									color="primary"
 									variant="contained"
 									disableElevation
-									onClick={() => {
-										signOut();
-									}}
 								>
-									Logout
+									Account
 								</Button>
 							)}
 						</Box>

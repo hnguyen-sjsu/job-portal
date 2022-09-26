@@ -71,9 +71,7 @@ function MenuBar(props) {
 				color="transparent"
 				elevation={0}
 				position="sticky"
-				sx={{
-					backdropFilter: "blur(200px)",
-				}}
+				className="menu-bar"
 			>
 				<Toolbar>
 					{showOptions && (

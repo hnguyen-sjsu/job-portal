@@ -13,7 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logoImg from "../../../assets/app-logo.svg";
 import { UserContext } from "../../../providers/AuthProvider";
 
-function SignIn() {
+function SignIn({ isRecruiter }) {
 	const { signIn } = useContext(UserContext);
 
 	let navigate = useNavigate();
@@ -63,7 +63,9 @@ function SignIn() {
 							>
 								<img src={logoImg} className="logo-img" />
 								<Typography variant="h4" fontWeight="bold">
-									Find the job that best describes you
+									{isRecruiter
+										? "Find the talents that fit your company needs"
+										: "Find the job that best describes you"}
 								</Typography>
 							</Stack>
 						</Grid>
@@ -75,10 +77,12 @@ function SignIn() {
 						justifyContent={{ sm: "flex-start", md: "center" }}
 					>
 						<Typography variant="h4" fontWeight="bold">
-							Login
+							{isRecruiter ? "Recruiter Login" : "Login"}
 						</Typography>
 						<Typography variant="h6">
-							Your next career opportunity start here!
+							{isRecruiter
+								? "Your next talent pool is here!"
+								: "Your next career opportunity start here!"}
 						</Typography>
 						<Stack
 							component="form"

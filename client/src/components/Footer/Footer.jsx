@@ -51,6 +51,7 @@ export default function Footer() {
 	return (
 		<Box
 			component="footer"
+			className="footer"
 			sx={{
 				py: 3,
 				px: 2,

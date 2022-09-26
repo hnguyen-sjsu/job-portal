@@ -16,7 +16,6 @@ import CssBaseline from "@mui/material/CssBaseline";
 import SignUp from "./components/UserAccount/SignUp/SignUp";
 import SignIn from "./components/UserAccount/SignIn/SignIn";
 import ProfileForm from "./components/UserAccount/ProfileForm/ProfileForm";
-import Preferences from "./components/UserAccount/Profile/Preferences";
 import LandingPage from "./components/LandingPage/LandingPage";
 import Footer from "./components/Footer/Footer";
 import AuthProvider, { UserContext } from "./providers/AuthProvider";
@@ -100,14 +99,18 @@ function App() {
 						</Route>
 						<Route path="/account" element={<NoMenuBarLayout />}>
 							<Route path="signup" element={<SignUp />} />
+							<Route
+								path="recruiter-signup"
+								element={<SignUp isRecruiter={true} />}
+							/>
 							<Route path="login" element={<SignIn />} />
+							<Route
+								path="recruiter-login"
+								element={<SignIn isRecruiter={true} />}
+							/>
 							<Route
 								path="build-profile"
 								element={<ProfileForm />}
-							/>
-							<Route
-								path="preferences"
-								element={<Preferences />}
 							/>
 						</Route>
 					</Routes>

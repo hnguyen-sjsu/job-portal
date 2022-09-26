@@ -11,8 +11,9 @@ import { Link, useNavigate } from "react-router-dom";
 import logoImg from "../../../assets/app-logo.svg";
 import axios from "axios";
 
-function SignUp() {
+function SignUp({ isRecruiter }) {
 	let navigate = useNavigate();
+
 	const [loginInfo, setLoginInfo] = useState({
 		fullName: "",
 		email: "",
@@ -35,7 +36,7 @@ function SignUp() {
 		const userInfo = {
 			...loginInfo,
 			full_name: loginInfo.fullName,
-			role: "applicant",
+			role: isRecruiter ? "recruiter" : "applicant",
 		};
 		const params = { withCredentials: true };
 
@@ -63,7 +64,9 @@ function SignUp() {
 							>
 								<img src={logoImg} className="logo-img" />
 								<Typography variant="h4" fontWeight="bold">
-									Find the job that best describes you
+									{isRecruiter
+										? "Find the talents that fit your company needs"
+										: "Find the job that best describes you"}
 								</Typography>
 							</Stack>
 						</Grid>
@@ -75,10 +78,14 @@ function SignUp() {
 						justifyContent={{ sm: "flex-start", md: "center" }}
 					>
 						<Typography variant="h4" fontWeight="bold">
-							Create Account
+							{isRecruiter
+								? "Create a Recruiter Account"
+								: "Create an Account"}
 						</Typography>
 						<Typography variant="h6">
-							Your next career opportunity start here!
+							{isRecruiter
+								? "Your next talent pool is here!"
+								: "Your next career opportunity start here!"}
 						</Typography>
 						<Stack
 							component="form"

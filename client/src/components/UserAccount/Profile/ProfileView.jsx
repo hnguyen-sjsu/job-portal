@@ -7,7 +7,7 @@ import Stack from "@mui/material/Stack";
 
 import { UserContext } from "../../../providers/AuthProvider";
 
-function ProfileView() {
+function ProfileView(props) {
 	const { user } = useContext(UserContext);
 
 	const undefinedProfile = {
@@ -48,9 +48,11 @@ function ProfileView() {
 	}, [user]);
 
 	return (
-		<>
+		<Stack {...props}>
 			<>
-				<Typography variant="h5">{profile.full_name}</Typography>
+				<Typography variant="h5" fontWeight="bold">
+					{profile.full_name}
+				</Typography>
 				<Card>
 					<CardContent>
 						<Typography>{profile.bio}</Typography>
@@ -59,7 +61,7 @@ function ProfileView() {
 					</CardContent>
 				</Card>
 			</>
-		</>
+		</Stack>
 	);
 }
 

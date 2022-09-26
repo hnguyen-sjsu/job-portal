@@ -16,6 +16,42 @@ import Typography from "@mui/material/Typography";
 import appLogo from "../../assets/app-logo.svg";
 import { UserContext } from "../../providers/AuthProvider";
 
+import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { Avatar } from "@mui/material";
+
+function stringToColor(string) {
+	let hash = 0;
+	let i;
+
+	/* eslint-disable no-bitwise */
+	for (i = 0; i < string.length; i += 1) {
+		hash = string.charCodeAt(i) + ((hash << 5) - hash);
+	}
+
+	let color = "#";
+
+	for (i = 0; i < 3; i += 1) {
+		const value = (hash >> (i * 8)) & 0xff;
+		color += `00${value.toString(16)}`.slice(-2);
+	}
+	/* eslint-enable no-bitwise */
+
+	return color;
+}
+
+function stringAvatar(name) {
+	return {
+		sx: {
+			bgcolor: stringToColor(name),
+			width: 32,
+			height: 32,
+		},
+		children: `${name.split(" ")[0][0]}`,
+	};
+}
+
 function MenuBar(props) {
 	const { user, signOut } = useContext(UserContext);
 
@@ -23,15 +59,39 @@ function MenuBar(props) {
 
 	const [mobileOpen, setMobileOpen] = useState(false);
 
+	const [anchorEl, setAnchorEl] = useState(null);
+
+	const handleAccountClick = (event) => {
+		setAnchorEl(event.currentTarget);
+	};
+	const handleAccountClose = () => {
+		setAnchorEl(null);
+	};
+
+	const open = Boolean(anchorEl);
+
 	const handleDrawerToggle = () => {
 		setMobileOpen(!mobileOpen);
 	};
 
-	const linkItems = [
-		{ title: "Find Candidates", url: "#candidates" },
-		{ title: "Browse Jobs", url: "#jobs" },
-		{ title: "Post Job", url: "#post" },
-	];
+	// const linkItems = [
+	// 	{ title: "Find Candidates", url: "#candidates" },
+	// 	{ title: "Browse Jobs", url: "#jobs" },
+	// 	{ title: "Post Job", url: "#post" },
+	// ];
+
+	const linkItems = user
+		? user.role === "employer"
+			? [
+					{ title: "Find Candidates", url: "#candidates" },
+					{ title: "Post Jobs", url: "#post-jobs" },
+					{ title: "Manage Jobs", url: "#manage-jobs" },
+			  ]
+			: [
+					{ title: "Find Jobs", url: "#jobs" },
+					{ title: "Applications", url: "#applications" },
+			  ]
+		: [];
 
 	const container =
 		window !== undefined ? () => window().document.body : undefined;
@@ -122,18 +182,55 @@ function MenuBar(props) {
 								</Button>
 							)}
 							{user && (
-								<Button
-									color="primary"
-									variant="contained"
-									disableElevation
+								<IconButton
+									onClick={handleAccountClick}
+									size="small"
+									sx={{ ml: 2 }}
 								>
-									Account
-								</Button>
+									<Avatar {...stringAvatar(user.full_name)} />
+								</IconButton>
 							)}
 						</Box>
 					)}
 				</Toolbar>
 			</AppBar>
+			<Menu
+				anchorEl={anchorEl}
+				open={open}
+				onClose={handleAccountClose}
+				onClick={handleAccountClose}
+				PaperProps={{
+					elevation: 0,
+					sx: {
+						overflow: "visible",
+						filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+						mt: 1.5,
+						"& .MuiAvatar-root": {
+							width: 32,
+							height: 32,
+							ml: -0.5,
+							mr: 1,
+						},
+						"&:before": {
+							content: '""',
+							display: "block",
+							position: "absolute",
+							top: 0,
+							right: 14,
+							width: 10,
+							height: 10,
+							bgcolor: "background.paper",
+							transform: "translateY(-50%) rotate(45deg)",
+							zIndex: 0,
+						},
+					},
+				}}
+				transformOrigin={{ horizontal: "right", vertical: "top" }}
+				anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+			>
+				<MenuItem>Profile</MenuItem>
+				<MenuItem>Sign Out</MenuItem>
+			</Menu>
 			<Box component="nav">
 				<Drawer
 					container={container}

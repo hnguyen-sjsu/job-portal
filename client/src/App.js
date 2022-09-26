@@ -15,7 +15,8 @@ import MenuBar from "./components/MenuBar/MenuBar";
 import CssBaseline from "@mui/material/CssBaseline";
 import SignUp from "./components/UserAccount/SignUp/SignUp";
 import SignIn from "./components/UserAccount/SignIn/SignIn";
-import ProfileForm from "./components/UserAccount/ProfileForm/ProfileForm";
+import ProfileView from "./components/UserAccount/Profile/ProfileView";
+import ProfileForm from "./components/UserAccount/Profile/ProfileForm";
 import LandingPage from "./components/LandingPage/LandingPage";
 import Footer from "./components/Footer/Footer";
 import AuthProvider, { UserContext } from "./providers/AuthProvider";
@@ -96,6 +97,9 @@ function App() {
 					<Routes>
 						<Route path="/" element={<WithMenuBarLayout />}>
 							<Route index element={<LandingPage />} />
+						</Route>
+						<Route path="/account" element={<WithMenuBarLayout />}>
+							<Route path="profile" element={<ProfileView />} />
 						</Route>
 						<Route path="/account" element={<NoMenuBarLayout />}>
 							<Route path="signup" element={<SignUp />} />

@@ -36,7 +36,7 @@ function SignUp({ isRecruiter }) {
 		const userInfo = {
 			...loginInfo,
 			full_name: loginInfo.fullName,
-			role: isRecruiter ? "recruiter" : "applicant",
+			role: isRecruiter ? "employer" : "applicant",
 		};
 		const params = { withCredentials: true };
 

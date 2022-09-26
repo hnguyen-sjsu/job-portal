@@ -30,6 +30,7 @@ import PlaceRoundedIcon from "@mui/icons-material/PlaceRounded";
 import CallRoundedIcon from "@mui/icons-material/CallRounded";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import { UserContext } from "../../../providers/AuthProvider";
+import ProfileView from "./ProfileView";
 
 const ProfileForm = () => {
 	const { user } = useContext(UserContext);
@@ -50,7 +51,6 @@ const ProfileForm = () => {
 	const handleProfileChange = (e) => {
 		const { name, value } = e.target;
 		setUserProfile({ ...userProfile, [name]: value });
-		console.log(userProfile);
 	};
 
 	const handleEducationChange = (e, index) => {
@@ -60,7 +60,6 @@ const ProfileForm = () => {
 		});
 
 		setEducationItems([...updatedItems]);
-		console.log(educationItems);
 	};
 
 	const handleAddNewEducation = () => {
@@ -98,7 +97,6 @@ const ProfileForm = () => {
 				<Profile
 					userProfile={userProfile}
 					handleChange={handleProfileChange}
-					disabled={false}
 				/>
 			),
 		},
@@ -162,7 +160,7 @@ const ProfileForm = () => {
 	};
 
 	return (
-		<>
+		<Container maxWidth="md">
 			<Stepper activeStep={activeStep} alternativeLabel>
 				{steps.map((step) => (
 					<Step key={step.title}>
@@ -204,12 +202,12 @@ const ProfileForm = () => {
 					</Button>
 				)}
 			</Box>
-		</>
+		</Container>
 	);
 };
 
 const Profile = (props) => {
-	const { userProfile, handleChange, disabled } = props;
+	const { userProfile, handleChange } = props;
 
 	return (
 		<Container disableGutters>
@@ -603,14 +601,24 @@ const Review = (props) => {
 			<Typography variant="h4" fontWeight="bold">
 				Review & Submit
 			</Typography>
-			<Typography variant="h4" color="primary" fontWeight="bold">
+			<ProfileView
+				userProfile={userProfile}
+				skills={skills}
+				experiences={experiences}
+				educations={educations}
+			/>
+			{/* <Typography variant="h4" color="primary" fontWeight="bold">
 				{userProfile.full_name}
 			</Typography>
 			<Typography>{userProfile.bio}</Typography>
 			<Grid container>
 				<Grid item xs={12} sm={4}>
 					<Stack>
-						<Typography variant="h5" fontWeight="bold">
+						<Typography
+							variant="h5"
+							fontWeight="bold"
+							color="primary"
+						>
 							Contact
 						</Typography>
 						<Grid container>
@@ -637,7 +645,11 @@ const Review = (props) => {
 						</Grid>
 					</Stack>
 					<Stack>
-						<Typography variant="h5" fontWeight="bold">
+						<Typography
+							variant="h5"
+							fontWeight="bold"
+							color="primary"
+						>
 							Skills
 						</Typography>
 						<Stack
@@ -654,7 +666,11 @@ const Review = (props) => {
 				</Grid>
 				<Grid item xs={12} sm={8}>
 					<Stack>
-						<Typography variant="h5" fontWeight="bold">
+						<Typography
+							variant="h5"
+							fontWeight="bold"
+							color="primary"
+						>
 							Education
 						</Typography>
 						{educations.map((item, index) => (
@@ -683,7 +699,11 @@ const Review = (props) => {
 						))}
 					</Stack>
 					<Stack>
-						<Typography variant="h5" fontWeight="bold">
+						<Typography
+							variant="h5"
+							fontWeight="bold"
+							color="primary"
+						>
 							Experience
 						</Typography>
 						{experiences.map((item, index) => (
@@ -714,7 +734,7 @@ const Review = (props) => {
 						))}
 					</Stack>
 				</Grid>
-			</Grid>
+			</Grid> */}
 		</>
 	);
 };

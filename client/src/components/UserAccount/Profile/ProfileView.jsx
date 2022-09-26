@@ -1,8 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
+import PlaceRoundedIcon from "@mui/icons-material/PlaceRounded";
+import CallRoundedIcon from "@mui/icons-material/CallRounded";
+import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import Stack from "@mui/material/Stack";
 
 import { UserContext } from "../../../providers/AuthProvider";
@@ -10,58 +11,174 @@ import { UserContext } from "../../../providers/AuthProvider";
 function ProfileView(props) {
 	const { user } = useContext(UserContext);
 
-	const undefinedProfile = {
-		full_name: "",
-		email: "",
-		role: "",
-		bio: "",
-		phoneNo: "",
-		location: "",
+	const { userProfile, skills, educations, experiences } = props;
+
+	const [profile, setProfile] = useState({
+		userProfile: {},
 		skills: [],
 		educations: [],
 		experiences: [],
-	};
-
-	const [profile, setProfile] = useState({ ...undefinedProfile });
+	});
 
 	useEffect(() => {
-		if (user) {
-			const dummyData = {
-				bio: "San Jose State University Software Engineering Student looks for internship",
-				phoneNo: "(209) 123-4567",
-				location: "San Jose, CA",
-				skills: [
-					"Python",
-					"Java",
-					"ReactJS",
-					"SwiftUI",
-					"Full Stack Development",
-				],
-				educations: [],
-				experiences: [],
-			};
-			console.log(user);
-			setTimeout(() => {
-				setProfile({ ...profile, ...user, ...dummyData });
-			}, 1000);
+		if (userProfile && skills && educations && experiences) {
+			// Profile Review - Data not submitted to database
+			setProfile({
+				userProfile: { ...userProfile },
+				skills: [...skills],
+				educations: [...educations],
+				experiences: [...experiences],
+			});
+		} else {
+			// Profile View - Data loading from database
+			if (user) {
+				console.log(user);
+				setProfile({
+					userProfile: { ...user },
+					skills: [],
+					educations: [],
+					experiences: [],
+				});
+			}
 		}
 	}, [user]);
 
 	return (
-		<Stack {...props}>
-			<>
-				<Typography variant="h5" fontWeight="bold">
-					{profile.full_name}
+		<>
+			<Stack spacing={2}>
+				<Typography variant="h4" color="primary" fontWeight="bold">
+					{profile.userProfile.full_name}
 				</Typography>
-				<Card>
-					<CardContent>
-						<Typography>{profile.bio}</Typography>
-						<Typography>{profile.phoneNo}</Typography>
-						<Typography>{profile.email}</Typography>
-					</CardContent>
-				</Card>
-			</>
-		</Stack>
+				<Typography>{profile.userProfile.bio}</Typography>
+				<Grid container>
+					<Grid item xs={12} sm={4}>
+						<Stack spacing={2}>
+							<Typography
+								variant="h5"
+								fontWeight="bold"
+								color="primary"
+							>
+								Contact
+							</Typography>
+							<Grid container>
+								<Grid item xs={2}>
+									<PlaceRoundedIcon fontSize="small" />
+								</Grid>
+								<Grid item xs={10}>
+									<Typography>
+										{profile.userProfile.location}
+									</Typography>
+								</Grid>
+								<Grid item xs={2}>
+									<CallRoundedIcon fontSize="small" />
+								</Grid>
+								<Grid item xs={10}>
+									<Typography>
+										{profile.userProfile.phoneNumber}
+									</Typography>
+								</Grid>
+								<Grid item xs={2}>
+									<EmailRoundedIcon fontSize="small" />
+								</Grid>
+								<Grid item xs={10}>
+									<Typography>
+										{profile.userProfile.email}
+									</Typography>
+								</Grid>
+							</Grid>
+
+							<Typography
+								variant="h5"
+								fontWeight="bold"
+								color="primary"
+							>
+								Skills
+							</Typography>
+							<Stack
+								direction={{ xs: "row", sm: "column" }}
+								spacing={{ xs: 2, sm: 0 }}
+							>
+								{profile.skills.map((skill, index) => (
+									<Typography key={"skill-" + index}>
+										{skill}
+									</Typography>
+								))}
+							</Stack>
+						</Stack>
+					</Grid>
+					<Grid item xs={12} sm={8}>
+						<Stack spacing={2}>
+							<Typography
+								variant="h5"
+								fontWeight="bold"
+								color="primary"
+							>
+								Education
+							</Typography>
+							{profile.educations.map((item, index) => (
+								<Grid container key={"education-" + index}>
+									<Grid item xs={6}>
+										<Typography fontWeight="bold">
+											{item.schoolName}
+										</Typography>
+									</Grid>
+									<Grid item xs={6}>
+										<Typography align="right">
+											{item.startDate +
+												" - " +
+												item.endDate}
+										</Typography>
+									</Grid>
+									<Grid item xs={12}>
+										<Typography>
+											{item.degree + ", " + item.major}
+										</Typography>
+									</Grid>
+									<Grid item xs={12}>
+										<Typography paragraph={true}>
+											{item.description}
+										</Typography>
+									</Grid>
+								</Grid>
+							))}
+							<Typography
+								variant="h5"
+								fontWeight="bold"
+								color="primary"
+							>
+								Experience
+							</Typography>
+							{profile.experiences.map((item, index) => (
+								<Grid container key={"experience-" + index}>
+									<Grid item xs={6}>
+										<Typography fontWeight="bold">
+											{item.companyName}
+											{item.companyLocation}
+										</Typography>
+									</Grid>
+									<Grid item xs={6}>
+										<Typography align="right">
+											{item.startDate + " - "}
+											{item.isCurrentJob
+												? "Present"
+												: item.endDate}
+										</Typography>
+									</Grid>
+									<Grid item xs={12}>
+										<Typography>{item.title}</Typography>
+									</Grid>
+									<Grid item xs={12}>
+										<Typography paragraph={true}>
+											{item.description}
+										</Typography>
+									</Grid>
+								</Grid>
+							))}
+						</Stack>
+					</Grid>
+				</Grid>
+			</Stack>
+		</>
 	);
 }
 

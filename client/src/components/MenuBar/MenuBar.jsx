@@ -16,41 +16,9 @@ import Typography from "@mui/material/Typography";
 import appLogo from "../../assets/app-logo.svg";
 import { UserContext } from "../../providers/AuthProvider";
 
-import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Avatar } from "@mui/material";
-
-function stringToColor(string) {
-	let hash = 0;
-	let i;
-
-	/* eslint-disable no-bitwise */
-	for (i = 0; i < string.length; i += 1) {
-		hash = string.charCodeAt(i) + ((hash << 5) - hash);
-	}
-
-	let color = "#";
-
-	for (i = 0; i < 3; i += 1) {
-		const value = (hash >> (i * 8)) & 0xff;
-		color += `00${value.toString(16)}`.slice(-2);
-	}
-	/* eslint-enable no-bitwise */
-
-	return color;
-}
-
-function stringAvatar(name) {
-	return {
-		sx: {
-			bgcolor: stringToColor(name),
-			width: 32,
-			height: 32,
-		},
-		children: `${name.split(" ")[0][0]}`,
-	};
-}
 
 function MenuBar(props) {
 	const { user, signOut } = useContext(UserContext);
@@ -74,12 +42,6 @@ function MenuBar(props) {
 		setMobileOpen(!mobileOpen);
 	};
 
-	// const linkItems = [
-	// 	{ title: "Find Candidates", url: "#candidates" },
-	// 	{ title: "Browse Jobs", url: "#jobs" },
-	// 	{ title: "Post Job", url: "#post" },
-	// ];
-
 	const linkItems = user
 		? user.role === "employer"
 			? [
@@ -91,7 +53,14 @@ function MenuBar(props) {
 					{ title: "Find Jobs", url: "#jobs" },
 					{ title: "Applications", url: "#applications" },
 			  ]
-		: [];
+		: [
+				{ title: "Login", url: "/account/login", primary: false },
+				{
+					title: "Create Account",
+					url: "/account/signup",
+					primary: true,
+				},
+		  ];
 
 	const container =
 		window !== undefined ? () => window().document.body : undefined;
@@ -158,29 +127,18 @@ function MenuBar(props) {
 					{showOptions && (
 						<Box sx={{ display: { xs: "none", sm: "block" } }}>
 							{linkItems.map((item, idx) => (
-								<Button key={idx} color="inherit">
+								<Button
+									key={idx}
+									color={item.primary ? "primary" : "inherit"}
+									href={item.url}
+									variant={
+										item.primary ? "contained" : "text"
+									}
+									disableElevation
+								>
 									{item.title}
 								</Button>
 							))}
-							{!user && (
-								<Button
-									color="inherit"
-									disableElevation
-									href="/account/login"
-								>
-									Login
-								</Button>
-							)}
-							{!user && (
-								<Button
-									color="primary"
-									variant="contained"
-									disableElevation
-									href="/account/signup"
-								>
-									Create Account
-								</Button>
-							)}
 							{user && (
 								<IconButton
 									onClick={handleAccountClick}
@@ -257,3 +215,34 @@ function MenuBar(props) {
 }
 
 export default MenuBar;
+
+function stringToColor(string) {
+	let hash = 0;
+	let i;
+
+	/* eslint-disable no-bitwise */
+	for (i = 0; i < string.length; i += 1) {
+		hash = string.charCodeAt(i) + ((hash << 5) - hash);
+	}
+
+	let color = "#";
+
+	for (i = 0; i < 3; i += 1) {
+		const value = (hash >> (i * 8)) & 0xff;
+		color += `00${value.toString(16)}`.slice(-2);
+	}
+	/* eslint-enable no-bitwise */
+
+	return color;
+}
+
+function stringAvatar(name) {
+	return {
+		sx: {
+			bgcolor: stringToColor(name),
+			width: 32,
+			height: 32,
+		},
+		children: `${name.split(" ")[0][0]}`,
+	};
+}

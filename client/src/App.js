@@ -11,6 +11,7 @@ import {
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 
 import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
 import MenuBar from "./components/MenuBar/MenuBar";
 import CssBaseline from "@mui/material/CssBaseline";
 import SignUp from "./components/UserAccount/SignUp/SignUp";
@@ -136,13 +137,19 @@ function NoMenuBarLayout() {
 
 function WithMenuBarLayout() {
 	return (
-		<>
+		<Box
+			sx={{
+				display: "flex",
+				flexDirection: "column",
+				minHeight: "100vh",
+			}}
+		>
 			<MenuBar showOptions={true} />
 			<Container maxWidth="md">
 				<Outlet />
 			</Container>
 			<Footer />
-		</>
+		</Box>
 	);
 }
 

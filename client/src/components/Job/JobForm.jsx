@@ -12,19 +12,20 @@ import InputAdornment from "@mui/material/InputAdornment";
 
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import JobView from "./JobView";
 
 function JobForm(props) {
 	const jobTypes = [
-		{ value: "full-time", title: "Full Time" },
-		{ value: "part-time", title: "Part Time" },
-		{ value: "intern", title: "Intern" },
+		{ title: "Full Time" },
+		{ title: "Part Time" },
+		{ title: "Intern" },
 	];
 
 	const expLevels = [
-		{ value: "entry", title: "Entry Level" },
-		{ value: "internmediate", title: "Intermediate Level" },
-		{ value: "senior", title: "Senior Level" },
-		{ value: "intern", title: "Intern Level" },
+		{ title: "Entry Level" },
+		{ title: "Intermediate Level" },
+		{ title: "Senior Level" },
+		{ title: "Intern Level" },
 	];
 
 	const categories = [
@@ -49,6 +50,13 @@ function JobForm(props) {
 		category: "",
 		minSalary: "",
 		maxSalary: "",
+		description: "",
+		noApplicants: 150,
+		company: {
+			name: "Apple",
+			size: "10,001+ employees",
+			industryField: "Computers Electronics",
+		},
 	});
 
 	const handleChange = (e) => {
@@ -62,7 +70,7 @@ function JobForm(props) {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		console.log(job);
-		console.log(convertedText);
+		// console.log(convertedText);
 	};
 
 	return (
@@ -101,7 +109,7 @@ function JobForm(props) {
 								<em>None</em>
 							</MenuItem>
 							{jobTypes.map((type) => (
-								<MenuItem key={type.value} value={type.value}>
+								<MenuItem key={type.title} value={type.title}>
 									{type.title}
 								</MenuItem>
 							))}
@@ -125,7 +133,7 @@ function JobForm(props) {
 								<em>None</em>
 							</MenuItem>
 							{expLevels.map((level) => (
-								<MenuItem key={level.value} value={level.value}>
+								<MenuItem key={level.title} value={level.title}>
 									{level.title}
 								</MenuItem>
 							))}
@@ -224,8 +232,10 @@ function JobForm(props) {
 						</InputLabel>
 						<ReactQuill
 							theme="snow"
-							value={convertedText}
-							onChange={setConvertedText}
+							value={job.description}
+							onChange={(content) => {
+								setJob({ ...job, description: content });
+							}}
 						/>
 					</Grid>
 					<Grid item xs={6}>
@@ -245,6 +255,7 @@ function JobForm(props) {
 					</Grid>
 				</Grid>
 			</Stack>
+			<JobView job={job} />
 		</>
 	);
 }

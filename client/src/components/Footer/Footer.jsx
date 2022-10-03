@@ -78,7 +78,7 @@ export default function Footer() {
 							{sections.map((section) => (
 								<Grid
 									item
-									xs={12}
+									xs={6}
 									sm={4}
 									key={"footer-item-" + section.title}
 								>

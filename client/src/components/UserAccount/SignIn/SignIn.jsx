@@ -37,13 +37,13 @@ function SignIn({ isRecruiter }) {
 		e.preventDefault();
 		setLoading(true);
 		signIn(loginInfo).then((response) => {
-			console.log("Login successfully", response);
+			console.log(response);
 			setTimeout(() => {
 				setLoading(false);
 				if (response) {
 					navigate("/");
 				}
-			}, 3000);
+			}, 2000);
 		});
 	};
 
@@ -143,23 +143,6 @@ function SignIn({ isRecruiter }) {
 									</Link>
 								</div>
 							</Stack>
-							<Divider />
-							<Button
-								startIcon={
-									<>
-										<img
-											height={18}
-											width={18}
-											src={googleLogo}
-										/>
-									</>
-								}
-								variant="outlined"
-								disableElevation
-								className="google-button"
-							>
-								Login with Google
-							</Button>
 						</Stack>
 					</Stack>
 				</Grid>

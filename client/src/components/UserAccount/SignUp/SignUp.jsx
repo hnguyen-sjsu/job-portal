@@ -6,13 +6,17 @@ import TextField from "@mui/material/TextField";
 import InputLabel from "@mui/material/InputLabel";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
-import googleLogo from "../../../assets/google-icon.svg";
+
 import { Link, useNavigate } from "react-router-dom";
 import logoImg from "../../../assets/app-logo.svg";
-import axios from "axios";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
+import AuthenticationServices from "../../../services/AuthenticationServices";
 
 function SignUp({ isRecruiter }) {
 	let navigate = useNavigate();
+
+	const [loading, setLoading] = useState(false);
 
 	const [loginInfo, setLoginInfo] = useState({
 		fullName: "",
@@ -31,28 +35,33 @@ function SignUp({ isRecruiter }) {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
+		setLoading(true);
 
-		const url = "http://localhost:5000/register";
 		const userInfo = {
 			...loginInfo,
 			full_name: loginInfo.fullName,
 			role: isRecruiter ? "employer" : "applicant",
 		};
-		const params = { withCredentials: true };
 
-		axios
-			.post(url, userInfo, params)
-			.then((res) => {
-				navigate("/account/login");
-				console.log(res);
-			})
-			.catch((err) => {
-				console.error(err.response.data);
-			});
+		AuthenticationServices.signUp(userInfo).then((response) => {
+			setLoading(false);
+			if (response) {
+				console.log(response);
+				setTimeout(() => {
+					setLoading(false);
+					if (response) {
+						navigate("/account/login");
+					}
+				}, 2000);
+			}
+		});
 	};
 
 	return (
 		<>
+			<Box sx={{ width: "100%", display: loading ? "block" : "none" }}>
+				<LinearProgress />
+			</Box>
 			<Grid container className="signin-container">
 				<Grid item xs={0} md={6} alignItems="center">
 					<Grid container>
@@ -156,20 +165,17 @@ function SignUp({ isRecruiter }) {
 							</Stack>
 							<Divider />
 							<Button
-								startIcon={
-									<>
-										<img
-											height={18}
-											width={18}
-											src={googleLogo}
-										/>
-									</>
-								}
 								variant="outlined"
 								disableElevation
 								className="google-button"
+								onClick={() => {
+									isRecruiter
+										? navigate("/account/signup")
+										: navigate("/account/recruiter-signup");
+								}}
 							>
-								Sign up with Google
+								Create an Account as a{" "}
+								{isRecruiter ? "Candidate" : "Recruiter"}
 							</Button>
 						</Stack>
 					</Stack>

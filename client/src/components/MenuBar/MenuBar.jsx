@@ -15,7 +15,7 @@ import Typography from "@mui/material/Typography";
 
 import appLogo from "../../assets/app-logo.svg";
 import { UserContext } from "../../providers/AuthProvider";
-
+import { useNavigate } from "react-router-dom";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Avatar } from "@mui/material";
@@ -32,6 +32,7 @@ function MenuBar(props) {
 	const handleAccountClick = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
+
 	const handleAccountClose = () => {
 		setAnchorEl(null);
 	};
@@ -42,16 +43,18 @@ function MenuBar(props) {
 		setMobileOpen(!mobileOpen);
 	};
 
+	let navigate = useNavigate();
+
 	const linkItems = user
 		? user.role === "employer"
 			? [
 					{ title: "Find Candidates", url: "#candidates" },
-					{ title: "Post Jobs", url: "#post-jobs" },
+					{ title: "Post Jobs", url: "/post-jobs" },
 					{ title: "Manage Jobs", url: "#manage-jobs" },
 			  ]
 			: [
-					{ title: "Find Jobs", url: "#jobs" },
-					{ title: "Applications", url: "#applications" },
+					{ title: "Find Jobs", url: "/job/search" },
+					{ title: "Applications", url: "/applications" },
 			  ]
 		: [
 				{ title: "Login", url: "/account/login", primary: false },
@@ -186,8 +189,14 @@ function MenuBar(props) {
 				transformOrigin={{ horizontal: "right", vertical: "top" }}
 				anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
 			>
-				<MenuItem>Profile</MenuItem>
-				<MenuItem>Sign Out</MenuItem>
+				<MenuItem
+					onClick={() => {
+						navigate("../account/profile");
+					}}
+				>
+					Profile
+				</MenuItem>
+				<MenuItem onClick={signOut}>Sign Out</MenuItem>
 			</Menu>
 			<Box component="nav">
 				<Drawer

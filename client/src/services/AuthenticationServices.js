@@ -20,7 +20,20 @@ const signIn = async (loginInfo) => {
 	}
 };
 
-const signUp = async (userInfo) => {};
+const signUp = async (userInfo) => {
+	const url = API_URL + "register";
+	const params = {
+		withCredentials: true,
+	};
+	try {
+		const response = await axios.post(url, userInfo, params);
+		console.log(response);
+		return response;
+	} catch (e) {
+		console.error(e);
+		return null;
+	}
+};
 
 const signOut = () => {
 	localStorage.setItem("user", null);

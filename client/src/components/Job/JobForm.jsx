@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -9,6 +10,8 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
+import LinearProgress from "@mui/material/LinearProgress";
+
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -43,7 +46,9 @@ function JobForm(props) {
 		{ title: "Banking" },
 	];
 
-	const [job, setJob] = useState({
+	const [loading, setLoading] = useState(false);
+
+	let undefinedJob = {
 		title: "",
 		type: "",
 		experienceLevel: "",
@@ -61,6 +66,10 @@ function JobForm(props) {
 		startDate: null,
 		endDate: null,
 		postedDate: new Date(),
+	};
+
+	const [job, setJob] = useState({
+		...undefinedJob,
 	});
 
 	const handleChange = (e) => {
@@ -74,10 +83,30 @@ function JobForm(props) {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		console.log(job);
+		setLoading(true);
+		setTimeout(() => {
+			setLoading(false);
+		}, 3000);
+	};
+
+	const handleClear = (e) => {
+		e.preventDefault();
+		setJob({ ...undefinedJob });
 	};
 
 	return (
 		<>
+			<Box
+				sx={{
+					width: "100vw",
+					display: loading ? "block" : "none",
+					position: "fixed",
+					left: 0,
+					zIndex: 1999,
+				}}
+			>
+				<LinearProgress />
+			</Box>
 			<LocalizationProvider dateAdapter={AdapterDateFns}>
 				<Grid container spacing={2}>
 					<Grid item xs={12} md={6}>
@@ -97,6 +126,7 @@ function JobForm(props) {
 										onChange={handleChange}
 										fullWidth
 										required
+										disabled={loading}
 									/>
 								</Grid>
 								<Grid item xs={6}>
@@ -112,6 +142,7 @@ function JobForm(props) {
 										fullWidth
 										onChange={handleChange}
 										required
+										disabled={loading}
 									>
 										<MenuItem value="">
 											<em>None</em>
@@ -139,6 +170,7 @@ function JobForm(props) {
 										value={job.experienceLevel}
 										onChange={handleChange}
 										required
+										disabled={loading}
 									>
 										<MenuItem value="">
 											<em>None</em>
@@ -178,6 +210,7 @@ function JobForm(props) {
 												required
 											/>
 										)}
+										disabled={loading}
 									/>
 								</Grid>
 								<Grid item xs={6}>
@@ -207,6 +240,7 @@ function JobForm(props) {
 												required
 											/>
 										)}
+										disabled={loading}
 									/>
 								</Grid>
 								<Grid item xs={6}>
@@ -229,6 +263,7 @@ function JobForm(props) {
 												</InputAdornment>
 											),
 										}}
+										disabled={loading}
 									/>
 								</Grid>
 								<Grid item xs={6}>
@@ -251,6 +286,7 @@ function JobForm(props) {
 												</InputAdornment>
 											),
 										}}
+										disabled={loading}
 									/>
 								</Grid>
 								<Grid item xs={6}>
@@ -275,6 +311,7 @@ function JobForm(props) {
 												required
 											/>
 										)}
+										disabled={loading}
 									/>
 								</Grid>
 								<Grid item xs={6}>
@@ -299,6 +336,7 @@ function JobForm(props) {
 												required
 											/>
 										)}
+										disabled={loading}
 									/>
 								</Grid>
 								<Grid item xs={12}>
@@ -314,6 +352,7 @@ function JobForm(props) {
 												description: content,
 											});
 										}}
+										readOnly={loading}
 									/>
 								</Grid>
 								<Grid item xs={6}>
@@ -322,6 +361,7 @@ function JobForm(props) {
 										disableElevation
 										fullWidth
 										type="submit"
+										disabled={loading}
 									>
 										Save
 									</Button>
@@ -331,6 +371,8 @@ function JobForm(props) {
 										variant="outlined"
 										disableElevation
 										fullWidth
+										disabled={loading}
+										onClick={handleClear}
 									>
 										Clear
 									</Button>

@@ -97,8 +97,11 @@ body {
 }
 
 .menu-bar {
-  backdrop-filter: blur(200px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5); 
+  backdrop-filter: blur(20px);
+  border-style: solid;
+  border-color: rgb(245, 245, 245);
+  border-width: 0px 0px thin;
+  background: rgba(255, 255, 255, 0.7);
 }
 
 .wrapper-class {

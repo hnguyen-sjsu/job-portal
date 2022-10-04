@@ -49,7 +49,7 @@ function MenuBar(props) {
 		? user.role === "employer"
 			? [
 					{ title: "Find Candidates", url: "#candidates" },
-					{ title: "Post Jobs", url: "/post-jobs" },
+					{ title: "Post Jobs", url: "/recruiter/post-jobs" },
 					{ title: "Manage Jobs", url: "#manage-jobs" },
 			  ]
 			: [

@@ -6,17 +6,20 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import ReactQuill from "react-quill";
+import Skeleton from "@mui/material/Skeleton";
 
 import WorkRoundedIcon from "@mui/icons-material/WorkRounded";
 import BusinessRoundedIcon from "@mui/icons-material/BusinessRounded";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
+import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
 
+import moment from "moment/dist/moment.js";
 import "react-quill/dist/quill.bubble.css";
+import SkeletonLabel from "../Utils/SkeletonLabel";
 
 function JobView(props) {
-	const { job } = props;
+	const { job, isPreview } = props;
 	// const [job, setJob] = useState({
 	// 	category: "Software",
 	// 	experienceLevel: "Senior Level",
@@ -39,22 +42,66 @@ function JobView(props) {
 			{job && (
 				<>
 					<Typography variant="h4" fontWeight="bold">
-						{job.title}
+						<SkeletonLabel text={job.title} width={300} />
 					</Typography>
-					<Typography>
-						{job.company.name} • {job.location} • {job.category} •{" "}
-						{job.noApplicants} applicant
-						{job.noApplicants > 1 && "s"}
-					</Typography>
+					<Stack direction="row" divider={<>{" • "}</>}>
+						{job.company.name}
+						<SkeletonLabel text={job.location} />
+						<SkeletonLabel text={job.category} />
+						<SkeletonLabel
+							text={
+								job.noApplicants +
+								" applicant" +
+								(job.noApplicants > 1 && "s")
+							}
+							animation={false}
+						/>
+					</Stack>
 					<List disablePadding dense>
 						<ListItem disableGutters>
 							<ListItemIcon>
 								<WorkRoundedIcon />
 							</ListItemIcon>
 							<ListItemText>
-								{job.type} • {job.experienceLevel} • $
-								{job.minSalary}{" "}
-								{job.maxSalary && "- $" + job.maxSalary}
+								<Stack direction="row" divider={<>{" • "}</>}>
+									<SkeletonLabel text={job.type} />
+									<SkeletonLabel text={job.experienceLevel} />
+									<SkeletonLabel
+										text={
+											job.minSalary && "$" + job.minSalary
+										}
+									/>
+									<SkeletonLabel
+										text={
+											job.maxSalary && "$" + job.maxSalary
+										}
+									/>
+								</Stack>
+							</ListItemText>
+						</ListItem>
+						<ListItem disableGutters>
+							<ListItemIcon>
+								<EventAvailableRoundedIcon />
+							</ListItemIcon>
+							<ListItemText>
+								<Stack direction="row" divider={<>{" • "}</>}>
+									<SkeletonLabel
+										text={
+											job.startDate &&
+											moment(job.startDate).format(
+												"MM/DD/YYYY"
+											)
+										}
+									/>
+									<SkeletonLabel
+										text={
+											job.endDate &&
+											moment(job.endDate).format(
+												"MM/DD/YYYY"
+											)
+										}
+									/>
+								</Stack>
 							</ListItemText>
 						</ListItem>
 						<ListItem disableGutters>
@@ -62,32 +109,47 @@ function JobView(props) {
 								<BusinessRoundedIcon />
 							</ListItemIcon>
 							<ListItemText>
-								{job.company.size} • {job.company.industryField}
+								<Stack direction="row" divider={<>{" • "}</>}>
+									<SkeletonLabel text={job.company.size} />
+									<SkeletonLabel
+										text={job.company.industryField}
+									/>
+								</Stack>
 							</ListItemText>
 						</ListItem>
 					</List>
-					<Stack direction="row" spacing={2}>
-						<Button
-							variant="contained"
-							disableElevation
-							endIcon={<SendRoundedIcon />}
-						>
-							Apply
-						</Button>
-						<Button
-							variant="outlined"
-							disableElevation
-							endIcon={<BookmarkBorderRoundedIcon />}
-						>
-							Save
-						</Button>
-					</Stack>
+					{!isPreview && (
+						<Stack direction="row" spacing={2}>
+							<Button
+								variant="contained"
+								disableElevation
+								endIcon={<SendRoundedIcon />}
+							>
+								Apply
+							</Button>
+							<Button
+								variant="outlined"
+								disableElevation
+								endIcon={<BookmarkBorderRoundedIcon />}
+							>
+								Save
+							</Button>
+						</Stack>
+					)}
 					<Typography variant="h6" fontWeight="bold">
 						Description
 					</Typography>
-					<div
-						dangerouslySetInnerHTML={{ __html: job.description }}
-					></div>
+					{job.description ? (
+						<div
+							dangerouslySetInnerHTML={{
+								__html: job.description,
+							}}
+						></div>
+					) : (
+						[...Array(10).keys()].map((n) => (
+							<Skeleton key={"skeleton-" + n} />
+						))
+					)}
 				</>
 			)}
 		</>

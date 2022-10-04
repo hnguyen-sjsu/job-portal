@@ -100,11 +100,13 @@ function App() {
 					<Routes>
 						<Route path="/" element={<WithMenuBarLayout />}>
 							<Route index element={<LandingPage />} />
-							<Route path="post-jobs" element={<JobForm />} />
 							<Route path="job/:id" element={<JobView />} />
 						</Route>
 						<Route path="/account" element={<WithMenuBarLayout />}>
 							<Route path="profile" element={<ProfileView />} />
+						</Route>
+						<Route path="/recruiter" element={<RecruiterLayout />}>
+							<Route path="post-jobs" element={<JobForm />} />
 						</Route>
 						<Route path="/account" element={<NoMenuBarLayout />}>
 							<Route path="signup" element={<SignUp />} />
@@ -148,6 +150,24 @@ function WithMenuBarLayout() {
 		>
 			<MenuBar showOptions={true} />
 			<Container maxWidth="md">
+				<Outlet />
+			</Container>
+			<Footer />
+		</Box>
+	);
+}
+
+function RecruiterLayout() {
+	return (
+		<Box
+			sx={{
+				display: "flex",
+				flexDirection: "column",
+				minHeight: "100vh",
+			}}
+		>
+			<MenuBar showOptions={true} />
+			<Container maxWidth="xl">
 				<Outlet />
 			</Container>
 			<Footer />

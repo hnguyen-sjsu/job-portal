@@ -20,6 +20,8 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Avatar } from "@mui/material";
 
+import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
+
 function MenuBar(props) {
 	const { user, signOut } = useContext(UserContext);
 
@@ -148,7 +150,24 @@ function MenuBar(props) {
 									size="small"
 									sx={{ ml: 2 }}
 								>
-									<Avatar {...stringAvatar(user.full_name)} />
+									{user.role === "candidate" &&
+										(user.fullName.length > 0 ? (
+											<Avatar
+												{...stringAvatar(user.fullName)}
+											/>
+										) : (
+											<AccountCircleRoundedIcon />
+										))}
+									{user.role === "recruiter" &&
+										(user.companyName.length > 0 ? (
+											<Avatar
+												{...stringAvatar(
+													user.companyName
+												)}
+											/>
+										) : (
+											<AccountCircleRoundedIcon />
+										))}
 								</IconButton>
 							)}
 						</Box>
@@ -191,7 +210,7 @@ function MenuBar(props) {
 			>
 				<MenuItem
 					onClick={() => {
-						navigate("../account/profile");
+						navigate("../" + user.role + "/profile");
 					}}
 				>
 					Profile
@@ -229,6 +248,10 @@ function stringToColor(string) {
 	let hash = 0;
 	let i;
 
+	if (string === undefined) {
+		string = "Unnamed User";
+	}
+
 	/* eslint-disable no-bitwise */
 	for (i = 0; i < string.length; i += 1) {
 		hash = string.charCodeAt(i) + ((hash << 5) - hash);
@@ -246,6 +269,9 @@ function stringToColor(string) {
 }
 
 function stringAvatar(name) {
+	if (name === undefined) {
+		name = "Unnamed User";
+	}
 	return {
 		sx: {
 			bgcolor: stringToColor(name),

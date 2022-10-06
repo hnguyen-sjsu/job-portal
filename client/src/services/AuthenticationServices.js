@@ -7,21 +7,20 @@ const signIn = async (loginInfo) => {
 	const params = {
 		withCredentials: true,
 	};
-	const url = API_URL + "login";
+	const url = API_URL + "user/login";
 
 	try {
 		const response = await axios.post(url, user, params);
 		console.log(response);
-		localStorage.setItem("user", JSON.stringify(response.data.user_info));
-		return response.data.user_info;
+		return response;
 	} catch (e) {
 		console.error(e);
-		return null;
+		return e;
 	}
 };
 
 const signUp = async (userInfo) => {
-	const url = API_URL + "register";
+	const url = API_URL + "user/register";
 	const params = {
 		withCredentials: true,
 	};
@@ -43,11 +42,27 @@ const getCurrentUser = () => {
 	return JSON.parse(localStorage.getItem("user"));
 };
 
+const getProfile = async (role) => {
+	const url = API_URL + role + "/get-profile";
+	const params = {
+		withCredentials: true,
+	};
+	try {
+		const response = await axios.get(url, params);
+		console.log(response);
+		return response;
+	} catch (e) {
+		console.error(e);
+		return e;
+	}
+};
+
 const AuthenticationServices = {
 	signIn,
 	signUp,
 	signOut,
 	getCurrentUser,
+	getProfile,
 };
 
 export default AuthenticationServices;

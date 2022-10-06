@@ -19,7 +19,6 @@ function SignUp({ isRecruiter }) {
 	const [loading, setLoading] = useState(false);
 
 	const [loginInfo, setLoginInfo] = useState({
-		fullName: "",
 		email: "",
 		password: "",
 	});
@@ -39,8 +38,7 @@ function SignUp({ isRecruiter }) {
 
 		const userInfo = {
 			...loginInfo,
-			full_name: loginInfo.fullName,
-			role: isRecruiter ? "employer" : "applicant",
+			role: isRecruiter ? "recruiter" : "candidate",
 		};
 
 		AuthenticationServices.signUp(userInfo).then((response) => {
@@ -103,18 +101,6 @@ function SignUp({ isRecruiter }) {
 							onSubmit={handleSubmit}
 						>
 							<Stack>
-								<InputLabel htmlFor="fullName">
-									Full Name
-								</InputLabel>
-								<TextField
-									variant="standard"
-									id="fullName"
-									name="fullName"
-									placeholder="Enter your full name"
-									onChange={handleChange}
-								/>
-							</Stack>
-							<Stack>
 								<InputLabel htmlFor="email">
 									Email Address
 								</InputLabel>
@@ -125,6 +111,7 @@ function SignUp({ isRecruiter }) {
 									placeholder="name@domain.com"
 									type="email"
 									onChange={handleChange}
+									required
 								/>
 							</Stack>
 							<Stack>

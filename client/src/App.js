@@ -103,14 +103,23 @@ function App() {
 							<Route index element={<LandingPage />} />
 							<Route path="job/:id" element={<JobView />} />
 						</Route>
-						<Route path="/account" element={<WithMenuBarLayout />}>
+						<Route
+							path="/candidate"
+							element={<WithMenuBarLayout />}
+						>
 							<Route path="profile" element={<ProfileView />} />
 						</Route>
 						<Route path="/recruiter" element={<RecruiterLayout />}>
 							<Route path="post-jobs" element={<JobForm />} />
 							<Route
-								path="profile"
+								path="build-profile"
 								element={<CompanyProfile />}
+							/>
+						</Route>
+						<Route path="/candidate" element={<NoMenuBarLayout />}>
+							<Route
+								path="build-profile"
+								element={<ProfileForm />}
 							/>
 						</Route>
 						<Route path="/account" element={<NoMenuBarLayout />}>
@@ -123,10 +132,6 @@ function App() {
 							<Route
 								path="recruiter-login"
 								element={<SignIn isRecruiter={true} />}
-							/>
-							<Route
-								path="build-profile"
-								element={<ProfileForm />}
 							/>
 						</Route>
 					</Routes>

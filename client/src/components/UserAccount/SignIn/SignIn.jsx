@@ -4,14 +4,16 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import LinearProgress from "@mui/material/LinearProgress";
-import Divider from "@mui/material/Divider";
+import Alert from "@mui/material/Alert";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import googleLogo from "../../../assets/google-icon.svg";
+
 import { Link, useNavigate } from "react-router-dom";
 
 import logoImg from "../../../assets/app-logo.svg";
 import { UserContext } from "../../../providers/AuthProvider";
+
+import AuthenticationServices from "../../../services/AuthenticationServices";
 
 function SignIn({ isRecruiter }) {
 	const { signIn } = useContext(UserContext);
@@ -24,6 +26,7 @@ function SignIn({ isRecruiter }) {
 	});
 
 	const [loading, setLoading] = useState(false);
+	const [errorMessage, setErrorMessage] = useState("");
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -37,13 +40,42 @@ function SignIn({ isRecruiter }) {
 		e.preventDefault();
 		setLoading(true);
 		signIn(loginInfo).then((response) => {
-			console.log(response);
 			setTimeout(() => {
-				setLoading(false);
-				if (response) {
-					navigate("/");
+				if (response.status === 200) {
+					const userInfo = response.data.user_info;
+					AuthenticationServices.getProfile(userInfo.role).then(
+						(response) => {
+							setLoading(false);
+							const profile = {
+								...userInfo,
+								...response.data,
+							};
+							localStorage.setItem(
+								"user",
+								JSON.stringify(profile)
+							);
+							console.log(profile);
+							if (userInfo.role === "candidate") {
+								if (profile.fullName === "") {
+									navigate("/candidate/build-profile");
+								} else {
+									navigate("/");
+								}
+							}
+							if (userInfo.role === "recruiter") {
+								if (profile.companyName === "") {
+									navigate("/recruiter/build-profile");
+								} else {
+									navigate("/");
+								}
+							}
+						}
+					);
+					setErrorMessage("");
+				} else {
+					setErrorMessage(response.response.data.message);
 				}
-			}, 2000);
+			}, 1000);
 		});
 	};
 
@@ -115,6 +147,17 @@ function SignIn({ isRecruiter }) {
 								required
 								disabled={loading}
 							/>
+							<Alert
+								severity="error"
+								sx={{
+									display:
+										errorMessage.length > 0
+											? "flex"
+											: "none",
+								}}
+							>
+								{errorMessage}
+							</Alert>
 							<Link
 								to="/account/reset-password"
 								className=".uncolored-link"

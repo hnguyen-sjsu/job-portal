@@ -88,13 +88,6 @@ class Add(Resource):
         try:
             new_job.save_to_db()
 
-            # Create dummy data
-            # for _ in range(10):
-            #     new_job = Job(company_name=faker.company(), title=faker.job(), description=faker.text(), location=faker.city(), type="Full Time", experience_level="Entry Level", salary=faker.random_int(
-            #         min=10000, max=100000), company_logo_url=faker.image_url(), days_until_expired=2, uid=uid)
-
-            #     new_job.save_to_db()
-
             # jobs = [
             #     {
             #         'companyName': "Tiktok",

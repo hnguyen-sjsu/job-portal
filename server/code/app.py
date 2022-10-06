@@ -15,11 +15,15 @@ from resources.users.private import Protected
 from resources.users.logout import Logout
 from resources.users.update import UpdateProfile
 from resources.users.delete import Delete
+from resources.candidates.update import UpdateCandidateProfile
+from resources.candidates.read import GetCandidateProfile
+from resources.recruiters.update import UpdateRecruiterProfile
+from resources.recruiters.read import GetRecruiterProfile
 from resources.jobs.add import Add
 from resources.jobs.get import GetAll, GetTen, GetAllByUID, GetOne
 from resources.jobs.delete import DeleteJob
 from resources.jobs.update import UpdateJob
-from resources.jobs.remove_expired_jobs import remove_expired_jobs
+from resources.db_cleaner import remove_expired_jobs, remove_expired_tokens
 from dotenv import load_dotenv
 from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, JWTManager, set_access_cookies
 
@@ -53,6 +57,8 @@ def create_tables():
     db.create_all()
     removed_jobs = remove_expired_jobs()
     print(removed_jobs)
+    expired_tokens = remove_expired_tokens()
+    print(expired_tokens)
 
 
 # @app.before_request
@@ -94,15 +100,23 @@ def my_expired_token_callback(response):
 
 
 # API endpoints start with http://localhost:5000/...
-api.add_resource(User, '/get-all-users')
-api.add_resource(Register, '/register')
-api.add_resource(UpdateProfile, '/update-profile')
-api.add_resource(Login, '/login')
-api.add_resource(RecoverPasswordURL, '/get-reset-password-url')
-api.add_resource(ResetPassword, '/reset-password')
-api.add_resource(Delete, '/delete')
-api.add_resource(Logout, '/logout')
-api.add_resource(Protected, '/protected')
+# users
+api.add_resource(User, '/user/get-all-users')
+api.add_resource(Register, '/user/register')
+api.add_resource(UpdateProfile, '/user/update')
+api.add_resource(Login, '/user/login')
+api.add_resource(RecoverPasswordURL, '/user/send-recovery-url')
+api.add_resource(ResetPassword, '/user/reset-password')
+api.add_resource(Delete, '/user/delete')
+api.add_resource(Logout, '/user/logout')
+api.add_resource(Protected, '/user/protected')
+# candidates
+api.add_resource(UpdateCandidateProfile, '/candidate/update')
+api.add_resource(GetCandidateProfile, '/candidate/get-profile')
+# recruiters
+api.add_resource(UpdateRecruiterProfile, '/recruiter/update')
+api.add_resource(GetRecruiterProfile, '/recruiter/get-profile')
+# job
 api.add_resource(GetAll, '/job/get-all')
 api.add_resource(GetOne, '/job/get-one')
 api.add_resource(GetTen, '/job/get-ten')

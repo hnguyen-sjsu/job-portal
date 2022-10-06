@@ -58,7 +58,7 @@ class UpdateJob(Resource):
         # Find job by job_id
         job = Job.find_by_id(data["job_id"])
 
-        # Find all jobs that current employer has posted
+        # Find all jobs that current candidate has posted
         uid = get_jwt_identity()
 
         jobs = Job.find_all_by_uid(uid)

@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse
-from models.user_model import UserModel, PasswordRecovery
+from models.user_model import UserModel
+from models.password_recovery import PasswordRecovery
 from itsdangerous import URLSafeSerializer
 from dotenv import load_dotenv
 from flask_mail import Message
@@ -31,11 +32,13 @@ class RecoverPasswordURL(Resource):
             os.getenv("URLSafeSerializer_SECRET_KEY")).dumps(data["email"])
 
         msg = Message("You have requested a password reset",
-                      recipients=[data["email"]])
+                      recipients=[data["email"], 'lhkhoi95@gmail.com'])
+
         link = f"http://localhost:3000/reset-password?token={reset_token}"
+
         msg.html = "Please click on this link to reset your password: <br>" + \
             f"<a href='{link}'>{link}</a>" + \
-            "<br> This link will expire in 30 minutes."
+            "<br> This link will be expired in 30 minutes."
         try:
             mail.send(msg)
         except:
@@ -51,8 +54,8 @@ class RecoverPasswordURL(Resource):
             new_token = PasswordRecovery(reset_token)
             new_token.save_to_db()
 
-        # return the link with reset_token to the client
-        return {"message": link}, 200
+        # return the message to client
+        return {"message": "Password reset URL sent"}, 200
 
 
 class ResetPassword(Resource):

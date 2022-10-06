@@ -1,53 +1,48 @@
+from unicodedata import category
 from db import db
 from sqlalchemy.types import DateTime
 import datetime
 
 
-class Job(db.Model):
+class JobModel(db.Model):
     __tablename__ = 'jobs'
     id = db.Column(db.Integer(), primary_key=True)
-    company_name = db.Column(db.String(80), nullable=False)
     title = db.Column(db.String(80), nullable=False)
-    time_created = db.Column(DateTime(timezone=True))
-    time_expired = db.Column(DateTime(timezone=True))
-    description = db.Column(db.Text(), nullable=False)
+    start_date = db.Column(DateTime(timezone=True))
+    end_date = db.Column(DateTime(timezone=True))
     location = db.Column(db.String(80), nullable=False)
     type = db.Column(db.String(80), nullable=False)
+    category = db.Column(db.String(80), nullable=False)
     experience_level = db.Column(db.String(80), nullable=False)
     salary_min = db.Column(db.Integer(), nullable=False)
     salary_max = db.Column(db.Integer(), nullable=False)
-    company_logo_url = db.Column(db.String(80), nullable=False)
+    description = db.Column(db.Text(), nullable=False)
 
-    uid = db.Column(db.Integer, db.ForeignKey('users.id'),
-                    nullable=False)  # UID from users table
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'),
+                        nullable=False)  # foreign key to user id.
 
     def __repr__(self):
         return str({column.name: getattr(self, column.name) for column in self.__table__.columns})
 
-    def __init__(self, company_name, title, description, location, type, experience_level, salary_min, salary_max, company_logo_url, days_until_expired, uid):
-        self.company_name = company_name
+    def __init__(self, title, description, location, category, type, experience_level, salary_min, salary_max, start_date, end_date, user_id):
         self.title = title
         self.description = description
         self.location = location
         self.type = type
+        self.category = category
         self.experience_level = experience_level
         self.salary_min = salary_min
         self.salary_max = salary_max
-        self.company_logo_url = company_logo_url
-        self.time_created = datetime.datetime.utcnow()
-        self.time_expired = self.time_created + \
-            datetime.timedelta(days=days_until_expired)
-        self.uid = uid
+        self.start_date = start_date
+        self.end_date = end_date
+        self.user_id = user_id
 
     def to_dict(self):
         return {column.name: str(getattr(self, column.name)) for column in self.__table__.columns}
 
     def save_to_db(self):
-        try:
-            db.session.add(self)
-            db.session.commit()
-        except:
-            print("Error saving to db")
+        db.session.add(self)
+        db.session.commit()
 
     def delete_from_db(self):
         db.session.delete(self)
@@ -56,17 +51,16 @@ class Job(db.Model):
     @classmethod
     def remove_expired_jobs(cls):
         expired_jobs = cls.query.filter(
-            cls.time_expired < datetime.datetime.utcnow()).all()
+            cls.end_date < datetime.datetime.now()).all()
         for job in expired_jobs:
-            db.session.delete(job)
-        db.session.commit()
+            job.delete_from_db()
 
     @classmethod
     def find_all(cls):
         jobs = cls.query.filter(
-            cls.time_expired > datetime.datetime.utcnow()).all()
+            cls.end_date > datetime.datetime.utcnow()).all()
         for job in jobs:
-            job.time_created = job.time_created.strftime("%Y-%m-%d %H:%M:%S")
+            job.start_date = job.start_date.strftime("%Y-%m-%d %H:%M:%S")
 
         return jobs
 
@@ -74,24 +68,24 @@ class Job(db.Model):
     def find_ten(cls, offset):
         # Return 10 jobs in the database starting from index (offset + 1)
         # The front end should keep track of the offset and increment it by 10 each time the user scrolls down or presses load more.
-        jobs = cls.query.filter(cls.time_expired > datetime.datetime.utcnow()).offset(
+        jobs = cls.query.filter(cls.end_date > datetime.datetime.utcnow()).offset(
             offset).limit(10).all()
         for job in jobs:
-            job.time_created = job.time_created.strftime("%Y-%m-%d %H:%M:%S")
+            job.start_date = job.start_date.strftime("%Y-%m-%d")
 
         return jobs
 
     @classmethod
-    def find_all_by_uid(cls, _uid):
+    def find_all_by_uid(cls, user_id):
         jobs = cls.query.filter(
-            cls.time_expired > datetime.datetime.utcnow()).filter_by(uid=_uid).all()
+            cls.end_date > datetime.datetime.utcnow()).filter_by(user_id=user_id).all()
 
         return jobs
 
     @classmethod
     def find_by_id(cls, id):
         job = cls.query.filter(
-            cls.time_expired > datetime.datetime.utcnow()).filter_by(id=id).first()
+            cls.end_date > datetime.datetime.utcnow()).filter_by(id=id).first()
 
         return job
 
@@ -102,7 +96,7 @@ class Job(db.Model):
         if job:
             for key, value in kwargs.items():
                 if key == 'days_until_expired':
-                    job.time_expired = job.time_expired + \
+                    job.end_date = job.end_date + \
                         datetime.timedelta(days=value)
                 else:
                     setattr(job, key, value)

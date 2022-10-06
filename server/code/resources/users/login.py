@@ -30,7 +30,9 @@ class Login(Resource):
 
         data = Login.parser.parse_args()
 
+        # Check if email exists in candidates table
         user = UserModel.find_by_email(data['email'])
+
         if not user:
             response = response_message_code("Invalid Email", 403)
             return response
@@ -43,7 +45,6 @@ class Login(Resource):
                 "user_info": {
                     "uid": user.id,
                     "email": user.email,
-                    "full_name": user.full_name,
                     "role": user.role
                 }
             }),
@@ -51,7 +52,8 @@ class Login(Resource):
             mimetype="application/json"
         )
 
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(
+            identity={"user_id": user.id, "role": user.role})
         set_access_cookies(response, access_token)
 
         return response

@@ -1,7 +1,7 @@
 from flask_restful import Resource
-from response_message_code import response_message_code
 from models.user_model import UserModel
-from flask import jsonify
+from models.recruiter_model import RecruiterModel
+from models.candidate_model import CandidateModel
 
 
 class User(Resource):

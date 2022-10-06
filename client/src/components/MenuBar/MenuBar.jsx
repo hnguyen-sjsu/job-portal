@@ -50,7 +50,7 @@ function MenuBar(props) {
 			? [
 					{ title: "Find Candidates", url: "#candidates" },
 					{ title: "Post Jobs", url: "/recruiter/post-jobs" },
-					{ title: "Manage Jobs", url: "#manage-jobs" },
+					{ title: "Manage Jobs", url: "/recruiter/manage-jobs" },
 			  ]
 			: [
 					{ title: "Find Jobs", url: "/job/search" },

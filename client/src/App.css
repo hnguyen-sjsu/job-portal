@@ -62,3 +62,57 @@ body {
 .signin-container input:hover {
   border-color: #000;
 }
+
+.signin-container {
+  background-image: url("./assets/4853433.jpg");
+}
+
+.left-wizard-container {  
+  background-size: 50%;
+  width: 100vw;
+  padding: 16px;
+}
+
+.right-wizard-container {
+  height: 100vh;
+  background-color:rgba(255,255,255,.3);
+  backdrop-filter: blur(5px);
+  padding: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.89);
+}
+
+.left-wizard-container .logo-img {
+  width: 30%;
+}
+
+@media only screen and (min-width: 900px) {
+  .left-wizard-container {
+    height: 100vh;  
+    width: 50vw;  
+  }
+
+  .left-wizard-container .logo-img {
+    width: 50%;
+  }
+}
+
+.menu-bar {
+  backdrop-filter: blur(20px);
+  border-style: solid;
+  border-color: rgb(245, 245, 245);
+  border-width: 0px 0px thin;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.wrapper-class {
+  padding: 1rem;
+  border: 1px solid #ccc;
+}
+.editor-class {
+  background-color:lightgray;
+  padding: 1rem;
+  border: 1px solid #ccc;
+}
+.toolbar-class {
+  border: 1px solid #ccc;
+}

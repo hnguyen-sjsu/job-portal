@@ -10,10 +10,10 @@ import Box from "@mui/material/Box";
 import googleLogo from "../../../assets/google-icon.svg";
 import { Link, useNavigate } from "react-router-dom";
 
-import loginImage from "../../../assets/login-concept-illustration_114360-757.jpg";
+import logoImg from "../../../assets/app-logo.svg";
 import { UserContext } from "../../../providers/AuthProvider";
 
-function SignIn() {
+function SignIn({ isRecruiter }) {
 	const { signIn } = useContext(UserContext);
 
 	let navigate = useNavigate();
@@ -37,13 +37,13 @@ function SignIn() {
 		e.preventDefault();
 		setLoading(true);
 		signIn(loginInfo).then((response) => {
-			console.log("Login successfully", response);
+			console.log(response);
 			setTimeout(() => {
 				setLoading(false);
 				if (response) {
 					navigate("/");
 				}
-			}, 3000);
+			}, 2000);
 		});
 	};
 
@@ -54,27 +54,35 @@ function SignIn() {
 			</Box>
 			<Grid container className="signin-container">
 				<Grid item xs={0} md={6} alignItems="center">
-					<Grid container style={{ margin: "16px" }}>
+					<Grid container>
 						<Grid item>
-							<Stack alignItems="center">
+							<Stack
+								alignItems="center"
+								justifyContent="center"
+								className="left-wizard-container"
+							>
+								<img src={logoImg} className="logo-img" />
 								<Typography variant="h4" fontWeight="bold">
-									Find the job that best describes you
+									{isRecruiter
+										? "Find the talents that fit your company needs"
+										: "Find the job that best describes you"}
 								</Typography>
-								<img
-									src={loginImage}
-									style={{ height: "35vw" }}
-								/>
 							</Stack>
 						</Grid>
 					</Grid>
 				</Grid>
 				<Grid item xs={12} md={6}>
-					<Stack style={{ margin: "16px" }}>
+					<Stack
+						className="right-wizard-container"
+						justifyContent={{ sm: "flex-start", md: "center" }}
+					>
 						<Typography variant="h4" fontWeight="bold">
-							Login
+							{isRecruiter ? "Recruiter Login" : "Login"}
 						</Typography>
 						<Typography variant="h6">
-							Your next career opportunity start here!
+							{isRecruiter
+								? "Your next talent pool is here!"
+								: "Your next career opportunity start here!"}
 						</Typography>
 						<Stack
 							component="form"
@@ -135,23 +143,6 @@ function SignIn() {
 									</Link>
 								</div>
 							</Stack>
-							<Divider />
-							<Button
-								startIcon={
-									<>
-										<img
-											height={18}
-											width={18}
-											src={googleLogo}
-										/>
-									</>
-								}
-								variant="outlined"
-								disableElevation
-								className="google-button"
-							>
-								Login with Google
-							</Button>
 						</Stack>
 					</Stack>
 				</Grid>

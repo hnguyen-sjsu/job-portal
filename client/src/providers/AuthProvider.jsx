@@ -25,6 +25,7 @@ export default (props) => {
 
 	const signOut = () => {
 		AuthenticationServices.signOut();
+		window.location.href = "/";
 		setUser(null);
 	};
 

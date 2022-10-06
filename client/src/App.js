@@ -11,15 +11,18 @@ import {
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 
 import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
 import MenuBar from "./components/MenuBar/MenuBar";
 import CssBaseline from "@mui/material/CssBaseline";
 import SignUp from "./components/UserAccount/SignUp/SignUp";
 import SignIn from "./components/UserAccount/SignIn/SignIn";
-import ProfileForm from "./components/UserAccount/ProfileForm/ProfileForm";
-import Preferences from "./components/UserAccount/Profile/Preferences";
+import ProfileView from "./components/UserAccount/Profile/ProfileView";
+import ProfileForm from "./components/UserAccount/Profile/ProfileForm";
 import LandingPage from "./components/LandingPage/LandingPage";
 import Footer from "./components/Footer/Footer";
 import AuthProvider, { UserContext } from "./providers/AuthProvider";
+import JobForm from "./components/Job/JobForm";
+import JobView from "./components/Job/JobView";
 
 let theme = createTheme({
 	palette: {
@@ -97,17 +100,28 @@ function App() {
 					<Routes>
 						<Route path="/" element={<WithMenuBarLayout />}>
 							<Route index element={<LandingPage />} />
+							<Route path="job/:id" element={<JobView />} />
+						</Route>
+						<Route path="/account" element={<WithMenuBarLayout />}>
+							<Route path="profile" element={<ProfileView />} />
+						</Route>
+						<Route path="/recruiter" element={<RecruiterLayout />}>
+							<Route path="post-jobs" element={<JobForm />} />
 						</Route>
 						<Route path="/account" element={<NoMenuBarLayout />}>
 							<Route path="signup" element={<SignUp />} />
+							<Route
+								path="recruiter-signup"
+								element={<SignUp isRecruiter={true} />}
+							/>
 							<Route path="login" element={<SignIn />} />
+							<Route
+								path="recruiter-login"
+								element={<SignIn isRecruiter={true} />}
+							/>
 							<Route
 								path="build-profile"
 								element={<ProfileForm />}
-							/>
-							<Route
-								path="preferences"
-								element={<Preferences />}
 							/>
 						</Route>
 					</Routes>
@@ -120,7 +134,6 @@ function App() {
 function NoMenuBarLayout() {
 	return (
 		<>
-			<MenuBar showOptions={false} />
 			<Outlet />
 		</>
 	);
@@ -128,13 +141,37 @@ function NoMenuBarLayout() {
 
 function WithMenuBarLayout() {
 	return (
-		<>
+		<Box
+			sx={{
+				display: "flex",
+				flexDirection: "column",
+				minHeight: "100vh",
+			}}
+		>
 			<MenuBar showOptions={true} />
 			<Container maxWidth="md">
 				<Outlet />
 			</Container>
 			<Footer />
-		</>
+		</Box>
+	);
+}
+
+function RecruiterLayout() {
+	return (
+		<Box
+			sx={{
+				display: "flex",
+				flexDirection: "column",
+				minHeight: "100vh",
+			}}
+		>
+			<MenuBar showOptions={true} />
+			<Container maxWidth="xl">
+				<Outlet />
+			</Container>
+			<Footer />
+		</Box>
 	);
 }
 

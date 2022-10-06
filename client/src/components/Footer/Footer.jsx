@@ -51,6 +51,7 @@ export default function Footer() {
 	return (
 		<Box
 			component="footer"
+			className="footer"
 			sx={{
 				py: 3,
 				px: 2,
@@ -77,7 +78,7 @@ export default function Footer() {
 							{sections.map((section) => (
 								<Grid
 									item
-									xs={12}
+									xs={6}
 									sm={4}
 									key={"footer-item-" + section.title}
 								>

@@ -1,10 +1,10 @@
-from models.job_model import Job
+from models.job_model import JobModel
 from models.password_recovery import PasswordRecovery
 
 
 def remove_expired_jobs():
     try:
-        Job.remove_expired_jobs()
+        JobModel.remove_expired_jobs()
     except:
         return "Error removing expired jobs"
 

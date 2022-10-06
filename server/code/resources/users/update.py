@@ -27,7 +27,7 @@ class UpdateProfile(Resource):
         if user is None:
             return {"message": "User not found"}, 404
 
-        # --------If the user only wants to update either email or password, then the other field will be left empty string ("")--------
+        # --------If the user only wants to update either email or password, then the other field will be left as empty string ("")--------
 
         # Check if the user wants to change the email
         if data.email != "":

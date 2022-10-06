@@ -10,12 +10,15 @@ class UserModel(db.Model):
     password = db.Column(db.String(), nullable=False)
     role = db.Column(db.String(), nullable=False)
 
-    # Create a relationship between User and Candidate
+    # Create a relationship between User and CandidateModel
     candidate = db.relationship(
         'CandidateModel', backref='users', lazy=True, cascade='all, delete-orphan')
-    # Create a relationship between User and Recruiter
+    # Create a relationship between User and RecruiterModel
     recruiter = db.relationship('RecruiterModel', backref='users',
                                 lazy=True, cascade='all, delete-orphan')
+    # Create a relationship between User and JobModel
+    jobs = db.relationship('JobModel', backref='users',
+                           lazy=True, cascade='all, delete-orphan')
 
     def __repr__(self):
         return str({column.name: getattr(self, column.name) for column in self.__table__.columns})
@@ -30,11 +33,8 @@ class UserModel(db.Model):
         return {column.name: str(getattr(self, column.name)) for column in self.__table__.columns}
 
     def save_to_db(self):
-        try:
-            db.session.add(self)
-            db.session.commit()
-        except:
-            print("Error while saving to db")
+        db.session.add(self)
+        db.session.commit()
 
     @classmethod
     def find_all(cls):

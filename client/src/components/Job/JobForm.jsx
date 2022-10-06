@@ -49,6 +49,7 @@ function JobForm(props) {
 	const [loading, setLoading] = useState(false);
 
 	let undefinedJob = {
+		id: undefined,
 		title: "",
 		type: "",
 		experienceLevel: "",
@@ -111,7 +112,9 @@ function JobForm(props) {
 				<Grid container spacing={2}>
 					<Grid item xs={12} md={6}>
 						<Stack component="form" onSubmit={handleSubmit}>
-							<Typography variant="h4">Post Job</Typography>
+							<Typography variant="h4">
+								{job.id ? "Edit Job" : "Post Job"}
+							</Typography>
 							<Grid container spacing={2}>
 								<Grid item xs={12}>
 									<InputLabel htmlFor="title">

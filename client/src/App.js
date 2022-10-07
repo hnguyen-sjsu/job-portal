@@ -24,6 +24,7 @@ import AuthProvider, { UserContext } from "./providers/AuthProvider";
 import JobForm from "./components/Job/JobForm";
 import JobView from "./components/Job/JobView";
 import CompanyProfile from "./components/UserAccount/Profile/CompanyProfile";
+import Settings from "./components/UserAccount/Settings/Settings";
 
 let theme = createTheme({
 	palette: {
@@ -53,7 +54,7 @@ let theme = createTheme({
 		MuiCard: {
 			styleOverrides: {
 				root: {
-					borderRadius: "16px",
+					borderRadius: "8px",
 				},
 			},
 		},
@@ -68,6 +69,15 @@ let theme = createTheme({
 			styleOverrides: {
 				root: {
 					color: "#000",
+				},
+			},
+		},
+		MuiAccordion: {
+			styleOverrides: {
+				root: {
+					borderRadius: "8px",
+					boxShadow: "none",
+					border: "1px solid #dbdbdb",
 				},
 			},
 		},
@@ -108,6 +118,7 @@ function App() {
 							element={<WithMenuBarLayout />}
 						>
 							<Route path="profile" element={<ProfileView />} />
+							<Route path="settings" element={<Settings />} />
 						</Route>
 						<Route path="/recruiter" element={<RecruiterLayout />}>
 							<Route path="post-jobs" element={<JobForm />} />
@@ -115,6 +126,7 @@ function App() {
 								path="build-profile"
 								element={<CompanyProfile />}
 							/>
+							<Route path="settings" element={<Settings />} />
 						</Route>
 						<Route path="/candidate" element={<NoMenuBarLayout />}>
 							<Route
@@ -159,7 +171,10 @@ function WithMenuBarLayout() {
 			}}
 		>
 			<MenuBar showOptions={true} />
-			<Container maxWidth="md">
+			<Container
+				maxWidth="md"
+				style={{ paddingTop: "32px", paddingBottom: "32px" }}
+			>
 				<Outlet />
 			</Container>
 			<Footer />
@@ -177,7 +192,10 @@ function RecruiterLayout() {
 			}}
 		>
 			<MenuBar showOptions={true} />
-			<Container maxWidth="xl">
+			<Container
+				maxWidth="xl"
+				style={{ paddingTop: "32px", paddingBottom: "32px" }}
+			>
 				<Outlet />
 			</Container>
 			<Footer />

@@ -102,7 +102,7 @@ function MenuBar(props) {
 		<>
 			<AppBar
 				component="nav"
-				color="transparent"
+				color="inherit"
 				elevation={0}
 				position="sticky"
 				className="menu-bar"
@@ -214,6 +214,13 @@ function MenuBar(props) {
 					}}
 				>
 					Profile
+				</MenuItem>
+				<MenuItem
+					onClick={() => {
+						navigate("../" + user.role + "/settings");
+					}}
+				>
+					Settings
 				</MenuItem>
 				<MenuItem onClick={signOut}>Sign Out</MenuItem>
 			</Menu>

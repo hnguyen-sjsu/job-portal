@@ -96,10 +96,14 @@ body {
   }
 }
 
+#root {
+  background-color: #fafafa;
+}
+
 .menu-bar {
   backdrop-filter: blur(20px);
   border-style: solid;
-  border-color: rgb(245, 245, 245);
+  border-color: #DBDBDB;
   border-width: 0px 0px thin;
   background: rgba(255, 255, 255, 0.7);
 }

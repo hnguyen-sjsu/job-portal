@@ -1,6 +1,7 @@
 from flask_restful import Resource, reqparse
 from models.job_model import JobModel
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from to_camel_case import dict_to_camel_case
 
 
 class GetAll(Resource):
@@ -13,7 +14,7 @@ class GetAll(Resource):
 
         jobs = JobModel.find_all()
 
-        return {"jobs": [job.to_dict() for job in jobs]}, 200
+        return {"jobs": [dict_to_camel_case(job.to_dict()) for job in jobs]}, 200
 
 
 class GetOne(Resource):
@@ -35,7 +36,7 @@ class GetOne(Resource):
             get_jwt_identity().get('user_id'))
 
         if job and job in jobs_belong_to_user:
-            return job.to_dict(), 200
+            return dict_to_camel_case(job.to_dict()), 200
 
         return {"message": "Job not found"}, 404
 
@@ -56,7 +57,7 @@ class GetTen(Resource):
         data = GetTen.parser.parse_args()
         jobs = JobModel.find_ten(offset=data['offset'])
 
-        return {"jobs": [job.to_dict() for job in jobs]}, 200
+        return {"jobs": [dict_to_camel_case(job.to_dict()) for job in jobs]}, 200
 
 
 class GetAllByUID(Resource):
@@ -70,4 +71,4 @@ class GetAllByUID(Resource):
         user_id = get_jwt_identity().get('user_id')
         jobs = JobModel.find_all_by_uid(user_id)
 
-        return {"jobs": [job.to_dict() for job in jobs]}, 200
+        return {"jobs": [dict_to_camel_case(job.to_dict()) for job in jobs]}, 200

@@ -16,9 +16,9 @@ from resources.users.logout import Logout
 from resources.users.update import UpdateProfile
 from resources.users.delete import Delete
 from resources.candidates.update import UpdateCandidateProfile
-from resources.candidates.read import GetCandidateProfile
+from resources.candidates.get import GetCandidateProfile
 from resources.recruiters.update import UpdateRecruiterProfile
-from resources.recruiters.read import GetRecruiterProfile
+from resources.recruiters.get import GetRecruiterProfile
 from resources.jobs.add import Add
 from resources.jobs.get import GetAll, GetTen, GetAllByUID, GetOne
 from resources.jobs.delete import DeleteJob

@@ -49,7 +49,6 @@ const getProfile = async (role) => {
 	};
 	try {
 		const response = await axios.get(url, params);
-		console.log(response);
 		return response;
 	} catch (e) {
 		console.error(e);

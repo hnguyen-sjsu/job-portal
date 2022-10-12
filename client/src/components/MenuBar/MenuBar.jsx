@@ -7,20 +7,28 @@ import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemButton from "@mui/material/ListItemButton";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
+
+import MenuIcon from "@mui/icons-material/Menu";
 
 import appLogo from "../../assets/app-logo.svg";
 import { UserContext } from "../../providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+
 import { Avatar } from "@mui/material";
 
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
+import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 
 function MenuBar(props) {
 	const { user, signOut } = useContext(UserContext);
@@ -48,10 +56,16 @@ function MenuBar(props) {
 	let navigate = useNavigate();
 
 	const linkItems = user
-		? user.role === "employer"
+		? user.role === "recruiter"
 			? [
-					{ title: "Find Candidates", url: "#candidates" },
-					{ title: "Post Jobs", url: "/recruiter/post-jobs" },
+					{
+						title: "Find Candidates",
+						url: "/recruiter/candidates",
+					},
+					{
+						title: "Post Jobs",
+						url: "/recruiter/post-jobs",
+					},
 					{ title: "Manage Jobs", url: "/recruiter/manage-jobs" },
 			  ]
 			: [
@@ -66,6 +80,21 @@ function MenuBar(props) {
 					primary: true,
 				},
 		  ];
+
+	const profileMenuItems = user
+		? [
+				{
+					title: "Profile",
+					url: "/" + user.role + "/profile",
+					icon: <AccountCircleOutlinedIcon />,
+				},
+				{
+					title: "Settings",
+					url: "/" + user.role + "/settings",
+					icon: <SettingsOutlinedIcon />,
+				},
+		  ]
+		: [];
 
 	const container =
 		window !== undefined ? () => window().document.body : undefined;
@@ -108,7 +137,7 @@ function MenuBar(props) {
 				className="menu-bar"
 			>
 				<Toolbar>
-					{showOptions && (
+					{/* {showOptions && (
 						<IconButton
 							color="inherit"
 							aria-label="open drawer"
@@ -118,7 +147,7 @@ function MenuBar(props) {
 						>
 							<MenuIcon />
 						</IconButton>
-					)}
+					)} */}
 					<img src={appLogo} height={40} />
 					<Typography
 						variant="h6"
@@ -130,47 +159,53 @@ function MenuBar(props) {
 						Job Finder
 					</Typography>
 					{showOptions && (
-						<Box sx={{ display: { xs: "none", sm: "block" } }}>
-							{linkItems.map((item, idx) => (
-								<Button
-									key={idx}
-									color={item.primary ? "primary" : "inherit"}
-									href={item.url}
-									variant={
-										item.primary ? "contained" : "text"
-									}
-									disableElevation
-								>
-									{item.title}
-								</Button>
-							))}
-							{user && (
-								<IconButton
-									onClick={handleAccountClick}
-									size="small"
-									sx={{ ml: 2 }}
-								>
-									{user.role === "candidate" &&
-										(user.fullName.length > 0 ? (
-											<Avatar
-												{...stringAvatar(user.fullName)}
-											/>
-										) : (
-											<AccountCircleRoundedIcon />
-										))}
-									{user.role === "recruiter" &&
-										(user.companyName.length > 0 ? (
-											<Avatar
-												{...stringAvatar(
-													user.companyName
-												)}
-											/>
-										) : (
-											<AccountCircleRoundedIcon />
-										))}
-								</IconButton>
-							)}
-						</Box>
+						<>
+							<Box sx={{ display: { xs: "none", sm: "block" } }}>
+								{linkItems.map((item, idx) => (
+									<Button
+										key={idx}
+										color={
+											item.primary ? "primary" : "inherit"
+										}
+										href={item.url}
+										variant={
+											item.primary ? "contained" : "text"
+										}
+										disableElevation
+									>
+										{item.title}
+									</Button>
+								))}
+							</Box>
+							<Box>
+								{user && (
+									<IconButton
+										onClick={handleAccountClick}
+										size="small"
+										sx={{ ml: 2 }}
+									>
+										{user.role === "candidate" &&
+											(user.fullName.length > 0 ? (
+												<Avatar
+													{...stringAvatar(
+														user.fullName
+													)}
+												/>
+											) : (
+												<AccountCircleRoundedIcon />
+											))}
+										{user.role === "recruiter" &&
+											(user.companyLogoUrl.length > 0 ? (
+												<Avatar
+													src={user.companyLogoUrl}
+												/>
+											) : (
+												<AccountCircleRoundedIcon />
+											))}
+									</IconButton>
+								)}
+							</Box>
+						</>
 					)}
 				</Toolbar>
 			</AppBar>
@@ -203,28 +238,43 @@ function MenuBar(props) {
 							transform: "translateY(-50%) rotate(45deg)",
 							zIndex: 0,
 						},
+						minWidth: "200px",
 					},
 				}}
 				transformOrigin={{ horizontal: "right", vertical: "top" }}
 				anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
 			>
-				<MenuItem
-					onClick={() => {
-						navigate("../" + user.role + "/profile");
-					}}
-				>
-					Profile
+				{profileMenuItems.map((item) => (
+					<MenuItem
+						key={item.title}
+						onClick={() => {
+							navigate(item.url);
+						}}
+					>
+						<ListItemIcon>{item.icon}</ListItemIcon>
+						{item.title}
+					</MenuItem>
+				))}
+				{linkItems.map((item) => (
+					<MenuItem
+						key={item.title}
+						onClick={() => {
+							navigate(item.url);
+						}}
+					>
+						<ListItemIcon></ListItemIcon>
+						{item.title}
+					</MenuItem>
+				))}
+
+				<MenuItem onClick={signOut}>
+					<ListItemIcon>
+						<LogoutOutlinedIcon />
+					</ListItemIcon>
+					Sign Out
 				</MenuItem>
-				<MenuItem
-					onClick={() => {
-						navigate("../" + user.role + "/settings");
-					}}
-				>
-					Settings
-				</MenuItem>
-				<MenuItem onClick={signOut}>Sign Out</MenuItem>
 			</Menu>
-			<Box component="nav">
+			{/* <Box component="nav">
 				<Drawer
 					container={container}
 					variant="temporary"
@@ -244,7 +294,7 @@ function MenuBar(props) {
 				>
 					{drawer}
 				</Drawer>
-			</Box>
+			</Box> */}
 		</>
 	);
 }

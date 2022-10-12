@@ -23,7 +23,7 @@ import Footer from "./components/Footer/Footer";
 import AuthProvider, { UserContext } from "./providers/AuthProvider";
 import JobForm from "./components/Job/JobForm";
 import JobView from "./components/Job/JobView";
-import CompanyProfile from "./components/UserAccount/Profile/CompanyProfile";
+import CompanyProfileForm from "./components/UserAccount/Profile/CompanyProfileForm";
 import Settings from "./components/UserAccount/Settings/Settings";
 
 let theme = createTheme({
@@ -124,7 +124,7 @@ function App() {
 							<Route path="post-jobs" element={<JobForm />} />
 							<Route
 								path="build-profile"
-								element={<CompanyProfile />}
+								element={<CompanyProfileForm />}
 							/>
 							<Route path="settings" element={<Settings />} />
 						</Route>

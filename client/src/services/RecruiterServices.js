@@ -4,9 +4,7 @@ const baseUrl = "http://localhost:5000/recruiter/";
 
 const updateCompanyProfile = async (companyProfile) => {
 	const url = baseUrl + "update";
-	console.log(document.cookie);
 	const token = document.cookie.split("=")[1];
-	console.log(token);
 	const params = {
 		withCredentials: true,
 	};

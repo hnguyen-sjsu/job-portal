@@ -19,8 +19,14 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import JobView from "./JobView";
+import JobServices from "../../services/JobServices";
+import AlertDialog from "../Utils/AlertDialog";
+
+import { useNavigate } from "react-router-dom";
 
 function JobForm(props) {
+	let navigate = useNavigate();
+
 	const jobTypes = [
 		{ title: "Full Time" },
 		{ title: "Part Time" },
@@ -47,6 +53,8 @@ function JobForm(props) {
 	];
 
 	const [loading, setLoading] = useState(false);
+	const [message, setMessage] = useState("");
+	const [showDialog, setShowDialog] = useState(false);
 
 	let undefinedJob = {
 		id: undefined,
@@ -81,13 +89,21 @@ function JobForm(props) {
 		});
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		console.log(job);
 		setLoading(true);
-		setTimeout(() => {
+		setShowDialog(false);
+		try {
+			const response = await JobServices.saveJob(job);
+			console.log(response);
+			setMessage(response.data.message);
+			setShowDialog(true);
+		} catch (e) {
+			console.error(e);
+		} finally {
 			setLoading(false);
-		}, 3000);
+		}
 	};
 
 	const handleClear = (e) => {
@@ -389,6 +405,13 @@ function JobForm(props) {
 					</Grid>
 				</Grid>
 			</LocalizationProvider>
+			<AlertDialog
+				message={message}
+				showDialog={showDialog}
+				onComplete={() => {
+					navigate("/recruiter/jobs");
+				}}
+			/>
 		</>
 	);
 }

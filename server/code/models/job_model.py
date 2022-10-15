@@ -1,4 +1,6 @@
-from unicodedata import category
+from models.recruiter_model import RecruiterModel
+from models.candidate_model import CandidateModel
+from models.user_model import UserModel
 from db import db
 from sqlalchemy.types import DateTime
 import datetime
@@ -73,8 +75,7 @@ class JobModel(db.Model):
 
     @classmethod
     def find_all_by_uid(cls, user_id):
-        jobs = cls.query.filter(
-            cls.end_date > datetime.datetime.utcnow()).filter_by(user_id=user_id).all()
+        jobs = cls.query.filter_by(user_id=user_id).all()
 
         return jobs
 

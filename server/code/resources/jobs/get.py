@@ -77,7 +77,8 @@ class GetAllByUID(Resource):
         user_id = get_jwt_identity().get('user_id')
         # Get all jobs by user_id
         jobs = JobModel.find_all_by_uid(user_id)
-        # Get company's logo
-        company_logo = RecruiterModel.find_logo_by_uid(user_id)
+        returned_jobs = []
+        for job in jobs:
+            returned_jobs.append(add_logo_to_job(job))
 
-        return {"companyLogo": company_logo, "jobs": [dict_to_camel_case(job.to_dict()) for job in jobs]}, 200
+        return {'jobs': returned_jobs}, 200

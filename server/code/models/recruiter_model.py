@@ -14,6 +14,7 @@ class RecruiterModel(db.Model):
                         nullable=False)
     # job = db.relationship('Job', backref='recruiters',
     #                       lazy=True, cascade='all, delete-orphan')
+
     # membership = db.relationship('Membership', backref='recruiters',
     #                              lazy=True, cascade='all, delete-orphan')
 

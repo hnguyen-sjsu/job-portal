@@ -409,7 +409,7 @@ function JobForm(props) {
 				message={message}
 				showDialog={showDialog}
 				onComplete={() => {
-					navigate("/recruiter/jobs");
+					navigate("/recruiter/manage-jobs");
 				}}
 			/>
 		</>

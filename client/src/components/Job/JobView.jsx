@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -16,10 +16,14 @@ import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded
 
 import moment from "moment/dist/moment.js";
 import "react-quill/dist/quill.bubble.css";
+
+import { useParams } from "react-router-dom";
 import SkeletonLabel from "../Utils/SkeletonLabel";
+import JobServices from "../../services/JobServices";
 
 function JobView(props) {
-	const { job, isPreview } = props;
+	let { job, isPreview } = props;
+	const [jobInfo, setJobInfo] = useState(null);
 	// const [job, setJob] = useState({
 	// 	category: "Software",
 	// 	experienceLevel: "Senior Level",
@@ -37,22 +41,42 @@ function JobView(props) {
 	// 	},
 	// });
 
+	let { jobId } = useParams();
+
+	useEffect(() => {
+		if (job) {
+			setJobInfo({ ...job });
+		}
+		if (jobId) {
+			const id = jobId.split(":")[1];
+			JobServices.getJob(id).then((response) => {
+				console.log(response);
+			});
+		}
+	}, []);
+
+	useEffect(() => {
+		if (job) {
+			setJobInfo({ ...job });
+		}
+	}, [job]);
+
 	return (
 		<>
-			{job && (
+			{jobInfo && (
 				<>
 					<Typography variant="h4" fontWeight="bold">
-						<SkeletonLabel text={job.title} width={300} />
+						<SkeletonLabel text={jobInfo.title} width={300} />
 					</Typography>
 					<Stack direction="row" divider={<>{" • "}</>}>
-						{job.company.name}
-						<SkeletonLabel text={job.location} />
-						<SkeletonLabel text={job.category} />
+						{jobInfo.company.name}
+						<SkeletonLabel text={jobInfo.location} />
+						<SkeletonLabel text={jobInfo.category} />
 						<SkeletonLabel
 							text={
-								job.noApplicants +
+								jobInfo.noApplicants +
 								" applicant" +
-								(job.noApplicants > 1 && "s")
+								(jobInfo.noApplicants > 1 && "s")
 							}
 							animation={false}
 						/>
@@ -64,16 +88,20 @@ function JobView(props) {
 							</ListItemIcon>
 							<ListItemText>
 								<Stack direction="row" divider={<>{" • "}</>}>
-									<SkeletonLabel text={job.type} />
-									<SkeletonLabel text={job.experienceLevel} />
+									<SkeletonLabel text={jobInfo.type} />
+									<SkeletonLabel
+										text={jobInfo.experienceLevel}
+									/>
 									<SkeletonLabel
 										text={
-											job.minSalary && "$" + job.minSalary
+											jobInfo.minSalary &&
+											"$" + jobInfo.minSalary
 										}
 									/>
 									<SkeletonLabel
 										text={
-											job.maxSalary && "$" + job.maxSalary
+											jobInfo.maxSalary &&
+											"$" + jobInfo.maxSalary
 										}
 									/>
 								</Stack>
@@ -87,16 +115,16 @@ function JobView(props) {
 								<Stack direction="row" divider={<>{" • "}</>}>
 									<SkeletonLabel
 										text={
-											job.startDate &&
-											moment(job.startDate).format(
+											jobInfo.startDate &&
+											moment(jobInfo.startDate).format(
 												"MM/DD/YYYY"
 											)
 										}
 									/>
 									<SkeletonLabel
 										text={
-											job.endDate &&
-											moment(job.endDate).format(
+											jobInfo.endDate &&
+											moment(jobInfo.endDate).format(
 												"MM/DD/YYYY"
 											)
 										}
@@ -110,9 +138,11 @@ function JobView(props) {
 							</ListItemIcon>
 							<ListItemText>
 								<Stack direction="row" divider={<>{" • "}</>}>
-									<SkeletonLabel text={job.company.size} />
 									<SkeletonLabel
-										text={job.company.industryField}
+										text={jobInfo.company.size}
+									/>
+									<SkeletonLabel
+										text={jobInfo.company.industryField}
 									/>
 								</Stack>
 							</ListItemText>
@@ -139,10 +169,10 @@ function JobView(props) {
 					<Typography variant="h6" fontWeight="bold">
 						Description
 					</Typography>
-					{job.description ? (
+					{jobInfo.description ? (
 						<div
 							dangerouslySetInnerHTML={{
-								__html: job.description,
+								__html: jobInfo.description,
 							}}
 						></div>
 					) : (

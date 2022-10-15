@@ -64,8 +64,47 @@ const saveJob = async (jobInfo) => {
 	}
 };
 
+const getPostedJobs = async () => {
+	const url = baseUrl + "get-posted-jobs";
+	const headers = getHeaders();
+	const params = {
+		withCredentials: true,
+	};
+
+	try {
+		const response = await axios.get(url, params, headers);
+		console.log(response);
+		return response.data.jobs;
+	} catch (e) {
+		console.error(e);
+		return e;
+	}
+};
+
+const getJob = async (jobId) => {
+	const url = baseUrl + "get-one";
+	const headers = getHeaders();
+	const params = {
+		withCredentials: true,
+	};
+	const data = {
+		job_id: jobId,
+	};
+
+	try {
+		const response = await axios.get(url, data, params, headers);
+		console.log(response);
+		return response.data.jobs;
+	} catch (e) {
+		console.error(e);
+		return e;
+	}
+};
+
 const JobServices = {
 	saveJob,
+	getJob,
+	getPostedJobs,
 };
 
 export default JobServices;

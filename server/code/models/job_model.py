@@ -59,8 +59,6 @@ class JobModel(db.Model):
     def find_all(cls):
         jobs = cls.query.filter(
             cls.end_date > datetime.datetime.utcnow()).all()
-        for job in jobs:
-            job.start_date = job.start_date.strftime("%Y-%m-%d %H:%M:%S")
 
         return jobs
 
@@ -70,8 +68,6 @@ class JobModel(db.Model):
         # The front end should keep track of the offset and increment it by 10 each time the user scrolls down or presses load more.
         jobs = cls.query.filter(cls.end_date > datetime.datetime.utcnow()).offset(
             offset).limit(10).all()
-        for job in jobs:
-            job.start_date = job.start_date.strftime("%Y-%m-%d")
 
         return jobs
 

@@ -56,6 +56,9 @@ class RecruiterModel(db.Model):
         # save to db
         db.session.commit()
 
+    @classmethod
+    def find_logo_by_uid(cls, user_id):
+        return cls.query.filter_by(user_id=user_id).first().company_logo_url
     # @classmethod
     # def delete_by_user_id(cls, user_id):
     #     user = cls.query.filter_by(user_id=user_id).first()

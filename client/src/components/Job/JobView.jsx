@@ -64,12 +64,20 @@ function JobView(props) {
 		<>
 			{jobInfo && (
 				<>
-					<Typography variant="h4" fontWeight="bold">
-						<SkeletonLabel text={jobInfo.title} width={300} />
+					<Stack
+						direction="row"
+						alignItems="center"
+						justifyContent="space-between"
+					>
+						<Typography variant="h4" fontWeight="bold">
+							<SkeletonLabel text={jobInfo.title} width={300} />
+						</Typography>
 						{user && user.role === "recruiter" && (
-							<Button>Edit</Button>
+							<Button variant="contained" disableElevation>
+								Edit
+							</Button>
 						)}
-					</Typography>
+					</Stack>
 					<Stack direction="row" divider={<>{" • "}</>}>
 						{jobInfo.company.name}
 						<SkeletonLabel text={jobInfo.location} />

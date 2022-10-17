@@ -87,6 +87,7 @@ const getJob = async (jobId) => {
 	const params = {
 		withCredentials: true,
 	};
+
 	const data = {
 		job_id: jobId,
 	};

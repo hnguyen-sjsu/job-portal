@@ -28,10 +28,20 @@ function JobListView(props) {
 			{layout === "grid" && (
 				<Grid container spacing={2}>
 					{jobs.map((job, idx) => (
-						<Grid item key={idx} xs={12} sm={6} md={4}>
-							<Card variant="outlined">
-								<JobListItem job={job} />
-							</Card>
+						<Grid item key={idx} xs={12} sm={6} md={4} lg={3}>
+							<Link
+								to={{
+									pathname: `/job/jobId:${job.id}`,
+								}}
+								style={{
+									color: "inherit",
+									textDecoration: "none",
+								}}
+							>
+								<Card variant="outlined">
+									<JobListItem job={job} />
+								</Card>
+							</Link>
 						</Grid>
 					))}
 				</Grid>
@@ -40,7 +50,18 @@ function JobListView(props) {
 				<>
 					<List style={{ backgroundColor: "#fff" }}>
 						{jobs.map((job) => (
-							<JobListItem job={job} />
+							<Link
+								to={{
+									pathname: `/job/jobId:${job.id}`,
+								}}
+								style={{
+									color: "inherit",
+									textDecoration: "none",
+								}}
+							>
+								<JobListItem job={job} />
+								<Divider />
+							</Link>
 						))}
 					</List>
 				</>

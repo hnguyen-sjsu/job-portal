@@ -1,3 +1,6 @@
+import datetime
+
+
 def string_to_camel_case(snake_str):
     components = snake_str.split('_')
     # We capitalize the first letter of each component except the first one
@@ -7,3 +10,8 @@ def string_to_camel_case(snake_str):
 
 def dict_to_camel_case(dict):
     return {string_to_camel_case(key): value for key, value in dict.items()}
+
+
+def convert_string_to_date(string):
+    format = '%Y-%m-%d'
+    return datetime.datetime.strptime(string, format).date()

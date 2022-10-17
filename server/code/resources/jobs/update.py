@@ -1,72 +1,98 @@
+import datetime
+from lib2to3.pytree import convert
+from unicodedata import category
 from flask_restful import Resource, reqparse
 from models.job_model import JobModel
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import inputs
-from to_camel_case import dict_to_camel_case
+from helpers import dict_to_camel_case, convert_string_to_date
 from flask_smorest import abort
+from marshmallow import Schema, fields
+from flask import request
+from sqlalchemy.exc import SQLAlchemyError
+
+
+class UpdateJobSchema(Schema):
+    job_id = fields.Int(required=True)
+    title = fields.Str(required=True)
+    start_date = fields.Date(required=True)
+    end_date = fields.Date(required=True)
+    location = fields.Str(required=True)
+    type = fields.Str(required=True)
+    category = fields.Str(required=True)
+    experience_level = fields.Str(required=True)
+    salary_min = fields.Int(required=True)
+    salary_max = fields.Int(required=True)
+    description = fields.Str(required=True)
 
 
 class UpdateJob(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument("job_id",
-                        type=int,
-                        required=True,
-                        help="job_id cannot be left blank")
+    # parser = reqparse.RequestParser()
+    # parser.add_argument("job_id",
+    #                     type=int,
+    #                     required=True,
+    #                     help="job_id cannot be left blank")
 
-    parser.add_argument("title",
-                        type=str,
-                        required=True,
-                        help="title cannot be left blank")
+    # parser.add_argument("title",
+    #                     type=str,
+    #                     required=True,
+    #                     help="title cannot be left blank")
 
-    parser.add_argument("start_date",
-                        type=inputs.date,
-                        required=True,
-                        help="start_date cannot be left blank")
+    # parser.add_argument("start_date",
+    #                     type=inputs.date,
+    #                     required=True,
+    #                     help="start_date cannot be left blank")
 
-    parser.add_argument("end_date",
-                        type=inputs.date,
-                        required=True,
-                        help="end_date cannot be left blank")
+    # parser.add_argument("end_date",
+    #                     type=inputs.date,
+    #                     required=True,
+    #                     help="end_date cannot be left blank")
 
-    parser.add_argument("location",
-                        type=str,
-                        required=True,
-                        help="location cannot be left blank")
+    # parser.add_argument("location",
+    #                     type=str,
+    #                     required=True,
+    #                     help="location cannot be left blank")
 
-    parser.add_argument("type",
-                        type=str,
-                        required=True,
-                        help="type cannot be left blank")
+    # parser.add_argument("type",
+    #                     type=str,
+    #                     required=True,
+    #                     help="type cannot be left blank")
 
-    parser.add_argument("category",
-                        type=str,
-                        required=True,
-                        help="category cannot be left blank")
+    # parser.add_argument("category",
+    #                     type=str,
+    #                     required=True,
+    #                     help="category cannot be left blank")
 
-    parser.add_argument("experience_level",
-                        type=str,
-                        required=True,
-                        help="experience_level cannot be left blank")
+    # parser.add_argument("experience_level",
+    #                     type=str,
+    #                     required=True,
+    #                     help="experience_level cannot be left blank")
 
-    parser.add_argument("salary_min",
-                        type=int,
-                        required=True,
-                        help="salary_min cannot be left blank")
+    # parser.add_argument("salary_min",
+    #                     type=int,
+    #                     required=True,
+    #                     help="salary_min cannot be left blank")
 
-    parser.add_argument("salary_max",
-                        type=int,
-                        required=True,
-                        help="salary_max cannot be left blank")
+    # parser.add_argument("salary_max",
+    #                     type=int,
+    #                     required=True,
+    #                     help="salary_max cannot be left blank")
 
-    parser.add_argument("description",
-                        type=str,
-                        required=True,
-                        help="description cannot be left blank")
+    # parser.add_argument("description",
+    #                     type=str,
+    #                     required=True,
+    #                     help="description cannot be left blank")
 
     @classmethod
     @jwt_required()
     def put(cls):
-        data = UpdateJob.parser.parse_args()
+        # validate form data
+        errors = UpdateJobSchema().validate(request.get_json())
+        if errors:
+            abort(400, message=errors)
+
+        # data = UpdateJob.parser.parse_args()
+        data = request.get_json()
 
         # Check if salary_min is less than salary_max
         if data['salary_min'] is not None and data['salary_max'] is not None:
@@ -89,9 +115,11 @@ class UpdateJob(Resource):
             abort(403, message='You are not authorized to update this job')
 
         # Call update method on Job model and pass in data
+        # try:
+        data['start_date'] = convert_string_to_date(data['start_date'])
+        data['end_date'] = convert_string_to_date(data['end_date'])
         job_to_update = JobModel.update(**data)
-
-        if job_to_update is None:
-            abort(500, message='An error occurred while updating the job')
+        # except SQLAlchemyError:
+        #     abort(500, message='An error occurred while updating job')
 
         return {'updatedJob': dict_to_camel_case(job_to_update.to_dict())}, 200

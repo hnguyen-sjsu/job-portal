@@ -2,17 +2,17 @@ from flask_restful import Resource, reqparse
 from models.job_model import JobModel
 from models.recruiter_model import RecruiterModel
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from to_camel_case import dict_to_camel_case
+from helpers import dict_to_camel_case
 from flask_smorest import abort
 from flask import request
 from marshmallow import Schema, fields
 
 
-def add_logo_to_job(job):
+def add_company_to_job(job):
     # find company logo
-    logo = RecruiterModel.find_logo_by_uid(job.user_id)
-    job_dict = job.to_dict()
-    job_dict['companyLogo'] = logo
+    company = RecruiterModel.find_by_user_id(job.user_id)
+    job_dict = dict_to_camel_case(job.to_dict())
+    job_dict['company'] = dict_to_camel_case(company.to_dict())
     return job_dict
 
 
@@ -23,7 +23,7 @@ class GetAll(Resource):
         jobs = JobModel.find_all()
         returned_jobs = []
         for job in jobs:
-            returned_jobs.append(add_logo_to_job(job))
+            returned_jobs.append(add_company_to_job(job))
 
         return {'jobs': returned_jobs}, 200
 
@@ -47,7 +47,7 @@ class GetTen(Resource):
         returned_jobs = []
         for job in jobs:
             # remove user_id from job
-            returned_jobs.append(add_logo_to_job(job))
+            returned_jobs.append(add_company_to_job(job))
 
         return {'jobs': returned_jobs}, 200
 
@@ -74,12 +74,15 @@ class GetOne(Resource):
 
         # Find the job based on job_id.
         job = JobModel.find_by_job_id(job_id)
+
         user_id = get_jwt_identity().get('user_id')
         # Find all jobs that belong to the current recruiter.
         jobs_belong_to_user = JobModel.find_all_by_uid(user_id)
 
         if job in jobs_belong_to_user:
-            return {"job": dict_to_camel_case(job.to_dict())}, 200
+            returned_jobs = []
+            returned_jobs.append(add_company_to_job(job))
+            return {"job": returned_jobs}, 200
 
         return {"message": "Job not found"}, 404
 
@@ -95,8 +98,10 @@ class GetAllByUID(Resource):
         user_id = get_jwt_identity().get('user_id')
         # Get all jobs by user_id
         jobs = JobModel.find_all_by_uid(user_id)
+
+        # Add company to job
         returned_jobs = []
         for job in jobs:
-            returned_jobs.append(add_logo_to_job(job))
+            returned_jobs.append(add_company_to_job(job))
 
         return {'jobs': returned_jobs}, 200

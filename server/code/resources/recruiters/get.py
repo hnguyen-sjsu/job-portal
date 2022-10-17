@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from models.recruiter_model import RecruiterModel
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from to_camel_case import dict_to_camel_case
+from helpers import dict_to_camel_case
 from flask_smorest import abort
 
 

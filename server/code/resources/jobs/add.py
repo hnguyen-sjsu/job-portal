@@ -3,6 +3,7 @@ from models.job_model import JobModel
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from response_message_code import response_message_code
 from flask_restful import inputs
+from sqlalchemy.exc import SQLAlchemyError
 
 
 class Add(Resource):
@@ -61,7 +62,7 @@ class Add(Resource):
     @jwt_required()
     def post(cls):
         if get_jwt_identity().get('role') != 'recruiter':
-            return {'message': 'Unauthorized'}, 401
+            return {"message": "Unauthorized"}, 401
 
         data = Add.parser.parse_args()
 
@@ -87,7 +88,7 @@ class Add(Resource):
 
         try:
             new_job.save_to_db()
-        except Exception as e:
+        except SQLAlchemyError as e:
             print(e)
             return {"message": "An error occurred while creating the job."}, 500
 

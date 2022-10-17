@@ -25,6 +25,7 @@ import JobForm from "./components/Job/JobForm";
 import JobView from "./components/Job/JobView";
 import CompanyProfileForm from "./components/UserAccount/Profile/CompanyProfileForm";
 import Settings from "./components/UserAccount/Settings/Settings";
+import JobListView from "./components/Job/JobListView";
 
 let theme = createTheme({
 	palette: {
@@ -111,7 +112,6 @@ function App() {
 					<Routes>
 						<Route path="/" element={<WithMenuBarLayout />}>
 							<Route index element={<LandingPage />} />
-							<Route path="job/:id" element={<JobView />} />
 						</Route>
 						<Route
 							path="/candidate"
@@ -126,7 +126,14 @@ function App() {
 								path="build-profile"
 								element={<CompanyProfileForm />}
 							/>
+							<Route
+								path="manage-jobs"
+								element={<JobListView layout="grid" />}
+							/>
 							<Route path="settings" element={<Settings />} />
+						</Route>
+						<Route path="/job" element={<RecruiterLayout />}>
+							<Route path=":jobId" element={<JobView />} />
 						</Route>
 						<Route path="/candidate" element={<NoMenuBarLayout />}>
 							<Route

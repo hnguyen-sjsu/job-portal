@@ -23,7 +23,7 @@ from resources.jobs.add import Add
 from resources.jobs.get import GetAll, GetTen, GetAllByUID, GetOne
 from resources.jobs.delete import DeleteJob
 from resources.jobs.update import UpdateJob
-from resources.db_cleaner import remove_expired_jobs, remove_expired_tokens
+from resources.db_cleaner import *
 from dotenv import load_dotenv
 from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, JWTManager, set_access_cookies
 
@@ -35,19 +35,22 @@ CORS(app, supports_credentials=True)
 
 load_dotenv()
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["JWT_COOKIE_SECURE"] = False
-app.config["JWT_TOKEN_LOCATION"] = ["cookies"]
-app.config["JWT_COOKIE_CSRF_PROTECT"] = True
-app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=30)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['JWT_COOKIE_SECURE'] = False
+app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+app.config['JWT_COOKIE_CSRF_PROTECT'] = True
+app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=30)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
+# os.getenv('EMAIL_USER')
 app.config['MAIL_USERNAME'] = 'akkajobfinderservice@gmail.com'
+# os.getenv('MAIL_PASSWORD')
 app.config['MAIL_PASSWORD'] = 'tdvydjjylmixptan'
+# os.getenv('EMAIL_USER')
 app.config['MAIL_DEFAULT_SENDER'] = 'akkajobfinderservice@gmail.com'
 
 
@@ -59,6 +62,8 @@ def create_tables():
     print(removed_jobs)
     expired_tokens = remove_expired_tokens()
     print(expired_tokens)
+    expired_memberships = remove_expired_membership()
+    print(expired_memberships)
 
 
 # @app.before_request
@@ -75,7 +80,7 @@ def refresh_expiring_jwts(response):
 
     try:
         # Expiration time of the current token
-        exp_timestamp = get_jwt()["exp"]
+        exp_timestamp = get_jwt()['exp']
 
         now = datetime.now(timezone.utc)
         # Current time + x (mins)
@@ -96,7 +101,7 @@ def refresh_expiring_jwts(response):
 # Customize error message when no token is present
 @jwt.unauthorized_loader
 def my_expired_token_callback(response):
-    return {"message": "Please provide a valid token to access this route."}, 401
+    return {'message': 'Please provide a valid token to access this route.'}, 401
 
 
 # API endpoints start with http://localhost:5000/...

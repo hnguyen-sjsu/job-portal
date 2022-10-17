@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse
 from models.job_model import JobModel
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from response_message_code import response_custom_message
+from sqlalchemy.exc import SQLAlchemyError
 
 
 class DeleteJob(Resource):
@@ -15,15 +15,18 @@ class DeleteJob(Resource):
     @jwt_required()
     def delete(cls):
         if get_jwt_identity().get('role') != 'recruiter':
-            return {'message': 'Unauthorized'}, 401
+            return {"message": "Unauthorized"}, 401
 
         data = DeleteJob.parser.parse_args()
 
-        job = JobModel.find_by_id(data['job_id'])
+        job = JobModel.find_by_job_id(data['job_id'])
 
         if not job:
             return {"message": "Job not found"}, 404
+        try:
+            job.delete_from_db()
+        except SQLAlchemyError as e:
+            print(e)
+            return {"message": "An error occurred while deleting the job"}, 500
 
-        job.delete_from_db()
-
-        return response_custom_message("message", "Job deleted successfully", 200)
+        return {"message": "Job deleted successfully"}, 200

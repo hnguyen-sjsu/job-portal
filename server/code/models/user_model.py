@@ -19,6 +19,9 @@ class UserModel(db.Model):
     # Create a relationship between User and JobModel
     jobs = db.relationship('JobModel', backref='users',
                            lazy=True, cascade='all, delete-orphan')
+    # Create a relationship between User and MembershipModel
+    # memberships = db.relationship(
+    #     'MembershipModel', backref='users', lazy=True, cascade='all, delete-orphan')
 
     def __repr__(self):
         return str({column.name: getattr(self, column.name) for column in self.__table__.columns})

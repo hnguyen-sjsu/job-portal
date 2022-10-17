@@ -2,6 +2,7 @@ from flask_restful import Resource, reqparse
 from models.candidate_model import CandidateModel
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from to_camel_case import dict_to_camel_case
+from flask_smorest import abort
 
 
 class UpdateCandidateProfile(Resource):
@@ -35,7 +36,7 @@ class UpdateCandidateProfile(Resource):
     @jwt_required()
     def put(cls):
         if get_jwt_identity().get('role') != 'candidate':
-            return {'message': 'Not authorized'}, 401
+            abort(401, message='Unauthorized')
 
         data = UpdateCandidateProfile.parser.parse_args()
         candidate = CandidateModel.find_by_user_id(
@@ -43,7 +44,7 @@ class UpdateCandidateProfile(Resource):
 
         # Check if candidate exists
         if candidate is None:
-            return {"message": "Candidate not found"}, 404
+            abort(404, message='Candidate not found')
 
         # Update candidate's profile
         candidate.update(candidate.id, **data)

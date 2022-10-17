@@ -8,4 +8,4 @@ class Protected(Resource):
     @jwt_required()
     def get(cls):
         print(get_jwt_identity())
-        return {"user": get_jwt_identity()}, 200
+        return {'user': get_jwt_identity()}, 200

@@ -80,15 +80,16 @@ class JobModel(db.Model):
         return jobs
 
     @classmethod
-    def find_by_id(cls, id):
+    def find_by_job_id(cls, id):
         job = cls.query.filter(
             cls.end_date > datetime.datetime.utcnow()).filter_by(id=id).first()
 
         return job
 
+    # Where client store the job id?
     @classmethod
     def update(cls, **kwargs):
-        job = cls.find_by_id(kwargs['job_id'])
+        job = cls.find_by_job_id(kwargs['job_id'])
 
         if job:
             for key, value in kwargs.items():

@@ -34,10 +34,10 @@ class Login(Resource):
         user = UserModel.find_by_email(data['email'])
 
         if not user:
-            response = response_message_code("Invalid Email", 403)
+            response = response_message_code('Invalid Email', 403)
             return response
         elif user.password != hash_password(data['password']):
-            response = response_message_code("Wrong password", 403)
+            response = response_message_code('Wrong password', 403)
             return response
 
         response = Response(
@@ -53,7 +53,7 @@ class Login(Resource):
         )
 
         access_token = create_access_token(
-            identity={"user_id": user.id, "role": user.role})
+            identity={'user_id': user.id, 'role': user.role})
         set_access_cookies(response, access_token)
 
         return response

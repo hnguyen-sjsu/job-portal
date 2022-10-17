@@ -1,7 +1,8 @@
 from flask_restful import Resource, reqparse
 from models.recruiter_model import RecruiterModel
-from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from to_camel_case import dict_to_camel_case
+from flask_smorest import abort
 
 
 class UpdateRecruiterProfile(Resource):
@@ -30,7 +31,7 @@ class UpdateRecruiterProfile(Resource):
     @jwt_required()
     def put(cls):
         if get_jwt_identity().get('role') != 'recruiter':
-            return {'message': 'Not authorized'}, 401
+            abort(401, message='Unauthorized')
 
         data = UpdateRecruiterProfile.parser.parse_args()
         recruiter = RecruiterModel.find_by_user_id(
@@ -38,7 +39,7 @@ class UpdateRecruiterProfile(Resource):
 
         # Check if recruiter exists
         if recruiter is None:
-            return {"message": "Recruiter not found"}, 404
+            abort(404, message='Recruiter not found')
 
         # Update recruiter's profile
         recruiter.update(recruiter.id, **data)

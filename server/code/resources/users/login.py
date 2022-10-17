@@ -54,6 +54,7 @@ class Login(Resource):
 
         access_token = create_access_token(
             identity={'user_id': user.id, 'role': user.role})
+
         set_access_cookies(response, access_token)
 
         return response

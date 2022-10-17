@@ -101,7 +101,8 @@ def refresh_expiring_jwts(response):
 # Customize error message when no token is present
 @jwt.unauthorized_loader
 def my_expired_token_callback(response):
-    return {'message': 'Please provide a valid token to access this route.'}, 401
+    print(response)
+    return {'message': response}, 401
 
 
 # API endpoints start with http://localhost:5000/...

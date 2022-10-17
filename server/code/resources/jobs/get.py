@@ -4,6 +4,8 @@ from models.recruiter_model import RecruiterModel
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from to_camel_case import dict_to_camel_case
 from flask_smorest import abort
+from flask import request
+from marshmallow import Schema, fields
 
 
 def add_logo_to_job(job):
@@ -26,17 +28,22 @@ class GetAll(Resource):
         return {'jobs': returned_jobs}, 200
 
 
+class GetTenSchema(Schema):
+    offset = fields.Int(required=True)
+
+
 class GetTen(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument("offset",
-                        type=int,
-                        required=True,
-                        help="offset cannot be left blank")
 
     @classmethod
     def get(cls):
-        data = GetTen.parser.parse_args()
-        jobs = JobModel.find_ten(offset=data['offset'])
+        # Validate offset
+        errors = GetTenSchema().validate(request.args)
+        if errors:
+            abort(400, message=errors)
+
+        offset = request.args.get('offset')
+
+        jobs = JobModel.find_ten(offset=offset)
         returned_jobs = []
         for job in jobs:
             # remove user_id from job
@@ -45,28 +52,34 @@ class GetTen(Resource):
         return {'jobs': returned_jobs}, 200
 
 
+class GetOneSchema(Schema):
+    job_id = fields.Int(required=True)
+
+
 class GetOne(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument("job_id",
-                        type=int,
-                        required=True,
-                        help="job_id cannot be left blank")
 
     @classmethod
     @jwt_required()
     def get(cls):
+        # Check role
         if get_jwt_identity().get('role') != 'recruiter':
             abort(401, message="Unauthorized")
 
-        data = GetOne.parser.parse_args()
-        # Find the job based on job_id.
-        job = JobModel.find_by_job_id(data["job_id"])
-        # Find all jobs that belong to the current recruiter.
-        jobs_belong_to_user = JobModel.find_all_by_uid(
-            get_jwt_identity().get('user_id'))
+        # Validate job_id
+        errors = GetOneSchema().validate(request.args)
+        if errors:
+            abort(400, message=errors)
 
-        if job and job in jobs_belong_to_user:
-            return dict_to_camel_case(job.to_dict()), 200
+        job_id = request.args.get('job_id')
+
+        # Find the job based on job_id.
+        job = JobModel.find_by_job_id(job_id)
+        user_id = get_jwt_identity().get('user_id')
+        # Find all jobs that belong to the current recruiter.
+        jobs_belong_to_user = JobModel.find_all_by_uid(user_id)
+
+        if job in jobs_belong_to_user:
+            return {"job": dict_to_camel_case(job.to_dict())}, 200
 
         return {"message": "Job not found"}, 404
 

@@ -11,7 +11,7 @@ function SkeletonLabel(props) {
 				<Skeleton
 					variant="text"
 					width={width ? width : 100}
-					animation={animation}
+					animation={animation ? animation : false}
 				/>
 			)}
 		</>

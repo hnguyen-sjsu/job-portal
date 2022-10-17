@@ -26,6 +26,7 @@ import JobView from "./components/Job/JobView";
 import CompanyProfileForm from "./components/UserAccount/Profile/CompanyProfileForm";
 import Settings from "./components/UserAccount/Settings/Settings";
 import JobListView from "./components/Job/JobListView";
+import CompanyProfileView from "./components/UserAccount/Profile/CompanyProfileView";
 
 let theme = createTheme({
 	palette: {
@@ -123,7 +124,11 @@ function App() {
 						<Route path="/recruiter" element={<RecruiterLayout />}>
 							<Route path="post-jobs" element={<JobForm />} />
 							<Route
-								path="build-profile"
+								path="profile"
+								element={<CompanyProfileView />}
+							/>
+							<Route
+								path="edit-profile"
 								element={<CompanyProfileForm />}
 							/>
 							<Route

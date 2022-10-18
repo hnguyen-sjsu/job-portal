@@ -1,36 +1,24 @@
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from models.candidate_model import CandidateModel
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask import request
+from sqlalchemy.exc import SQLAlchemyError
 from helpers import dict_to_camel_case
 from flask_smorest import abort
+from marshmallow import Schema, fields
+
+# Schema to validate the json body of the request
+
+
+class UpdateCandidateSchema(Schema):
+    full_name = fields.Str(required=True)
+    location = fields.Str(required=True)
+    bio = fields.Str(required=True)
+    resume_url = fields.URL(required=True)
+    phone_number = fields.Str(required=True)
 
 
 class UpdateCandidateProfile(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument("full_name",
-                        type=str,
-                        required=True,
-                        help="full_name cannot be left blank")
-
-    parser.add_argument("location",
-                        type=str,
-                        required=True,
-                        help="location cannot be left blank")
-
-    parser.add_argument("location",
-                        type=str,
-                        required=True,
-                        help="location cannot be left blank")
-
-    parser.add_argument("bio",
-                        type=str,
-                        required=True,
-                        help="bio cannot be left blank")
-
-    parser.add_argument("resume_url",
-                        type=str,
-                        required=True,
-                        help="resume_url cannot be left blank")
 
     @classmethod
     @jwt_required()
@@ -38,15 +26,24 @@ class UpdateCandidateProfile(Resource):
         if get_jwt_identity().get('role') != 'candidate':
             abort(401, message='Unauthorized')
 
-        data = UpdateCandidateProfile.parser.parse_args()
+        # Validate json data from the request body
+        errors = UpdateCandidateSchema().validate(request.get_json())
+        if errors:
+            abort(400, message=errors)
+
+        # Get the data from the request body.
+        data = request.get_json()
         candidate = CandidateModel.find_by_user_id(
             get_jwt_identity().get('user_id'))
 
         # Check if candidate exists
         if candidate is None:
             abort(404, message='Candidate not found')
-
-        # Update candidate's profile
-        candidate.update(candidate.id, **data)
+        try:
+            # Update candidate's profile
+            candidate.update(candidate.id, **data)
+        except SQLAlchemyError as e:
+            print(e)
+            abort(500, message='An error occurred while updating the candidate.')
 
         return dict_to_camel_case(candidate.to_dict()), 201

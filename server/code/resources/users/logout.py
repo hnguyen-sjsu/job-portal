@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask_jwt_extended import unset_jwt_cookies
-from response_message_code import response_message_code
+from helpers import response_message_code
 
 
 class Logout(Resource):

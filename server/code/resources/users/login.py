@@ -2,22 +2,21 @@ from security import hash_password
 from flask_restful import Resource, reqparse
 from models.user_model import UserModel
 from flask_jwt_extended import create_access_token, set_access_cookies
-from response_message_code import response_message_code
-from flask import Response
+from helpers import response_message_code
+from flask import Response, request
+from flask_smorest import abort
+from marshmallow import Schema, fields
 import json
+
+# Schema to validate the json body of the request.
+
+
+class LoginSchema(Schema):
+    email = fields.Email(required=True)
+    password = fields.Str(required=True)
 
 
 class Login(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument("email",
-                        type=str,
-                        required=True,
-                        help="Email cannot be left blank")
-
-    parser.add_argument("password",
-                        type=str,
-                        required=True,
-                        help="Password cannot be left blank")
 
     """
     Return a dictionary that contains user login information such as email, password, etc.
@@ -28,7 +27,11 @@ class Login(Resource):
     @classmethod
     def post(cls):
 
-        data = Login.parser.parse_args()
+        errors = LoginSchema().validate(request.get_json())
+        if errors:
+            abort(400, message=errors)
+
+        data = request.get_json()
 
         # Check if email exists in candidates table
         user = UserModel.find_by_email(data['email'])

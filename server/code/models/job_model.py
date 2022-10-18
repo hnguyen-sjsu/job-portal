@@ -90,8 +90,6 @@ class JobModel(db.Model):
     @ classmethod
     def update(cls, **kwargs):
         job = cls.find_by_job_id(kwargs['job_id'])
-        print(type(kwargs['start_date']))
-        print(type(job.start_date))
         if job:
             for key, value in kwargs.items():
                 setattr(job, key, value)

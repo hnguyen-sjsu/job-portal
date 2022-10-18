@@ -1,15 +1,13 @@
-import datetime
-from lib2to3.pytree import convert
-from unicodedata import category
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from models.job_model import JobModel
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from flask_restful import inputs
 from helpers import dict_to_camel_case, convert_string_to_date
 from flask_smorest import abort
 from marshmallow import Schema, fields
 from flask import request
 from sqlalchemy.exc import SQLAlchemyError
+
+# Schema to validate the json body of the request
 
 
 class UpdateJobSchema(Schema):
@@ -27,66 +25,11 @@ class UpdateJobSchema(Schema):
 
 
 class UpdateJob(Resource):
-    # parser = reqparse.RequestParser()
-    # parser.add_argument("job_id",
-    #                     type=int,
-    #                     required=True,
-    #                     help="job_id cannot be left blank")
-
-    # parser.add_argument("title",
-    #                     type=str,
-    #                     required=True,
-    #                     help="title cannot be left blank")
-
-    # parser.add_argument("start_date",
-    #                     type=inputs.date,
-    #                     required=True,
-    #                     help="start_date cannot be left blank")
-
-    # parser.add_argument("end_date",
-    #                     type=inputs.date,
-    #                     required=True,
-    #                     help="end_date cannot be left blank")
-
-    # parser.add_argument("location",
-    #                     type=str,
-    #                     required=True,
-    #                     help="location cannot be left blank")
-
-    # parser.add_argument("type",
-    #                     type=str,
-    #                     required=True,
-    #                     help="type cannot be left blank")
-
-    # parser.add_argument("category",
-    #                     type=str,
-    #                     required=True,
-    #                     help="category cannot be left blank")
-
-    # parser.add_argument("experience_level",
-    #                     type=str,
-    #                     required=True,
-    #                     help="experience_level cannot be left blank")
-
-    # parser.add_argument("salary_min",
-    #                     type=int,
-    #                     required=True,
-    #                     help="salary_min cannot be left blank")
-
-    # parser.add_argument("salary_max",
-    #                     type=int,
-    #                     required=True,
-    #                     help="salary_max cannot be left blank")
-
-    # parser.add_argument("description",
-    #                     type=str,
-    #                     required=True,
-    #                     help="description cannot be left blank")
 
     @classmethod
     @jwt_required()
     def put(cls):
-        # validate form data
+        # Validate form data
         errors = UpdateJobSchema().validate(request.get_json())
         if errors:
             abort(400, message=errors)
@@ -108,18 +51,19 @@ class UpdateJob(Resource):
         job = JobModel.find_by_job_id(data['job_id'])
 
         # Find all jobs that current candidate has posted
-        uid = get_jwt_identity().get('user_id')
+        user_id = get_jwt_identity().get('user_id')
 
-        jobs = JobModel.find_all_by_uid(uid)
+        jobs = JobModel.find_all_by_uid(user_id)
         if job not in jobs:
             abort(403, message='You are not authorized to update this job')
 
-        # Call update method on Job model and pass in data
-        # try:
-        data['start_date'] = convert_string_to_date(data['start_date'])
-        data['end_date'] = convert_string_to_date(data['end_date'])
-        job_to_update = JobModel.update(**data)
-        # except SQLAlchemyError:
-        #     abort(500, message='An error occurred while updating job')
+        # Call update method on JobModel and pass in data
+        try:
+            data['start_date'] = convert_string_to_date(data['start_date'])
+            data['end_date'] = convert_string_to_date(data['end_date'])
+            job_to_update = JobModel.update(**data)
+        except SQLAlchemyError as e:
+            print(e)
+            abort(500, message='An error occurred while updating job')
 
         return {'updatedJob': dict_to_camel_case(job_to_update.to_dict())}, 200

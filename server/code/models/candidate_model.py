@@ -48,17 +48,15 @@ class CandidateModel(db.Model):
         return cls.query.filter_by(user_id=user_id).first()
 
     @classmethod
-    def update(cls, _id, full_name="", location="", phone_number="", bio="", resume_url=""):
+    def update(cls, _id, **kwargs):
         # find candidate
         candidate = cls.query.filter_by(id=_id).first()
-        # update candidate profile
-        candidate.full_name = full_name
-        candidate.location = location
-        candidate.phone_number = phone_number
-        candidate.bio = bio
-        candidate.resume_url = resume_url
-        # save to db
-        db.session.commit()
+        if candidate:
+            for key, value in kwargs.items():
+                setattr(candidate, key, value)
+
+            candidate.save_to_db()
+            return candidate
 
     # @classmethod
     # def delete_by_user_id(cls, user_id):

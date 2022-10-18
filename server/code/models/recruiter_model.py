@@ -45,17 +45,15 @@ class RecruiterModel(db.Model):
         return cls.query.filter_by(user_id=user_id).first()
 
     @classmethod
-    def update(cls, _id, company_name="", company_size="", industry="", company_logo_url=""):
+    def update(cls, _id, **kwargs):
         # find recruiter
         recruiter = cls.query.filter_by(id=_id).first()
-        print(recruiter)
-        # update recruiter's profile
-        recruiter.company_name = company_name
-        recruiter.company_size = company_size
-        recruiter.industry = industry
-        recruiter.company_logo_url = company_logo_url
-        # save to db
-        db.session.commit()
+        if recruiter:
+            for key, value in kwargs.items():
+                setattr(recruiter, key, value)
+
+            recruiter.save_to_db()
+            return recruiter
 
     @classmethod
     def find_logo_by_uid(cls, user_id):

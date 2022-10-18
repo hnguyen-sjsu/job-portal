@@ -1,32 +1,28 @@
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from models.user_model import UserModel
 from models.candidate_model import CandidateModel
 from models.recruiter_model import RecruiterModel
 from security import hash_password
 from flask_smorest import abort
+from flask import request
+from marshmallow import Schema, fields
+
+
+class RegisterSchema(Schema):
+    email = fields.Email(required=True)
+    password = fields.Str(required=True)
+    role = fields.Str(required=True)
 
 
 class Register(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('email',
-                        type=str,
-                        required=True,
-                        help='email cannot be left blank')
-
-    parser.add_argument('password',
-                        type=str,
-                        required=True,
-                        help='password cannot be left blank')
-
-    parser.add_argument('role',
-                        type=str,
-                        required=True,
-                        help='role cannot be left blank')
 
     @classmethod
     def post(cls):
+        errors = RegisterSchema().validate(request.get_json())
+        if errors:
+            abort(400, message=errors)
 
-        data = Register.parser.parse_args()
+        data = request.get_json()
 
         # Check if email already exists in users table.
         if UserModel.find_by_email(data['email']):

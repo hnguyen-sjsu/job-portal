@@ -1,6 +1,6 @@
 import os
 from db import db
-from email_to_user import mail
+from helpers import mail
 from flask import Flask
 from datetime import datetime
 from datetime import timedelta
@@ -11,7 +11,7 @@ from resources.users.user import User
 from resources.users.register import Register
 from resources.users.login import Login
 from resources.users.recover_password import RecoverPasswordURL, ResetPassword
-from resources.users.private import Protected
+from resources.users.protected import Protected
 from resources.users.logout import Logout
 from resources.users.update import UpdateProfile
 from resources.users.delete import Delete

@@ -1,4 +1,21 @@
 import datetime
+from flask_mail import Mail
+from flask import Response
+import json
+
+
+def response_message_code(dict, status_code=None):
+
+    return Response(
+        response=json.dumps({
+            "message": dict,
+        }),
+        status=status_code,
+        mimetype="application/json"
+    )
+
+
+mail = Mail()
 
 
 def string_to_camel_case(snake_str):

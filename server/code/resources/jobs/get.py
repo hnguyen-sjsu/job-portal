@@ -8,7 +8,7 @@ from flask import request
 from marshmallow import Schema, fields
 
 
-def add_company_to_job(job):
+def add_fields_to_job(job):
     # find company logo
     company = RecruiterModel.find_by_user_id(job.user_id)
     job_dict = dict_to_camel_case(job.to_dict())
@@ -23,7 +23,7 @@ class GetAll(Resource):
         jobs = JobModel.find_all()
         returned_jobs = []
         for job in jobs:
-            returned_jobs.append(add_company_to_job(job))
+            returned_jobs.append(add_fields_to_job(job))
 
         return {'jobs': returned_jobs}, 200
 
@@ -47,7 +47,7 @@ class GetTen(Resource):
         returned_jobs = []
         for job in jobs:
             # remove user_id from job
-            returned_jobs.append(add_company_to_job(job))
+            returned_jobs.append(add_fields_to_job(job))
 
         return {'jobs': returned_jobs}, 200
 
@@ -81,7 +81,7 @@ class GetOne(Resource):
 
         if job in jobs_belong_to_user:
             returned_jobs = []
-            returned_jobs.append(add_company_to_job(job))
+            returned_jobs.append(add_fields_to_job(job))
             return {"job": returned_jobs}, 200
 
         return {"message": "Job not found"}, 404
@@ -102,6 +102,6 @@ class GetAllByUID(Resource):
         # Add company to job
         returned_jobs = []
         for job in jobs:
-            returned_jobs.append(add_company_to_job(job))
+            returned_jobs.append(add_fields_to_job(job))
 
         return {'jobs': returned_jobs}, 200

@@ -4,26 +4,33 @@ from models.password_recovery import PasswordRecovery
 from itsdangerous import URLSafeSerializer
 from dotenv import load_dotenv
 from flask_mail import Message
-from email_to_user import mail
+from helpers import mail
 import os
 import datetime
 from security import hash_password
 from flask_smorest import abort
+from flask import request
+from flask_smorest import abort
+from marshmallow import Schema, fields
 
 load_dotenv()
 
 
+class RecoverPasswordURLSchema(Schema):
+    email = fields.Email(required=True)
+
+
 class RecoverPasswordURL(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('email',
-                        type=str,
-                        required=True,
-                        help='email cannot be left blank')
 
     @classmethod
     def get(cls):
+        errors = RecoverPasswordURLSchema().validate(request.get_json())
+        if errors:
+            abort(400, message=errors)
+
+        data = request.get_json()
+
         # check if email exists
-        data = RecoverPasswordURL.parser.parse_args()
         email = UserModel.find_by_email(data["email"])
         if email is None:
             abort(404, message='Email not found')
@@ -59,20 +66,20 @@ class RecoverPasswordURL(Resource):
         return {'message': 'Password reset URL sent', 'resetUrl': link}, 200
 
 
+class ResetPasswordSchema(Schema):
+    reset_token = fields.Str(required=True)
+    new_password = fields.Str(required=True)
+
+
 class ResetPassword(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('reset_token',
-                        type=str,
-                        required=True,
-                        help='reset_token cannot be left blank')
-    parser.add_argument('new_password',
-                        type=str,
-                        required=True,
-                        help='new_password cannot be left blank')
 
     @classmethod
     def post(cls):
-        data = ResetPassword.parser.parse_args()
+        errors = ResetPasswordSchema().validate(request.get_json())
+        if errors:
+            abort(400, message=errors)
+
+        data = request.get_json()
 
         # check if token is valid
         reset_token = PasswordRecovery.find_by_token(data['reset_token'])

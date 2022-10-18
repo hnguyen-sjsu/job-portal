@@ -10,7 +10,6 @@ import datetime
 from security import hash_password
 from flask_smorest import abort
 from flask import request
-from flask_smorest import abort
 from marshmallow import Schema, fields
 
 load_dotenv()

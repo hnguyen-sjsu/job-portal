@@ -1,3 +1,4 @@
+from struct import unpack
 from flask_restful import Resource, reqparse
 from models.job_model import JobModel
 from models.recruiter_model import RecruiterModel
@@ -8,24 +9,35 @@ from flask import request
 from marshmallow import Schema, fields
 
 
-def add_fields_to_job(job):
-    # find company logo
-    company = RecruiterModel.find_by_user_id(job.user_id)
-    job_dict = dict_to_camel_case(job.to_dict())
-    job_dict['company'] = dict_to_camel_case(company.to_dict())
-    return job_dict
+def unpack_jobs(jobs, get_one=False):
+    results_list = {'jobs': []}
+    results = {}
+
+    if get_one:
+        job, company = jobs
+        results['jobs'] = dict_to_camel_case(job.to_dict())
+        results['company'] = dict_to_camel_case(company.to_dict())
+        results_list['jobs'].append(results)
+    else:
+        for job, company in jobs:
+            results['jobs'] = dict_to_camel_case(job.to_dict())
+            results['company'] = dict_to_camel_case(company.to_dict())
+            # merge two dicts
+            results_list['jobs'].append(results)
+
+    return results_list
 
 
 class GetAll(Resource):
 
     @classmethod
     def get(cls):
-        jobs = JobModel.find_all()
-        returned_jobs = []
-        for job in jobs:
-            returned_jobs.append(add_fields_to_job(job))
+        jobs_company = JobModel.find_all()
 
-        return {'jobs': returned_jobs}, 200
+        # Create an empty dict to store the child dicts.
+        results_list = unpack_jobs(jobs_company)
+
+        return results_list, 200
 
 
 class GetTenSchema(Schema):
@@ -43,13 +55,12 @@ class GetTen(Resource):
 
         offset = request.args.get('offset')
 
-        jobs = JobModel.find_ten(offset=offset)
-        returned_jobs = []
-        for job in jobs:
-            # remove user_id from job
-            returned_jobs.append(add_fields_to_job(job))
+        jobs_company = JobModel.find_ten(offset=offset)
 
-        return {'jobs': returned_jobs}, 200
+        # Create an empty dict to store the child dicts.
+        results_list = unpack_jobs(jobs_company)
+
+        return results_list, 200
 
 
 class GetOneSchema(Schema):
@@ -73,16 +84,13 @@ class GetOne(Resource):
         job_id = request.args.get('job_id')
 
         # Find the job based on job_id.
-        job = JobModel.find_by_job_id(job_id)
-
+        job_company = JobModel.find_by_job_id(job_id)
         user_id = get_jwt_identity().get('user_id')
-        # Find all jobs that belong to the current recruiter.
-        jobs_belong_to_user = JobModel.find_all_by_uid(user_id)
 
-        if job in jobs_belong_to_user:
-            returned_jobs = []
-            returned_jobs.append(add_fields_to_job(job))
-            return {"job": returned_jobs}, 200
+        # Check if the job belongs to the recruiter.
+        if job_company and job_company[0].user_id == user_id:
+            result = unpack_jobs(job_company, get_one=True)
+            return result, 200
 
         return {"message": "Job not found"}, 404
 
@@ -96,12 +104,11 @@ class GetAllByUID(Resource):
             return {'message': 'Unauthorized'}, 401
 
         user_id = get_jwt_identity().get('user_id')
-        # Get all jobs by user_id
-        jobs = JobModel.find_all_by_uid(user_id)
 
-        # Add company to job
-        returned_jobs = []
-        for job in jobs:
-            returned_jobs.append(add_fields_to_job(job))
+        # Get all jobs and company info that belong to the current recruiter.
+        jobs_company = JobModel.find_all_by_uid(user_id)
 
-        return {'jobs': returned_jobs}, 200
+        # Create an empty dict to store the child dicts.
+        results_list = unpack_jobs(jobs_company)
+
+        return results_list, 200

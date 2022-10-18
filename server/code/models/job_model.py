@@ -59,32 +59,38 @@ class JobModel(db.Model):
 
     @ classmethod
     def find_all(cls):
-        jobs = cls.query.filter(
-            cls.end_date > datetime.datetime.utcnow()).all()
+        jobs_company = JobModel.query.join(
+            RecruiterModel, JobModel.user_id == RecruiterModel.user_id).add_columns(RecruiterModel).all()
 
-        return jobs
+        return jobs_company
 
     @ classmethod
     def find_ten(cls, offset):
-        # Return 10 jobs in the database starting from index (offset + 1)
-        # The front end should keep track of the offset and increment it by 10 each time the user scrolls down or presses load more.
-        jobs = cls.query.filter(cls.end_date > datetime.datetime.utcnow()).offset(
-            offset).limit(10).all()
+        """
+        Return 10 jobs in the database starting from index (offset + 1)
+        The front end should keep track of the offset and increment it by 10 each time the user scrolls down or presses load more.
+        """
+        # Join the JobModel table with the RecruiterModel table where user_id = user_id.
+        jobs_company = JobModel.query.join(
+            RecruiterModel, JobModel.user_id == RecruiterModel.user_id).add_columns(RecruiterModel).offset(offset).limit(10).all()
 
-        return jobs
+        return jobs_company
 
     @ classmethod
     def find_all_by_uid(cls, user_id):
-        jobs = cls.query.filter_by(user_id=user_id).all()
+        # Join the JobModel table with the RecruiterModel table where user_id = user_id.
+        jobs_company = JobModel.query.join(
+            RecruiterModel, JobModel.user_id == RecruiterModel.user_id).add_columns(RecruiterModel).filter(cls.user_id == user_id).all()
 
-        return jobs
+        return jobs_company
 
     @ classmethod
     def find_by_job_id(cls, id):
-        job = cls.query.filter(
-            cls.end_date > datetime.datetime.utcnow()).filter_by(id=id).first()
+        # Join the JobModel table with the RecruiterModel table where job_id = id.
+        job_company = JobModel.query.join(
+            RecruiterModel, JobModel.user_id == RecruiterModel.user_id).add_columns(RecruiterModel).filter(cls.id == id).first()
 
-        return job
+        return job_company
 
     # Where client store the job id?
     @ classmethod
@@ -98,3 +104,21 @@ class JobModel(db.Model):
             return job
 
         return None
+
+    # Testing join tables
+    @classmethod
+    def get_joined_table(cls, user_id):
+        # Join the JobModel table with the RecruiterModel table.
+        jobs_company = JobModel.query.join(
+            RecruiterModel, JobModel.user_id == RecruiterModel.user_id).join(CandidateModel,
+                                                                             JobModel.user_id == UserModel.id).add_columns(RecruiterModel, UserModel).filter(cls.user_id == user_id).all()
+        results_list = {}
+
+        for job, company, user in jobs_company:
+            results = {}
+            results['jobs'] = job.to_dict()
+            results['company'] = company.to_dict()
+            results['user'] = user.to_dict(),
+            results_list.update(results)
+
+        return results_list

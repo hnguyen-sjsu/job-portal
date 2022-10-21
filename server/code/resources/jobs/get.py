@@ -10,21 +10,28 @@ from marshmallow import Schema, fields
 
 
 def unpack_jobs(jobs, get_one=False):
-    results_list = {'jobs': []}
+    results_list = {}
+    results = {'jobs': []}
+    # Unpack the job_company tuple
+
+    def unpack(job_company):
+        # unpack the job_company tuple
+        job, company = job_company
+        # convert company to camel case and add to dict as company
+        company = {'company': dict_to_camel_case(company.to_dict())}
+        # convert job to camel case
+        job = dict_to_camel_case(job.to_dict())
+        # add company to job
+        job.update(company)
+        # add job to results list
+        results['jobs'].append(job)
+        return results
 
     if get_one:
-        results = {}
-        job, company = jobs
-        results['jobs'] = dict_to_camel_case(job.to_dict())
-        results['company'] = dict_to_camel_case(company.to_dict())
-        results_list['jobs'].append(results)
+        results_list = unpack(jobs)
     else:
-        for job, company in jobs:
-            results = {}
-            results['jobs'] = dict_to_camel_case(job.to_dict())
-            results['company'] = dict_to_camel_case(company.to_dict())
-
-            results_list['jobs'].append(results)
+        for job in jobs:
+            results_list.update(unpack((job)))
 
     return results_list
 

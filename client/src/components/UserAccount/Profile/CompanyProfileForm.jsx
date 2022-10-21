@@ -202,7 +202,6 @@ function CompanyProfileForm(props) {
 									disableElevation
 									fullWidth
 									disabled={loading}
-									href="/recruiter/profile"
 								>
 									Cancel
 								</Button>

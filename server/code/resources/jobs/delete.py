@@ -19,7 +19,7 @@ class DeleteJob(Resource):
     @jwt_required()
     def delete(cls):
         if get_jwt_identity().get('role') != 'recruiter':
-            abort(401, message='Unauthorized')
+            abort(401, message='You are not authorized to access this route')
 
         errors = DeleteSchema().validate(request.get_json())
         if errors:

@@ -24,7 +24,7 @@ class UpdateCandidateProfile(Resource):
     @jwt_required()
     def put(cls):
         if get_jwt_identity().get('role') != 'candidate':
-            abort(401, message='Unauthorized')
+            abort(401, message='You are not authorized to access this route')
 
         # Validate json data from the request body
         errors = UpdateCandidateSchema().validate(request.get_json())

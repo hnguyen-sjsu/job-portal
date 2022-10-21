@@ -10,7 +10,7 @@ class GetRecruiterProfile(Resource):
     @jwt_required()
     def get(cls):
         if get_jwt_identity().get('role') != 'recruiter':
-            abort(401, message='Unauthorized')
+            abort(401, message='You are not authorized to access this route')
 
         # get recruiter by user_id
         recruiter = RecruiterModel.find_by_user_id(

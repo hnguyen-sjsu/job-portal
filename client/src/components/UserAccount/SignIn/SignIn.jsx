@@ -64,7 +64,7 @@ function SignIn({ isRecruiter }) {
 							}
 							if (userInfo.role === "recruiter") {
 								if (profile.companyName === "") {
-									navigate("/recruiter/edit-profile");
+									navigate("/recruiter/build-profile");
 								} else {
 									navigate("/");
 								}

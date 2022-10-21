@@ -70,7 +70,6 @@ class JobModel(db.Model):
         Return 10 jobs in the database starting from index (offset + 1)
         The front end should keep track of the offset and increment it by 10 each time the user scrolls down or presses load more.
         """
-        # Join the JobModel table with the RecruiterModel table where user_id = user_id.
         jobs_company = JobModel.query.join(
             RecruiterModel, JobModel.user_id == RecruiterModel.user_id).add_columns(RecruiterModel).offset(offset).limit(10).all()
 

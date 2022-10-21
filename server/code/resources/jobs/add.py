@@ -29,7 +29,7 @@ class Add(Resource):
     @jwt_required()
     def post(cls):
         if get_jwt_identity().get('role') != 'recruiter':
-            return {"message": "Unauthorized"}, 401
+            abort(403, message='You are not authorized to access this resource.')
         # Check for invalid data
         errors = AddJobSchema().validate(request.get_json())
         if errors:
@@ -38,13 +38,13 @@ class Add(Resource):
         data = request.get_json()
 
         if data['salary_min'] > data['salary_max']:
-            return {"message": "salary_min cannot be greater than salary_max"}, 400
+            abort(400, message='Salary min cannot be greater than salary max')
 
         data['start_date'] = convert_string_to_date(data['start_date'])
         data['end_date'] = convert_string_to_date(data['end_date'])
 
         if data['start_date'] > data['end_date']:
-            return {"message": "start_date cannot be greater than end_date"}, 400
+            abort(400, message='Start date cannot be greater than end date')
 
         user_id = get_jwt_identity().get('user_id')
 
@@ -54,6 +54,6 @@ class Add(Resource):
             new_job.save_to_db()
         except SQLAlchemyError as e:
             print(e)
-            return {"message": "An error occurred while creating the job."}, 500
+            abort(500, message='An error occurred while adding the job')
 
-        return {"message": "Job created successfully."}, 201
+        return {'message': 'Job created successfully.'}, 201

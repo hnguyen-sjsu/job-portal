@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -20,36 +20,37 @@ import "react-quill/dist/quill.bubble.css";
 import { useParams } from "react-router-dom";
 import SkeletonLabel from "../Utils/SkeletonLabel";
 import JobServices from "../../services/JobServices";
-import { UserContext } from "../../providers/AuthProvider";
 
 function JobView(props) {
-	var numeral = require("numeral");
 	let { job, isPreview } = props;
-	let { jobId } = useParams();
-	const { user } = useContext(UserContext);
-
 	const [jobInfo, setJobInfo] = useState(null);
+	// const [job, setJob] = useState({
+	// 	category: "Software",
+	// 	experienceLevel: "Senior Level",
+	// 	location: "Cupertino, CA",
+	// 	maxSalary: "200000",
+	// 	minSalary: "116000",
+	// 	title: "Sr. Front-End Engineer",
+	// 	type: "Full Time",
+	// 	description: "Job description",
+	// 	noApplicants: 150,
+	// 	company: {
+	// 		name: "Apple",
+	// 		size: "10,001+ employees",
+	// 		industryField: "Computers Electronics",
+	// 	},
+	// });
+
+	let { jobId } = useParams();
 
 	useEffect(() => {
 		if (job) {
 			setJobInfo({ ...job });
 		}
-
 		if (jobId) {
 			const id = jobId.split(":")[1];
 			JobServices.getJob(id).then((response) => {
 				console.log(response);
-				setJobInfo({
-					...response,
-					company: {
-						name: response.company.companyName,
-						size: response.company.companySize,
-						industryField: response.company.industry,
-					},
-					noApplicants: 0,
-					minSalary: response.salaryMin,
-					maxSalary: response.salaryMax,
-				});
 			});
 		}
 	}, []);
@@ -64,6 +65,7 @@ function JobView(props) {
 		<>
 			{jobInfo && (
 				<>
+<<<<<<< HEAD
 					<Stack
 						direction="row"
 						alignItems="center"
@@ -78,6 +80,11 @@ function JobView(props) {
 							</Button>
 						)}
 					</Stack>
+=======
+					<Typography variant="h4" fontWeight="bold">
+						<SkeletonLabel text={jobInfo.title} width={300} />
+					</Typography>
+>>>>>>> parent of 508ac34 (Implement View Job List, Job Detail, Company Profile)
 					<Stack direction="row" divider={<>{" • "}</>}>
 						{jobInfo.company.name}
 						<SkeletonLabel text={jobInfo.location} />
@@ -86,8 +93,9 @@ function JobView(props) {
 							text={
 								jobInfo.noApplicants +
 								" applicant" +
-								(jobInfo.noApplicants > 1 ? "s" : "")
+								(jobInfo.noApplicants > 1 && "s")
 							}
+							animation={false}
 						/>
 					</Stack>
 					<List disablePadding dense>
@@ -104,18 +112,13 @@ function JobView(props) {
 									<SkeletonLabel
 										text={
 											jobInfo.minSalary &&
-											numeral(jobInfo.minSalary).format(
-												"($0a)"
-											)
+											"$" + jobInfo.minSalary
 										}
 									/>
-
 									<SkeletonLabel
 										text={
 											jobInfo.maxSalary &&
-											numeral(jobInfo.maxSalary).format(
-												"($0a)"
-											)
+											"$" + jobInfo.maxSalary
 										}
 									/>
 								</Stack>
@@ -153,9 +156,7 @@ function JobView(props) {
 							<ListItemText>
 								<Stack direction="row" divider={<>{" • "}</>}>
 									<SkeletonLabel
-										text={numeral(
-											jobInfo.company.size
-										).format("0,0")}
+										text={jobInfo.company.size}
 									/>
 									<SkeletonLabel
 										text={jobInfo.company.industryField}
@@ -164,7 +165,7 @@ function JobView(props) {
 							</ListItemText>
 						</ListItem>
 					</List>
-					{!isPreview && user && user.role === "candidate" && (
+					{!isPreview && (
 						<Stack direction="row" spacing={2}>
 							<Button
 								variant="contained"

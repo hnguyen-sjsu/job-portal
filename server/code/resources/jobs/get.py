@@ -11,18 +11,19 @@ from marshmallow import Schema, fields
 
 def unpack_jobs(jobs, get_one=False):
     results_list = {'jobs': []}
-    results = {}
 
     if get_one:
+        results = {}
         job, company = jobs
         results['jobs'] = dict_to_camel_case(job.to_dict())
         results['company'] = dict_to_camel_case(company.to_dict())
         results_list['jobs'].append(results)
     else:
         for job, company in jobs:
+            results = {}
             results['jobs'] = dict_to_camel_case(job.to_dict())
             results['company'] = dict_to_camel_case(company.to_dict())
-            # merge two dicts
+
             results_list['jobs'].append(results)
 
     return results_list

@@ -25,7 +25,7 @@ class UpdateRecruiterProfile(Resource):
     @jwt_required()
     def put(cls):
         if get_jwt_identity().get('role') != 'recruiter':
-            abort(401, message='Unauthorized')
+            abort(401, message='You are not authorized to access this route')
 
         errors = UpdateRecruiterSchema().validate(request.get_json())
         if errors:

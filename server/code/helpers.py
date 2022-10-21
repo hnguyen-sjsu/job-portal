@@ -1,7 +1,10 @@
 import datetime
 from flask_mail import Mail
-from flask import Response
+from flask import Response, make_response, Response
 import json
+
+
+mail = Mail()
 
 
 def response_message_code(dict, status_code=None):
@@ -13,9 +16,6 @@ def response_message_code(dict, status_code=None):
         status=status_code,
         mimetype="application/json"
     )
-
-
-mail = Mail()
 
 
 def string_to_camel_case(snake_str):
@@ -32,3 +32,18 @@ def dict_to_camel_case(dict):
 def convert_string_to_date(string):
     format = '%Y-%m-%d'
     return datetime.datetime.strptime(string, format).date()
+
+
+def response_message_code(dict, status_code=None):
+
+    return Response(
+        response=json.dumps({
+            "message": dict,
+        }),
+        status=status_code,
+        mimetype="application/json"
+    )
+
+
+def response_custom_message(message, data, status_code=None):
+    return make_response({message: str(data)}, status_code)

@@ -30,9 +30,9 @@ class UserModel(db.Model):
     # educations = db.relationship(
     #     'EducationModel', backref='users', lazy=True, cascade='all, delete-orphan')
 
-    # # Create a relationship between User and SkillModel
-    # skills = db.relationship(
-    #     'SkillModel', backref='users', lazy=True, cascade='all, delete-orphan')
+    # Create a relationship between User and SkillModel
+    skills = db.relationship(
+        'SkillModel', backref='users', lazy=True, cascade='all, delete-orphan')
 
     # # Create a relationship between User and WorkExperienceModel
     # work_experiences = db.relationship(

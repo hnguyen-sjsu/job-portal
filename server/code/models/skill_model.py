@@ -25,8 +25,13 @@ class SkillModel(db.Model):
         db.session.commit()
 
     @classmethod
-    def delete_by_id(cls, _id):
+    def delete_from_db(cls, _id):
         db.session.delete(cls.query.filter_by(id=_id).first())
+        db.session.commit()
+
+    @classmethod
+    def delete_all_by_uid(cls, user_id):
+        db.session.query(cls).filter_by(user_id=user_id).delete()
         db.session.commit()
 
     @classmethod
@@ -36,10 +41,18 @@ class SkillModel(db.Model):
         return skills
 
     @classmethod
-    def find_by_uid(cls, user_id):
+    def find_all_by_uid(cls, user_id):
         skills = cls.query.filter_by(user_id=user_id).all()
 
         return skills
+
+    # This method returns a set of skills of the user.
+    @classmethod
+    def find_all_skills_by_uid(cls, user_id):
+        skills = db.session.query(
+            SkillModel.name).filter_by(user_id=user_id).all()
+
+        return set(skill[0] for skill in skills)
 
     @classmethod
     def find_by_skill_id(cls, skill_id):

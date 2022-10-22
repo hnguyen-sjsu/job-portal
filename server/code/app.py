@@ -27,6 +27,10 @@ from resources.memberships.add import AddMembership
 from resources.memberships.get import GetMembership
 from resources.memberships.update import UpdateMembership
 from resources.memberships.delete import DeleteMembership
+from resources.skills.add import AddSkill
+from resources.skills.get import GetAllSkillsByUID
+from resources.skills.delete import DeleteOneOrMultiple
+from resources.skills.update import UpdateSkill
 from resources.db_cleaner import *
 from dotenv import load_dotenv
 from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, JWTManager, set_access_cookies
@@ -139,7 +143,11 @@ api.add_resource(AddMembership, '/membership/post')
 api.add_resource(GetMembership, '/membership/get')
 api.add_resource(UpdateMembership, '/membership/update')
 api.add_resource(DeleteMembership, '/membership/delete')
-
+# skills
+api.add_resource(AddSkill, '/skill/post')
+api.add_resource(GetAllSkillsByUID, '/skill/get')
+api.add_resource(DeleteOneOrMultiple, '/skill/delete')
+api.add_resource(UpdateSkill, '/skill/update')
 if __name__ == '__main__':
     db.init_app(app)
     mail.init_app(app)

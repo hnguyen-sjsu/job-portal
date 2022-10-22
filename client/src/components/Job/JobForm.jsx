@@ -96,8 +96,7 @@ function JobForm(props) {
 		setShowDialog(false);
 		try {
 			const response = await JobServices.saveJob(job);
-			console.log(response);
-			setMessage(response.data.message);
+			setMessage(response);
 			setShowDialog(true);
 		} catch (e) {
 			console.error(e);
@@ -112,7 +111,6 @@ function JobForm(props) {
 	};
 
 	const loadJob = async (jobId) => {
-		console.log("Edit Form");
 		setLoading(true);
 		try {
 			const job = await JobServices.getJob(jobId);
@@ -127,8 +125,6 @@ function JobForm(props) {
 	useEffect(() => {
 		if (jobId) {
 			loadJob(jobId.split(":")[1]);
-		} else {
-			console.log("Create Form");
 		}
 	}, []);
 

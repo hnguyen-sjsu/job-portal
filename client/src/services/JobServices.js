@@ -27,7 +27,6 @@ const saveJob = async (jobInfo) => {
 	};
 
 	const data = {
-		id: jobInfo.id,
 		job_id: jobInfo.id,
 		title: jobInfo.title,
 		start_date: moment(jobInfo.startDate).format(DATE_FORMAT),
@@ -47,13 +46,21 @@ const saveJob = async (jobInfo) => {
 		if (data.job_id) {
 			const url = baseUrl + "update";
 			const response = await axios.put(url, data, params, headers);
-			console.log(response);
-			return response;
+
+			if (response.status === 200) {
+				return "Job updated successfully!";
+			} else {
+				return "Error updating job. Please try again.";
+			}
 		} else {
 			const url = baseUrl + "post";
 			const response = await axios.post(url, data, params, headers);
-			console.log(response);
-			return response;
+
+			if (response.status === 201) {
+				return "Job posted successfully!";
+			} else {
+				return "Error creating job. Please try again.";
+			}
 		}
 	} catch (e) {
 		console.error(e);
@@ -70,7 +77,7 @@ const getPostedJobs = async () => {
 
 	try {
 		const response = await axios.get(url, params, headers);
-		console.log(response);
+
 		return response.data.jobs;
 	} catch (e) {
 		console.error(e);
@@ -88,7 +95,7 @@ const getJob = async (jobId) => {
 	try {
 		console.log(jobId);
 		const response = await axios.get(url, params, headers);
-		console.log(response);
+
 		return response.data.jobs[0];
 	} catch (e) {
 		console.error(e);

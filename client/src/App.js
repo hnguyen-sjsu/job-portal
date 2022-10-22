@@ -123,6 +123,10 @@ function App() {
 						<Route path="/recruiter" element={<RecruiterLayout />}>
 							<Route path="post-jobs" element={<JobForm />} />
 							<Route
+								path="edit-job/:jobId"
+								element={<JobForm />}
+							/>
+							<Route
 								path="build-profile"
 								element={<CompanyProfileForm />}
 							/>

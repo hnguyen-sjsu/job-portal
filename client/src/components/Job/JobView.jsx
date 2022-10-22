@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -20,163 +20,182 @@ import "react-quill/dist/quill.bubble.css";
 import { useParams } from "react-router-dom";
 import SkeletonLabel from "../Utils/SkeletonLabel";
 import JobServices from "../../services/JobServices";
+import { UserContext } from "../../providers/AuthProvider";
 
 function JobView(props) {
-  let { job, isPreview } = props;
-  const [jobInfo, setJobInfo] = useState(null);
-  // const [job, setJob] = useState({
-  // 	category: "Software",
-  // 	experienceLevel: "Senior Level",
-  // 	location: "Cupertino, CA",
-  // 	maxSalary: "200000",
-  // 	minSalary: "116000",
-  // 	title: "Sr. Front-End Engineer",
-  // 	type: "Full Time",
-  // 	description: "Job description",
-  // 	noApplicants: 150,
-  // 	company: {
-  // 		name: "Apple",
-  // 		size: "10,001+ employees",
-  // 		industryField: "Computers Electronics",
-  // 	},
-  // });
+	let numeral = require("numeral");
+	let { job, isPreview } = props;
+	let { jobId } = useParams();
 
-  let { jobId } = useParams();
+	const { user } = useContext(UserContext);
+	const [jobInfo, setJobInfo] = useState(null);
 
-  useEffect(() => {
-    if (job) {
-      setJobInfo({ ...job });
-    }
-    if (jobId) {
-      const id = jobId.split(":")[1];
-      JobServices.getJob(id).then((response) => {
-        console.log(response);
-      });
-    }
-  }, []);
+	useEffect(() => {
+		if (job) {
+			setJobInfo({ ...job });
+		}
+		if (jobId) {
+			const id = jobId.split(":")[1];
+			JobServices.getJob(id).then((response) => {
+				setJobInfo({ ...response });
+			});
+		}
+	}, []);
 
-  useEffect(() => {
-    if (job) {
-      setJobInfo({ ...job });
-    }
-  }, [job]);
+	useEffect(() => {
+		if (job) {
+			setJobInfo({ ...job });
+		}
+	}, [job]);
 
-  return (
-    <>
-      {jobInfo && (
-        <>
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Typography variant="h4" fontWeight="bold">
-              <SkeletonLabel text={jobInfo.title} width={300} />
-            </Typography>
-            {user && user.role === "recruiter" && (
-              <Button variant="contained" disableElevation>
-                Edit
-              </Button>
-            )}
-          </Stack>
-          <Stack direction="row" divider={<>{" • "}</>}>
-            {jobInfo.company.name}
-            <SkeletonLabel text={jobInfo.location} />
-            <SkeletonLabel text={jobInfo.category} />
-            <SkeletonLabel
-              text={
-                jobInfo.noApplicants +
-                " applicant" +
-                (jobInfo.noApplicants > 1 && "s")
-              }
-              animation={false}
-            />
-          </Stack>
-          <List disablePadding dense>
-            <ListItem disableGutters>
-              <ListItemIcon>
-                <WorkRoundedIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Stack direction="row" divider={<>{" • "}</>}>
-                  <SkeletonLabel text={jobInfo.type} />
-                  <SkeletonLabel text={jobInfo.experienceLevel} />
-                  <SkeletonLabel
-                    text={jobInfo.minSalary && "$" + jobInfo.minSalary}
-                  />
-                  <SkeletonLabel
-                    text={jobInfo.maxSalary && "$" + jobInfo.maxSalary}
-                  />
-                </Stack>
-              </ListItemText>
-            </ListItem>
-            <ListItem disableGutters>
-              <ListItemIcon>
-                <EventAvailableRoundedIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Stack direction="row" divider={<>{" • "}</>}>
-                  <SkeletonLabel
-                    text={
-                      jobInfo.startDate &&
-                      moment(jobInfo.startDate).format("MM/DD/YYYY")
-                    }
-                  />
-                  <SkeletonLabel
-                    text={
-                      jobInfo.endDate &&
-                      moment(jobInfo.endDate).format("MM/DD/YYYY")
-                    }
-                  />
-                </Stack>
-              </ListItemText>
-            </ListItem>
-            <ListItem disableGutters>
-              <ListItemIcon>
-                <BusinessRoundedIcon />
-              </ListItemIcon>
-              <ListItemText>
-                <Stack direction="row" divider={<>{" • "}</>}>
-                  <SkeletonLabel text={jobInfo.company.size} />
-                  <SkeletonLabel text={jobInfo.company.industryField} />
-                </Stack>
-              </ListItemText>
-            </ListItem>
-          </List>
-          {!isPreview && (
-            <Stack direction="row" spacing={2}>
-              <Button
-                variant="contained"
-                disableElevation
-                endIcon={<SendRoundedIcon />}
-              >
-                Apply
-              </Button>
-              <Button
-                variant="outlined"
-                disableElevation
-                endIcon={<BookmarkBorderRoundedIcon />}
-              >
-                Save
-              </Button>
-            </Stack>
-          )}
-          <Typography variant="h6" fontWeight="bold">
-            Description
-          </Typography>
-          {jobInfo.description ? (
-            <div
-              dangerouslySetInnerHTML={{
-                __html: jobInfo.description,
-              }}
-            ></div>
-          ) : (
-            [...Array(10).keys()].map((n) => <Skeleton key={"skeleton-" + n} />)
-          )}
-        </>
-      )}
-    </>
-  );
+	return (
+		<>
+			{jobInfo && (
+				<>
+					<Stack
+						direction="row"
+						alignItems="center"
+						justifyContent="space-between"
+					>
+						<Typography variant="h4" fontWeight="bold">
+							<SkeletonLabel text={jobInfo.title} width={300} />
+						</Typography>
+						{user && user.role === "recruiter" && (
+							<Button
+								variant="contained"
+								disableElevation
+								href={`/recruiter/edit-job/${jobId}`}
+							>
+								Edit
+							</Button>
+						)}
+					</Stack>
+					<Stack direction="row" divider={<>{" • "}</>}>
+						{jobInfo.company.name}
+						<SkeletonLabel text={jobInfo.location} />
+						<SkeletonLabel text={jobInfo.category} />
+						<SkeletonLabel
+							text={
+								jobInfo.noApplicants +
+								" applicant" +
+								(jobInfo.noApplicants > 1 && "s")
+							}
+							animation={false}
+						/>
+					</Stack>
+					<List disablePadding dense>
+						<ListItem disableGutters>
+							<ListItemIcon>
+								<WorkRoundedIcon />
+							</ListItemIcon>
+							<ListItemText>
+								<Stack direction="row" divider={<>{" • "}</>}>
+									<SkeletonLabel text={jobInfo.type} />
+									<SkeletonLabel
+										text={jobInfo.experienceLevel}
+									/>
+									<SkeletonLabel
+										text={
+											jobInfo.salaryMin &&
+											numeral(jobInfo.salaryMin).format(
+												"($0.00a)"
+											)
+										}
+									/>
+									<SkeletonLabel
+										text={
+											jobInfo.salaryMax &&
+											numeral(jobInfo.salaryMax).format(
+												"($0.00a)"
+											)
+										}
+									/>
+								</Stack>
+							</ListItemText>
+						</ListItem>
+						<ListItem disableGutters>
+							<ListItemIcon>
+								<EventAvailableRoundedIcon />
+							</ListItemIcon>
+							<ListItemText>
+								<Stack direction="row">
+									<SkeletonLabel
+										text={
+											jobInfo.startDate &&
+											"Available from " +
+												moment(
+													jobInfo.startDate
+												).format("MMM DD, YYYY")
+										}
+									/>
+									<SkeletonLabel
+										text={
+											jobInfo.endDate &&
+											" to " +
+												moment(jobInfo.endDate).format(
+													"MMM DD, YYYY"
+												)
+										}
+									/>
+								</Stack>
+							</ListItemText>
+						</ListItem>
+						<ListItem disableGutters>
+							<ListItemIcon>
+								<BusinessRoundedIcon />
+							</ListItemIcon>
+							<ListItemText>
+								<Stack direction="row" divider={<>{" • "}</>}>
+									<SkeletonLabel
+										text={
+											numeral(
+												jobInfo.company.companySize
+											).format("0,0") + " employees"
+										}
+									/>
+									<SkeletonLabel
+										text={jobInfo.company.industry}
+									/>
+								</Stack>
+							</ListItemText>
+						</ListItem>
+					</List>
+					{user && user.role === "candidate" && (
+						<Stack direction="row" spacing={2}>
+							<Button
+								variant="contained"
+								disableElevation
+								endIcon={<SendRoundedIcon />}
+							>
+								Apply
+							</Button>
+							<Button
+								variant="outlined"
+								disableElevation
+								endIcon={<BookmarkBorderRoundedIcon />}
+							>
+								Save
+							</Button>
+						</Stack>
+					)}
+					<Typography variant="h6" fontWeight="bold">
+						Description
+					</Typography>
+					{jobInfo.description ? (
+						<div
+							dangerouslySetInnerHTML={{
+								__html: jobInfo.description,
+							}}
+						></div>
+					) : (
+						[...Array(10).keys()].map((n) => (
+							<Skeleton key={"skeleton-" + n} />
+						))
+					)}
+				</>
+			)}
+		</>
+	);
 }
 
 export default JobView;

@@ -10,32 +10,28 @@ import ListItemText from "@mui/material/ListItemText";
 function JobListItem(props) {
 	const { job } = props;
 
+	let numeral = require("numeral");
+
 	return (
 		<>
 			{job && (
 				<ListItem alignItems="flex-start">
 					<ListItemAvatar>
-						<Avatar src={job.companyLogo} />
+						<Avatar src={job.company.companyLogoUrl} />
 					</ListItemAvatar>
-					<ListItemText
-						primary={job.title}
-						secondary={
-							<Stack>
-								<Typography variant="body2">
-									{job.type + " - " + job.experience_level}
-								</Typography>
-								<Typography variant="body2">
-									{job.location}
-								</Typography>
-								<Typography variant="body2">
-									{"$" +
-										job.salary_min +
-										" - $" +
-										job.salary_max}
-								</Typography>
-							</Stack>
-						}
-					/>
+
+					<Stack>
+						<Typography variant="body1">{job.title}</Typography>
+						<Typography variant="body2">
+							{job.type + " - " + job.experienceLevel}
+						</Typography>
+						<Typography variant="body2">{job.location}</Typography>
+						<Typography variant="body2">
+							{numeral(job.salaryMin).format("$(0.00a)") +
+								" - " +
+								numeral(job.salaryMax).format("$(0.00a)")}
+						</Typography>
+					</Stack>
 				</ListItem>
 			)}
 		</>

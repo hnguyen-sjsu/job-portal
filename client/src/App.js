@@ -26,6 +26,7 @@ import JobView from "./components/Job/JobView";
 import CompanyProfileForm from "./components/UserAccount/Profile/CompanyProfileForm";
 import Settings from "./components/UserAccount/Settings/Settings";
 import JobListView from "./components/Job/JobListView";
+import ManageJob from "./components/Job/ManageJob";
 
 let theme = createTheme({
 	palette: {
@@ -110,7 +111,7 @@ function App() {
 				<BrowserRouter>
 					<CssBaseline />
 					<Routes>
-						<Route path="/" element={<WithMenuBarLayout />}>
+						<Route path="/" element={<LandingPageLayout />}>
 							<Route index element={<LandingPage />} />
 						</Route>
 						<Route
@@ -130,10 +131,7 @@ function App() {
 								path="build-profile"
 								element={<CompanyProfileForm />}
 							/>
-							<Route
-								path="manage-jobs"
-								element={<JobListView layout="grid" />}
-							/>
+							<Route path="manage-jobs" element={<ManageJob />} />
 							<Route path="settings" element={<Settings />} />
 						</Route>
 						<Route path="/job" element={<RecruiterLayout />}>
@@ -185,6 +183,31 @@ function WithMenuBarLayout() {
 			<Container
 				maxWidth="md"
 				style={{ paddingTop: "32px", paddingBottom: "32px" }}
+			>
+				<Outlet />
+			</Container>
+			<Footer />
+		</Box>
+	);
+}
+
+function LandingPageLayout() {
+	return (
+		<Box
+			sx={{
+				display: "flex",
+				flexDirection: "column",
+				minHeight: "100vh",
+				backgroundColor: "#ffffff",
+			}}
+		>
+			<MenuBar showOptions={true} />
+			<Container
+				maxWidth="md"
+				style={{
+					paddingTop: "32px",
+					paddingBottom: "32px",
+				}}
 			>
 				<Outlet />
 			</Container>

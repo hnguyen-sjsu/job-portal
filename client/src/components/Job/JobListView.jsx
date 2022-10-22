@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
-import Stack from "@mui/material/Stack";
-import Card from "@mui/material/Card";
-import Grid from "@mui/material/Grid";
+
 import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
 import Divider from "@mui/material/Divider";
-import { Link } from "react-router-dom";
+
 import JobServices from "../../services/JobServices";
 import JobListItem from "./JobListItem";
 
 function JobListView(props) {
+	const { onJobSelected } = props;
 	const [jobs, setJobs] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const { layout } = props;
 
 	useEffect(() => {
 		setLoading(true);
@@ -24,49 +23,21 @@ function JobListView(props) {
 	}, []);
 
 	return (
-		<>
-			{layout === "grid" && (
-				<Grid container spacing={2}>
-					{jobs.map((job, idx) => (
-						<Grid item key={idx} xs={12} sm={6} md={4} lg={3}>
-							<Link
-								to={{
-									pathname: `/job/jobId:${job.id}`,
-								}}
-								style={{
-									color: "inherit",
-									textDecoration: "none",
-								}}
-							>
-								<Card variant="outlined">
-									<JobListItem job={job} />
-								</Card>
-							</Link>
-						</Grid>
-					))}
-				</Grid>
-			)}
-			{layout === "list" && (
-				<>
-					<List style={{ backgroundColor: "#fff" }}>
-						{jobs.map((job) => (
-							<Link
-								to={{
-									pathname: `/job/jobId:${job.id}`,
-								}}
-								style={{
-									color: "inherit",
-									textDecoration: "none",
-								}}
-							>
-								<JobListItem job={job} />
-								<Divider />
-							</Link>
-						))}
-					</List>
-				</>
-			)}
-		</>
+		<List disablePadding>
+			{jobs.map((job, idx) => (
+				<div key={job.id}>
+					<ListItemButton
+						onClick={() => {
+							onJobSelected({ ...job, jobId: job.id });
+						}}
+						disableGutters
+					>
+						<JobListItem job={job} />
+					</ListItemButton>
+					{idx !== jobs.length - 1 && <Divider />}
+				</div>
+			))}
+		</List>
 	);
 }
 

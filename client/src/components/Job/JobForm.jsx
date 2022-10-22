@@ -57,7 +57,7 @@ function JobForm(props) {
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
 	let undefinedJob = {
-		id: undefined,
+		job_id: undefined,
 		title: "",
 		type: "",
 		experienceLevel: "",
@@ -66,15 +66,13 @@ function JobForm(props) {
 		salaryMin: "",
 		salaryMax: "",
 		description: "",
-		noApplicants: 150,
 		company: {
-			name: "Apple",
-			size: "10,001+ employees",
-			industryField: "Computers Electronics",
+			name: "",
+			size: "",
+			industryField: "",
 		},
 		startDate: null,
 		endDate: null,
-		postedDate: new Date(),
 	};
 
 	const [job, setJob] = useState({
@@ -117,6 +115,7 @@ function JobForm(props) {
 	};
 
 	useEffect(() => {
+		console.log(jobId);
 		if (jobId) {
 			loadJob(jobId.split(":")[1]);
 		}
@@ -409,7 +408,6 @@ function JobForm(props) {
 					</Grid>
 				</Stack>
 			</LocalizationProvider>
-
 			<ConfirmDialog
 				title="Message"
 				message={message}
@@ -420,7 +418,9 @@ function JobForm(props) {
 						primary: true,
 						color: "primary",
 						action: () => {
-							navigate("/recruiter/manage-jobs");
+							if (!job.job_id) {
+								navigate("/recruiter/manage-jobs");
+							}
 						},
 					},
 				]}
@@ -443,8 +443,14 @@ function JobForm(props) {
 						primary: true,
 						color: "error",
 						action: () => {
-							JobServices.deleteJob(jobId.split(":")[1]);
-							setShowDeleteDialog(false);
+							JobServices.deleteJob(jobId.split(":")[1]).then(
+								(response) => {
+									setShowDeleteDialog(false);
+									setJob({ ...job, job_id: undefined });
+									setMessage(response);
+									setShowDialog(true);
+								}
+							);
 						},
 					},
 				]}

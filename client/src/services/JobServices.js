@@ -35,12 +35,10 @@ const saveJob = async (jobInfo) => {
 		category: jobInfo.category,
 		experience_level: jobInfo.experienceLevel,
 		type: jobInfo.type,
-		salary_min: jobInfo.salaryMin,
-		salary_max: jobInfo.salaryMax,
+		salary_min: parseInt(jobInfo.salaryMin),
+		salary_max: parseInt(jobInfo.salaryMax),
 		description: jobInfo.description,
 	};
-
-	console.log(data);
 
 	try {
 		if (data.job_id) {
@@ -55,7 +53,6 @@ const saveJob = async (jobInfo) => {
 		} else {
 			const url = baseUrl + "post";
 			const response = await axios.post(url, data, params, headers);
-
 			if (response.status === 201) {
 				return "Job posted successfully!";
 			} else {
@@ -92,31 +89,40 @@ const getJob = async (jobId) => {
 		withCredentials: true,
 	};
 
-	try {
-		console.log(jobId);
-		const response = await axios.get(url, params, headers);
+	let jobInfo = null;
 
-		return response.data.jobs[0];
+	try {
+		const response = await axios.get(url, params, headers);
+		console.log(response);
+		if (response.status === 200) {
+			jobInfo = response.data.jobs[0];
+		}
 	} catch (e) {
 		console.error(e);
-		return e;
+	} finally {
+		return jobInfo;
 	}
 };
 
 const deleteJob = async (jobId) => {
-	const url = baseUrl + "delete";
+	const url = baseUrl + `delete?job_id=${jobId}`;
+	const headers = getHeaders();
 	const params = {
 		withCredentials: true,
 	};
-	const data = { job_id: jobId };
-	try {
-		console.log(jobId);
-		const response = await axios.delete(url, data, params);
 
-		return response;
+	let message = "";
+	try {
+		const response = await axios.delete(url, params, headers);
+		console.log(response);
+		if (response.status === 200) {
+			message = response.data.message;
+		}
 	} catch (e) {
 		console.error(e);
-		return e;
+		message = "Error";
+	} finally {
+		return message;
 	}
 };
 

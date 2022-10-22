@@ -24,20 +24,28 @@ import { UserContext } from "../../providers/AuthProvider";
 
 function JobView(props) {
 	let numeral = require("numeral");
-	let { job, isPreview } = props;
+	let { job } = props;
 	let { jobId } = useParams();
 
 	const { user } = useContext(UserContext);
 	const [jobInfo, setJobInfo] = useState(null);
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
+		setLoading(true);
 		if (job) {
 			setJobInfo({ ...job });
+			setLoading(false);
 		}
 		if (jobId) {
 			const id = jobId.split(":")[1];
 			JobServices.getJob(id).then((response) => {
-				setJobInfo({ ...response });
+				if (response) {
+					setJobInfo({ ...response });
+					setLoading(false);
+				} else {
+					setJobInfo({ company: {} });
+				}
 			});
 		}
 	}, []);
@@ -45,6 +53,7 @@ function JobView(props) {
 	useEffect(() => {
 		if (job) {
 			setJobInfo({ ...job });
+			setLoading(false);
 		}
 	}, [job]);
 
@@ -64,7 +73,10 @@ function JobView(props) {
 							<Button
 								variant="contained"
 								disableElevation
-								href={`/recruiter/edit-job/${jobId}`}
+								href={`/recruiter/edit-job/${
+									jobId || "jobId:" + jobInfo.id
+								}`}
+								disabled={loading}
 							>
 								Edit
 							</Button>
@@ -181,17 +193,19 @@ function JobView(props) {
 					<Typography variant="h6" fontWeight="bold">
 						Description
 					</Typography>
-					{jobInfo.description ? (
-						<div
-							dangerouslySetInnerHTML={{
-								__html: jobInfo.description,
-							}}
-						></div>
-					) : (
-						[...Array(10).keys()].map((n) => (
-							<Skeleton key={"skeleton-" + n} />
-						))
-					)}
+					<div>
+						{jobInfo.description ? (
+							<div
+								dangerouslySetInnerHTML={{
+									__html: jobInfo.description,
+								}}
+							></div>
+						) : (
+							[...Array(10).keys()].map((n) => (
+								<Skeleton key={"skeleton-" + n} />
+							))
+						)}
+					</div>
 				</div>
 			)}
 		</>

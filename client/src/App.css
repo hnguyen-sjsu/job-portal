@@ -121,6 +121,12 @@ body {
   border: 1px solid #ccc;
 }
 
+.list-container {
+  background: #fff;
+  border: 1px solid #dbdbdb;
+  border-radius: 8px;
+}
+
 .container {
   background: #fff;
   border: 1px solid #dbdbdb;

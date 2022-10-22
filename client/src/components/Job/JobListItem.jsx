@@ -2,10 +2,10 @@ import React from "react";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
 
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemText from "@mui/material/ListItemText";
 
 function JobListItem(props) {
 	const { job } = props;
@@ -19,7 +19,6 @@ function JobListItem(props) {
 					<ListItemAvatar>
 						<Avatar src={job.company.companyLogoUrl} />
 					</ListItemAvatar>
-
 					<Stack>
 						<Typography variant="body1">{job.title}</Typography>
 						<Typography variant="body2">

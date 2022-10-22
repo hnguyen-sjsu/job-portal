@@ -148,7 +148,10 @@ function MenuBar(props) {
 							<MenuIcon />
 						</IconButton>
 					)} */}
-					<img src={appLogo} height={40} />
+					<a href="/">
+						<img src={appLogo} height={40} />
+					</a>
+
 					<Typography
 						variant="h6"
 						component="div"
@@ -158,6 +161,7 @@ function MenuBar(props) {
 					>
 						Job Finder
 					</Typography>
+
 					{showOptions && (
 						<>
 							<Box sx={{ display: { xs: "none", sm: "block" } }}>

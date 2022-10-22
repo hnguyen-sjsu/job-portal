@@ -19,10 +19,14 @@ from resources.candidates.update import UpdateCandidateProfile
 from resources.candidates.get import GetCandidateProfile
 from resources.recruiters.update import UpdateRecruiterProfile
 from resources.recruiters.get import GetRecruiterProfile
-from resources.jobs.add import Add
+from resources.jobs.add import AddJob
 from resources.jobs.get import GetAll, GetTen, GetAllByUID, GetOne
 from resources.jobs.delete import DeleteJob
 from resources.jobs.update import UpdateJob
+from resources.memberships.add import AddMembership
+from resources.memberships.get import GetMembership
+from resources.memberships.update import UpdateMembership
+from resources.memberships.delete import DeleteMembership
 from resources.db_cleaner import *
 from dotenv import load_dotenv
 from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, JWTManager, set_access_cookies
@@ -127,10 +131,14 @@ api.add_resource(GetAll, '/job/get-all')
 api.add_resource(GetOne, '/job/get-one')
 api.add_resource(GetTen, '/job/get-ten')
 api.add_resource(GetAllByUID, '/job/get-posted-jobs')
-api.add_resource(Add, '/job/post')
+api.add_resource(AddJob, '/job/post')
 api.add_resource(UpdateJob, '/job/update')
 api.add_resource(DeleteJob, '/job/delete')
-
+# membership
+api.add_resource(AddMembership, '/membership/post')
+api.add_resource(GetMembership, '/membership/get')
+api.add_resource(UpdateMembership, '/membership/update')
+api.add_resource(DeleteMembership, '/membership/delete')
 
 if __name__ == '__main__':
     db.init_app(app)

@@ -13,15 +13,30 @@ class UserModel(db.Model):
     # Create a relationship between User and CandidateModel
     candidate = db.relationship(
         'CandidateModel', backref='users', lazy=True, cascade='all, delete-orphan')
+
     # Create a relationship between User and RecruiterModel
     recruiter = db.relationship('RecruiterModel', backref='users',
                                 lazy=True, cascade='all, delete-orphan')
+
     # Create a relationship between User and JobModel
     jobs = db.relationship('JobModel', backref='users',
                            lazy=True, cascade='all, delete-orphan')
+
     # Create a relationship between User and MembershipModel
-    # memberships = db.relationship(
-    #     'MembershipModel', backref='users', lazy=True, cascade='all, delete-orphan')
+    memberships = db.relationship(
+        'MembershipModel', backref='users', lazy=True, cascade='all, delete-orphan')
+
+    # # Create a relationship between User and EducationModel
+    # educations = db.relationship(
+    #     'EducationModel', backref='users', lazy=True, cascade='all, delete-orphan')
+
+    # # Create a relationship between User and SkillModel
+    # skills = db.relationship(
+    #     'SkillModel', backref='users', lazy=True, cascade='all, delete-orphan')
+
+    # # Create a relationship between User and WorkExperienceModel
+    # work_experiences = db.relationship(
+    #     'WorkExperienceModel', backref='users', lazy=True, cascade='all, delete-orphan')
 
     def __repr__(self):
         return str({column.name: getattr(self, column.name) for column in self.__table__.columns})
@@ -40,6 +55,12 @@ class UserModel(db.Model):
         db.session.commit()
 
     @classmethod
+    def delete_by_id(cls, _id):
+        user = cls.query.filter_by(id=_id).first()
+        db.session.delete(user)
+        db.session.commit()
+
+    @classmethod
     def find_all(cls):
         return cls.query.all()
 
@@ -50,9 +71,3 @@ class UserModel(db.Model):
     @classmethod
     def find_by_id(cls, _id):
         return cls.query.filter_by(id=_id).first()
-
-    @classmethod
-    def delete_by_id(cls, _id):
-        user = cls.query.filter_by(id=_id).first()
-        db.session.delete(user)
-        db.session.commit()

@@ -5,13 +5,14 @@ from models.recruiter_model import RecruiterModel
 from security import hash_password
 from flask_smorest import abort
 from flask import request
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, validate
 
 
 class RegisterSchema(Schema):
     email = fields.Email(required=True)
     password = fields.Str(required=True)
-    role = fields.Str(required=True)
+    role = fields.Str(required=True, validate=validate.OneOf(
+        ['candidate', 'recruiter']))
 
 
 class Register(Resource):
@@ -30,11 +31,6 @@ class Register(Resource):
 
         # Hash password before saving into database
         data['password'] = hash_password(data['password'])
-
-        # Validate role
-        data['role'] = data['role'].lower()
-        if data['role'] not in ['candidate', 'recruiter']:
-            abort(400, message='Role must be either candidate or recruiter')
 
         # Instantiate an UserModel object to save to database
         user = UserModel(**data)

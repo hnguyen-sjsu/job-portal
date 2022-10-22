@@ -43,22 +43,21 @@ class UpdateJob(Resource):
                 abort(400, message='salary_min cannot be greater than salary_max')
 
         # Check if start_date is less than end_date
-        if data['start_date'] is not None and data['end_date'] is not None:
-            if data['start_date'] > data['end_date']:
-                abort(400, message='start_date cannot be greater than end_date')
+        if data['start_date'] > data['end_date']:
+            abort(400, message='start_date cannot be greater than end_date')
 
         # Find job by job_id
-        job = JobModel.find_by_job_id(data['job_id'])
+        job = JobModel.find_one_joined_result_by_job_id(data['job_id'])
 
-        # Find all jobs that current candidate has posted
         user_id = get_jwt_identity().get('user_id')
 
-        jobs = JobModel.find_all_by_uid(user_id)
+        # Find all jobs that current candidate has posted
+        jobs = JobModel.find_all_joined_results_by_uid(user_id)
         if job not in jobs:
             abort(403, message='You are not authorized to update this job')
 
-        # Call update method on JobModel and pass in data
         try:
+            # Convert string to date
             data['start_date'] = convert_string_to_date(data['start_date'])
             data['end_date'] = convert_string_to_date(data['end_date'])
             job_to_update = JobModel.update(**data)

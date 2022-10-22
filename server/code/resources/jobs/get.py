@@ -1,7 +1,5 @@
-from struct import unpack
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from models.job_model import JobModel
-from models.recruiter_model import RecruiterModel
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from helpers import dict_to_camel_case
 from flask_smorest import abort
@@ -40,7 +38,7 @@ class GetAll(Resource):
 
     @classmethod
     def get(cls):
-        jobs_company = JobModel.find_all()
+        jobs_company = JobModel.find_all_joined_results()
 
         # Create an empty dict to store the child dicts.
         results_list = unpack_jobs(jobs_company)
@@ -63,7 +61,7 @@ class GetTen(Resource):
 
         offset = request.args.get('offset')
 
-        jobs_company = JobModel.find_ten(offset=offset)
+        jobs_company = JobModel.find_ten_joined_results(offset=offset)
 
         # Create an empty dict to store the child dicts.
         results_list = unpack_jobs(jobs_company)
@@ -92,7 +90,7 @@ class GetOne(Resource):
         job_id = request.args.get('job_id')
 
         # Find the job based on job_id.
-        job_company = JobModel.find_by_job_id(job_id)
+        job_company = JobModel.find_one_joined_result_by_job_id(job_id)
         user_id = get_jwt_identity().get('user_id')
 
         # Check if the job belongs to the recruiter.
@@ -114,7 +112,7 @@ class GetAllByUID(Resource):
         user_id = get_jwt_identity().get('user_id')
 
         # Get all jobs and company info that belong to the current recruiter.
-        jobs_company = JobModel.find_all_by_uid(user_id)
+        jobs_company = JobModel.find_all_joined_results_by_uid(user_id)
 
         # Create an empty dict to store the child dicts.
         results_list = unpack_jobs(jobs_company)

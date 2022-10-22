@@ -104,6 +104,12 @@ class JobModel(db.Model):
             all()
 
     @classmethod
+    def find_by_job_id(cls, job_id):
+        return cls.query.filter_by(id=job_id).\
+            filter(JobModel.end_date > datetime.datetime.now()).\
+            first()
+
+    @classmethod
     def find_one_joined_result_by_job_id(cls, id):
         # Join the JobModel table with the RecruiterModel table where job_id = id.
         job_company = JobModel.query.\

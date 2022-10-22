@@ -106,7 +106,7 @@ def refresh_expiring_jwts(response):
 @jwt.unauthorized_loader
 def my_expired_token_callback(response):
     print(response)
-    return {'message': response}, 401
+    return {'message': 'Invalid token'}, 401
 
 
 # API endpoints start with http://localhost:5000/...

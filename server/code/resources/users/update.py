@@ -22,7 +22,7 @@ class UpdateProfile(Resource):
         if errors:
             abort(400, message=errors)
         data = request.get_json()
-        print(data)
+
         user = UserModel.find_by_id(get_jwt_identity().get('user_id'))
 
         # Check if user exists
@@ -50,7 +50,6 @@ class UpdateProfile(Resource):
 
         # Check if the user wants to change the password
         if data['new_password'] != '':
-            print("Change password")
             # Update user password
             user.password = hash_password(data['new_password'])
             user.save_to_db()

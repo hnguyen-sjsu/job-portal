@@ -27,12 +27,13 @@ class DeleteJob(Resource):
 
         data = request.get_json()
 
-        job = JobModel.find_by_job_id(data['job_id'])
+        job = JobModel.find_one_joined_result_by_job_id(data['job_id'])
 
         if not job:
             abort(404, message='Job not found')
+
         try:
-            job.delete_from_db()
+            JobModel.delete_from_db(_id=data['job_id'])
         except SQLAlchemyError as e:
             print(e)
             abort(500, message='An error occurred while deleting the job.')

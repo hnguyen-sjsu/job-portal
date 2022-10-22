@@ -13,12 +13,9 @@ class CandidateModel(db.Model):
     # Foreign key that references to the user id in the users table.
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'),
                         nullable=False)
-    # education = db.relationship('Education', backref='candidates',
-    #                             lazy=True, cascade='all, delete-orphan')
-    # work_experience = db.relationship(
-    #     'WorkExperience', backref='candidates', lazy=True, cascade='all, delete-orphan')
-    # skills = db.relationship(
-    #     'Skill', backref='candidates', lazy=True, cascade='all, delete-orphan')
+    # # Create a relationship between the candidate and application.
+    # applications = db.relationship(
+    #     'ApplicationModel', backref='candidate', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
         return str({column.name: getattr(self, column.name) for column in self.__table__.columns})

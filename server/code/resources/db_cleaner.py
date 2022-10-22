@@ -23,7 +23,7 @@ def remove_expired_tokens():
 
 def remove_expired_membership():
     try:
-        MembershipModel.remove_expired_membership()
+        MembershipModel.remove_expired_memberships()
     except:
         return 'Error removing expired membership'
 

@@ -6,6 +6,7 @@ from helpers import convert_string_to_date
 from flask_smorest import abort
 from flask import request
 from marshmallow import Schema, fields
+from datetime import date
 
 # Schema to validate the json body of the request.
 
@@ -23,7 +24,7 @@ class AddJobSchema(Schema):
     description = fields.Str(required=True)
 
 
-class Add(Resource):
+class AddJob(Resource):
 
     @classmethod
     @jwt_required()
@@ -43,8 +44,14 @@ class Add(Resource):
         data['start_date'] = convert_string_to_date(data['start_date'])
         data['end_date'] = convert_string_to_date(data['end_date'])
 
+        # Check if the end date is in the past
+        if data['end_date'] < date.today():
+            abort(400, message='The end date cannot be in the past.')
+
         if data['start_date'] > data['end_date']:
             abort(400, message='Start date cannot be greater than end date')
+
+        # TODO: Check if user has membership
 
         user_id = get_jwt_identity().get('user_id')
 

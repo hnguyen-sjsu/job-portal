@@ -103,10 +103,28 @@ const getJob = async (jobId) => {
 	}
 };
 
+const deleteJob = async (jobId) => {
+	const url = baseUrl + "delete";
+	const params = {
+		withCredentials: true,
+	};
+	const data = { job_id: jobId };
+	try {
+		console.log(jobId);
+		const response = await axios.delete(url, data, params);
+
+		return response;
+	} catch (e) {
+		console.error(e);
+		return e;
+	}
+};
+
 const JobServices = {
 	saveJob,
 	getJob,
 	getPostedJobs,
+	deleteJob,
 };
 
 export default JobServices;

@@ -51,7 +51,7 @@ function JobView(props) {
 	return (
 		<>
 			{jobInfo && (
-				<>
+				<div className="container">
 					<Stack
 						direction="row"
 						alignItems="center"
@@ -192,7 +192,7 @@ function JobView(props) {
 							<Skeleton key={"skeleton-" + n} />
 						))
 					)}
-				</>
+				</div>
 			)}
 		</>
 	);

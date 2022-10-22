@@ -6,14 +6,13 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-function AlertDialog(props) {
+function ConfirmDialog(props) {
 	const [open, setOpen] = useState(false);
 
-	const { title, message, showDialog, onComplete } = props;
+	const { title, message, showDialog, actions } = props;
 
 	const handleClose = () => {
 		setOpen(false);
-		onComplete();
 	};
 
 	useEffect(() => {
@@ -24,7 +23,6 @@ function AlertDialog(props) {
 		<>
 			<Dialog
 				open={open}
-				onClose={handleClose}
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
 			>
@@ -37,13 +35,25 @@ function AlertDialog(props) {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleClose} autoFocus>
-						Close
-					</Button>
+					{actions.map((action) => (
+						<Button
+							key={action.title}
+							onClick={() => {
+								setOpen(false);
+								action.action();
+							}}
+							variant={action.primary ? "contained" : "outlined"}
+							color={action.color ? action.color : "primary"}
+							disableElevation
+							fullWidth={actions.length === 1}
+						>
+							{action.title}
+						</Button>
+					))}
 				</DialogActions>
 			</Dialog>
 		</>
 	);
 }
 
-export default AlertDialog;
+export default ConfirmDialog;

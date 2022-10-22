@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -10,7 +9,6 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
-import LinearProgress from "@mui/material/LinearProgress";
 
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -18,9 +16,9 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import JobView from "./JobView";
+
 import JobServices from "../../services/JobServices";
-import AlertDialog from "../Utils/AlertDialog";
+import ConfirmDialog from "../Utils/ConfirmDialog";
 
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -56,6 +54,7 @@ function JobForm(props) {
 	const [loading, setLoading] = useState(false);
 	const [message, setMessage] = useState("");
 	const [showDialog, setShowDialog] = useState(false);
+	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
 	let undefinedJob = {
 		id: undefined,
@@ -105,11 +104,6 @@ function JobForm(props) {
 		}
 	};
 
-	const handleClear = (e) => {
-		e.preventDefault();
-		setJob({ ...undefinedJob });
-	};
-
 	const loadJob = async (jobId) => {
 		setLoading(true);
 		try {
@@ -130,19 +124,12 @@ function JobForm(props) {
 
 	return (
 		<>
-			<Box
-				sx={{
-					width: "100vw",
-					display: loading ? "block" : "none",
-					position: "fixed",
-					left: 0,
-					zIndex: 1999,
-				}}
-			>
-				<LinearProgress />
-			</Box>
 			<LocalizationProvider dateAdapter={AdapterDateFns}>
-				<Stack component="form" onSubmit={handleSubmit}>
+				<Stack
+					component="form"
+					onSubmit={handleSubmit}
+					className="container"
+				>
 					<Typography variant="h4">
 						{job.id ? "Edit Job" : "Post Job"}
 					</Typography>
@@ -383,37 +370,84 @@ function JobForm(props) {
 								readOnly={loading}
 							/>
 						</Grid>
-						<Grid item xs={6}>
-							<Button
-								variant="contained"
-								disableElevation
-								fullWidth
-								type="submit"
-								disabled={loading}
+						<Grid item xs={12}>
+							<Stack
+								direction="row"
+								spacing={2}
+								justifyContent="space-between"
 							>
-								Save
-							</Button>
-						</Grid>
-						<Grid item xs={6}>
-							<Button
-								variant="outlined"
-								disableElevation
-								fullWidth
-								disabled={loading}
-								onClick={handleClear}
-							>
-								Clear
-							</Button>
+								{job && jobId && (
+									<Button
+										variant="outlined"
+										color="error"
+										onClick={() => {
+											setShowDeleteDialog(true);
+										}}
+									>
+										Delete
+									</Button>
+								)}
+								<Stack direction="row" spacing={2}>
+									<Button
+										variant="contained"
+										disableElevation
+										type="submit"
+										disabled={loading}
+									>
+										Save
+									</Button>
+									<Button
+										variant="outlined"
+										disableElevation
+										disabled={loading}
+									>
+										Cancel
+									</Button>
+								</Stack>
+							</Stack>
 						</Grid>
 					</Grid>
 				</Stack>
 			</LocalizationProvider>
-			<AlertDialog
+
+			<ConfirmDialog
+				title="Message"
 				message={message}
 				showDialog={showDialog}
-				onComplete={() => {
-					navigate("/recruiter/manage-jobs");
-				}}
+				actions={[
+					{
+						title: "Close",
+						primary: true,
+						color: "primary",
+						action: () => {
+							navigate("/recruiter/manage-jobs");
+						},
+					},
+				]}
+			/>
+			<ConfirmDialog
+				title="Confirm"
+				message="Do you want to delete this job posting?"
+				showDialog={showDeleteDialog}
+				actions={[
+					{
+						title: "Close",
+						primary: false,
+						color: "primary",
+						action: () => {
+							setShowDeleteDialog(false);
+						},
+					},
+					{
+						title: "Delete",
+						primary: true,
+						color: "error",
+						action: () => {
+							JobServices.deleteJob(jobId.split(":")[1]);
+							setShowDeleteDialog(false);
+						},
+					},
+				]}
 			/>
 		</>
 	);

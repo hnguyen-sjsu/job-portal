@@ -120,3 +120,22 @@ body {
 .toolbar-class {
   border: 1px solid #ccc;
 }
+
+.container {
+  background: #fff;
+  border: 1px solid #dbdbdb;
+  border-radius: 8px;
+}
+
+.container > *:not(:last-child) {
+  padding: 0px 32px 0px 32px;
+}
+
+.container > *:first-child {
+  padding: 32px 32px 0px 32px;
+}
+
+.container > *:last-child {
+  padding: 0px 32px 32px 32px;
+}
+

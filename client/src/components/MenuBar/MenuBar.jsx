@@ -29,6 +29,7 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
+import { useEffect } from "react";
 
 function MenuBar(props) {
 	const { user, signOut } = useContext(UserContext);
@@ -95,6 +96,8 @@ function MenuBar(props) {
 				},
 		  ]
 		: [];
+
+	useEffect(() => {}, [user]);
 
 	const container =
 		window !== undefined ? () => window().document.body : undefined;

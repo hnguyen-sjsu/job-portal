@@ -143,7 +143,10 @@ function App() {
 						<Route path="/job" element={<RecruiterLayout />}>
 							<Route path=":jobId" element={<JobView />} />
 						</Route>
-						<Route path="/candidate" element={<NoMenuBarLayout />}>
+						<Route
+							path="/candidate"
+							element={<WithMenuBarLayout />}
+						>
 							<Route
 								path="build-profile"
 								element={<ProfileForm />}

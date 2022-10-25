@@ -86,14 +86,16 @@ function JobView(props) {
 						{jobInfo.company.name}
 						<SkeletonLabel text={jobInfo.location} />
 						<SkeletonLabel text={jobInfo.category} />
-						<SkeletonLabel
-							text={
-								jobInfo.noApplicants +
-								" applicant" +
-								(jobInfo.noApplicants > 1 && "s")
-							}
-							animation={false}
-						/>
+						{job.noApplicants && (
+							<SkeletonLabel
+								text={
+									jobInfo.noApplicants +
+									" applicant" +
+									(jobInfo.noApplicants > 1 && "s")
+								}
+								animation={false}
+							/>
+						)}
 					</Stack>
 					<List disablePadding dense>
 						<ListItem disableGutters>

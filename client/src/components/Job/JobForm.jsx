@@ -116,8 +116,10 @@ function JobForm(props) {
 
 	useEffect(() => {
 		console.log(jobId);
+		document.title = "Post Job";
 		if (jobId) {
 			loadJob(jobId.split(":")[1]);
+			document.title = "Edit Job";
 		}
 	}, []);
 
@@ -399,6 +401,9 @@ function JobForm(props) {
 										variant="outlined"
 										disableElevation
 										disabled={loading}
+										onClick={() => {
+											navigate(-1);
+										}}
 									>
 										Cancel
 									</Button>

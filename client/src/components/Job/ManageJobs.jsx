@@ -3,8 +3,12 @@ import Grid from "@mui/material/Grid";
 import JobListView from "./JobListView";
 import JobView from "./JobView";
 
-function ManageJob(props) {
+function ManageJobs(props) {
 	const [selectedJob, setSelectedJob] = useState(null);
+
+	useEffect(() => {
+		document.title = "AKKA - Manage Jobs";
+	}, []);
 
 	useEffect(() => {
 		console.log(selectedJob);
@@ -24,4 +28,4 @@ function ManageJob(props) {
 	);
 }
 
-export default ManageJob;
+export default ManageJobs;

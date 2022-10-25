@@ -51,13 +51,6 @@ body {
   text-decoration: underline;
 }
 
-.signin-container button {
-  background-color: #000;
-}
-
-.signin-container .google-button {
-  background-color: #fff;
-}
 
 .signin-container input:hover {
   border-color: #000;

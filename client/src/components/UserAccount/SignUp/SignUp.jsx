@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import InputLabel from "@mui/material/InputLabel";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
+
+import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
+import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 
 import { Link, useNavigate } from "react-router-dom";
 import logoImg from "../../../assets/app-logo.svg";
@@ -16,6 +20,7 @@ import AuthenticationServices from "../../../services/AuthenticationServices";
 function SignUp({ isRecruiter }) {
 	let navigate = useNavigate();
 
+	const [passwordVisible, setPasswordVisible] = useState(false);
 	const [loading, setLoading] = useState(false);
 
 	const [loginInfo, setLoginInfo] = useState({
@@ -122,10 +127,27 @@ function SignUp({ isRecruiter }) {
 									variant="standard"
 									id="password"
 									name="password"
-									type="password"
+									type={passwordVisible ? "text" : "password"}
 									placeholder="minimum 8 characters"
 									onChange={handleChange}
 									required
+									InputProps={{
+										endAdornment: (
+											<IconButton
+												onClick={() => {
+													setPasswordVisible(
+														!passwordVisible
+													);
+												}}
+											>
+												{passwordVisible ? (
+													<VisibilityOffRoundedIcon />
+												) : (
+													<VisibilityRoundedIcon />
+												)}
+											</IconButton>
+										),
+									}}
 								/>
 							</Stack>
 							<Button

@@ -20,13 +20,12 @@ import ProfileView from "./components/UserAccount/Profile/ProfileView";
 import ProfileForm from "./components/UserAccount/Profile/ProfileForm";
 import LandingPage from "./components/LandingPage/LandingPage";
 import Footer from "./components/Footer/Footer";
-import AuthProvider, { UserContext } from "./providers/AuthProvider";
 import JobForm from "./components/Job/JobForm";
 import JobView from "./components/Job/JobView";
 import CompanyProfileForm from "./components/UserAccount/Profile/CompanyProfileForm";
 import Settings from "./components/UserAccount/Settings/Settings";
-import JobListView from "./components/Job/JobListView";
-import ManageJob from "./components/Job/ManageJob";
+import ManageJobs from "./components/Job/ManageJobs";
+import AuthProvider, { UserContext } from "./providers/AuthProvider";
 
 let theme = createTheme({
 	palette: {
@@ -131,7 +130,14 @@ function App() {
 								path="build-profile"
 								element={<CompanyProfileForm />}
 							/>
-							<Route path="manage-jobs" element={<ManageJob />} />
+							<Route
+								path="profile"
+								element={<CompanyProfileForm />}
+							/>
+							<Route
+								path="manage-jobs"
+								element={<ManageJobs />}
+							/>
 							<Route path="settings" element={<Settings />} />
 						</Route>
 						<Route path="/job" element={<RecruiterLayout />}>

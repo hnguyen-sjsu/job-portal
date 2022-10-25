@@ -14,7 +14,7 @@ class UpdateCandidateSchema(Schema):
     full_name = fields.Str(required=True)
     location = fields.Str(required=True)
     bio = fields.Str(required=True)
-    resume_url = fields.URL(required=True)
+    resume_url = fields.Str(required=True)
     phone_number = fields.Str(required=True)
 
 

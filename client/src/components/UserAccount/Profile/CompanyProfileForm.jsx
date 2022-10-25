@@ -78,6 +78,7 @@ function CompanyProfileForm(props) {
 	};
 
 	useEffect(() => {
+		document.title = "AKKA - Edit Company Profile";
 		AuthenticationServices.getProfile("recruiter").then((response) => {
 			console.log(response);
 			if (response.status === 200) {
@@ -95,7 +96,7 @@ function CompanyProfileForm(props) {
 
 	return (
 		<Container maxWidth="md" disableGutters>
-			<Paper elevation={0}>
+			<div className="container">
 				<Stack style={{ padding: "16px" }}>
 					<Typography variant="h5" fontWeight="bold">
 						Edit Company Profile
@@ -133,6 +134,12 @@ function CompanyProfileForm(props) {
 									<AddPhotoAlternateRoundedIcon fontSize="large" />
 								)}
 							</IconButton>
+							<div>
+								<Typography variant="caption">
+									Click on the icon above to change profile
+									picture
+								</Typography>
+							</div>
 						</Grid>
 						<Grid item xs={12} sm={3}>
 							<InputLabel htmlFor="name">Company Name</InputLabel>
@@ -209,7 +216,7 @@ function CompanyProfileForm(props) {
 						</Grid>
 					</Grid>
 				</Stack>
-			</Paper>
+			</div>
 		</Container>
 	);
 }

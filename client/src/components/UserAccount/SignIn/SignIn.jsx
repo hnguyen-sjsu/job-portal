@@ -2,11 +2,15 @@ import React, { useState, useContext } from "react";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import LinearProgress from "@mui/material/LinearProgress";
 import Alert from "@mui/material/Alert";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
+
+import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
+import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 
 import { Link, useNavigate } from "react-router-dom";
 
@@ -25,6 +29,7 @@ function SignIn({ isRecruiter }) {
 		password: "",
 	});
 
+	const [passwordVisible, setPasswordVisible] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 
@@ -139,13 +144,30 @@ function SignIn({ isRecruiter }) {
 								variant="outlined"
 								id="password"
 								name="password"
-								type="password"
+								type={passwordVisible ? "text" : "password"}
 								placeholder="Password"
 								size="small"
 								value={loginInfo.password}
 								onChange={handleChange}
 								required
 								disabled={loading}
+								InputProps={{
+									endAdornment: (
+										<IconButton
+											onClick={() => {
+												setPasswordVisible(
+													!passwordVisible
+												);
+											}}
+										>
+											{passwordVisible ? (
+												<VisibilityOffRoundedIcon />
+											) : (
+												<VisibilityRoundedIcon />
+											)}
+										</IconButton>
+									),
+								}}
 							/>
 							<Alert
 								severity="error"

@@ -27,9 +27,9 @@ function SkillsExperienceForm(props) {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleAddSkill = (e) => {
-		setIsLoading(true);
 		const { value } = e.target;
 		if (e.key.toLowerCase() === "enter") {
+			setIsLoading(true);
 			CandidateServices.addSkill(value).then((response) => {
 				console.log(response);
 				setSkills([...skills, response]);
@@ -89,8 +89,7 @@ function SkillsExperienceForm(props) {
 									<Chip
 										label={skill.name}
 										color="primary"
-										onDelete={(e) => {
-											e.preventDefault();
+										onDelete={() => {
 											handleDeleteSkill(skill.id);
 										}}
 									/>

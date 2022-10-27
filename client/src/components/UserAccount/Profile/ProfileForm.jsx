@@ -11,10 +11,15 @@ import Button from "@mui/material/Button";
 import { UserContext } from "../../../providers/AuthProvider";
 import CandidateProfileForm from "./CandidateProfileForm";
 import CandidateServices from "../../../services/CandidateServices";
+import EducationHistoryForm from "./EducationHistoryForm";
+import SkillsExperienceForm from "./SkillsExperienceForm";
+import ResumeForm from "./ResumeForm";
 
 function ProfileForm(props) {
 	const { user } = useContext(UserContext);
+
 	const [loading, setLoading] = useState(false);
+
 	const [userProfile, setUserProfile] = useState({
 		fullName: "",
 		phoneNumber: "",
@@ -23,6 +28,20 @@ function ProfileForm(props) {
 		resumeUrl: "",
 	});
 
+	const [educationItems, setEducationItems] = useState([
+		{
+			schoolName: "",
+			degree: "",
+			major: "",
+			startDate: "",
+			endDate: "",
+			description: "",
+		},
+	]);
+	const [skills, setSkills] = useState([]);
+	const [experienceItems, setExperienceItems] = useState([
+		{ isCurrentJob: false },
+	]);
 	const [activeStep, setActiveStep] = useState(0);
 
 	const totalSteps = () => {
@@ -41,25 +60,30 @@ function ProfileForm(props) {
 
 	const handleNext = () => {
 		setLoading(true);
-		setTimeout(() => {
-			if (activeStep < totalSteps() - 1) {
-				setActiveStep(activeStep + 1);
-			}
-			setLoading(false);
-			console.log(userProfile);
-		}, 5000);
 
-		if (activeStep === 0) {
-			CandidateServices.updateCandidateProfile(userProfile).then(
-				(response) => {
-					console.log(response);
-					if (activeStep < totalSteps() - 1) {
-						setActiveStep(activeStep + 1);
+		switch (activeStep) {
+			case 0:
+				CandidateServices.updateCandidateProfile(userProfile).then(
+					(response) => {
+						console.log(response);
+						moveNext();
 					}
-					setLoading(false);
-				}
-			);
+				);
+				break;
+			case 1:
+			case 2:
+			case 3:
+			case 4:
+			default:
+				moveNext();
 		}
+	};
+
+	const moveNext = () => {
+		if (activeStep < totalSteps() - 1) {
+			setActiveStep(activeStep + 1);
+		}
+		setLoading(false);
 	};
 
 	const steps = [
@@ -75,12 +99,29 @@ function ProfileForm(props) {
 		},
 		{
 			title: "Education History",
+			component: (
+				<EducationHistoryForm
+					loading={loading}
+					educationItems={educationItems}
+					setEducationItems={setEducationItems}
+				/>
+			),
 		},
 		{
 			title: "Skills & Experience",
+			component: (
+				<SkillsExperienceForm
+					skills={skills}
+					setSkills={setSkills}
+					experienceItems={experienceItems}
+					setExperienceItems={setExperienceItems}
+					loading={loading}
+				/>
+			),
 		},
 		{
 			title: "Resume",
+			component: <ResumeForm />,
 		},
 		{
 			title: "Review & Submit",
@@ -88,6 +129,7 @@ function ProfileForm(props) {
 	];
 
 	useEffect(() => {
+		console.log(user);
 		CandidateServices.getCandidateProfile().then((response) => {
 			setUserProfile({ ...response });
 		});
@@ -123,7 +165,7 @@ function ProfileForm(props) {
 						<Button
 							variant="outlined"
 							disableElevation
-							onClick={handleNext}
+							href="/candidate/profile"
 							type="submit"
 							disabled={loading}
 						>
@@ -132,7 +174,9 @@ function ProfileForm(props) {
 						<Button
 							variant="contained"
 							disableElevation
-							sx={{ display: isLastStep() ? "none" : "block" }}
+							sx={{
+								display: isLastStep() ? "none" : "block",
+							}}
 							onClick={handleNext}
 							type="submit"
 							disabled={loading}

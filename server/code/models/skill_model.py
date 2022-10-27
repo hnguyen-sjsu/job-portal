@@ -25,6 +25,10 @@ class SkillModel(db.Model):
         db.session.commit()
 
     @classmethod
+    def get_the_last_skill(cls):
+        return SkillModel.query.order_by(SkillModel.id.desc()).first()
+
+    @classmethod
     def delete_from_db(cls, _id):
         db.session.delete(cls.query.filter_by(id=_id).first())
         db.session.commit()

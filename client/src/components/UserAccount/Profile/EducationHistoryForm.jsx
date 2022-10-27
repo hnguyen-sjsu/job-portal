@@ -50,119 +50,123 @@ function EducationHistoryForm(props) {
 			<Typography variant="h4" fontWeight="bold">
 				Education History
 			</Typography>
-			{educationItems.map((item, index) => (
-				<Grid container key={index} spacing={2}>
-					<Grid item xs={12}>
-						<Stack spacing={1}>
-							<InputLabel htmlFor="schoolName">School</InputLabel>
-							<TextField
-								placeholder="Enter the school name"
-								name="schoolName"
-								size="small"
-								value={item.schoolName}
-								onChange={(e) => {
-									handleChange(e, index);
-								}}
-							/>
-						</Stack>
+			<div className="container">
+				{educationItems.map((item, index) => (
+					<Grid container key={index} spacing={2}>
+						<Grid item xs={12}>
+							<Stack spacing={1}>
+								<InputLabel htmlFor="schoolName">
+									School
+								</InputLabel>
+								<TextField
+									placeholder="Enter the school name"
+									name="schoolName"
+									size="small"
+									value={item.schoolName}
+									onChange={(e) => {
+										handleChange(e, index);
+									}}
+								/>
+							</Stack>
+						</Grid>
+						<Grid item xs={6}>
+							<Stack spacing={1}>
+								<InputLabel htmlFor="degree">Degree</InputLabel>
+								<TextField
+									placeholder="Your degree"
+									name="degree"
+									size="small"
+									value={item.degree}
+									onChange={(e) => {
+										handleChange(e, index);
+									}}
+								/>
+							</Stack>
+						</Grid>
+						<Grid item xs={6}>
+							<Stack spacing={1}>
+								<InputLabel htmlFor="major">Major</InputLabel>
+								<TextField
+									placeholder="Major"
+									name="major"
+									size="small"
+									value={item.major}
+									onChange={(e) => {
+										handleChange(e, index);
+									}}
+								/>
+							</Stack>
+						</Grid>
+						<Grid item xs={6}>
+							<Stack spacing={1}>
+								<InputLabel htmlFor="startDate">
+									Start Date
+								</InputLabel>
+								<TextField
+									placeholder="MM/YYYY"
+									name="startDate"
+									size="small"
+									value={item.startDate}
+									onChange={(e) => {
+										handleChange(e, index);
+									}}
+								/>
+							</Stack>
+						</Grid>
+						<Grid item xs={6}>
+							<Stack spacing={1}>
+								<InputLabel htmlFor="endDate">
+									End Date (or expected)
+								</InputLabel>
+								<TextField
+									placeholder="MM/YYYY"
+									name="endDate"
+									size="small"
+									value={item.endDate}
+									onChange={(e) => {
+										handleChange(e, index);
+									}}
+								/>
+							</Stack>
+						</Grid>
+						<Grid item xs={12}>
+							<Stack spacing={1}>
+								<InputLabel htmlFor="description">
+									Description
+								</InputLabel>
+								<TextField
+									name="description"
+									multiline
+									minRows={2}
+									value={item.description}
+									onChange={(e) => {
+										handleChange(e, index);
+									}}
+								/>
+							</Stack>
+						</Grid>
+						<Grid item xs={12} textAlign="right">
+							{index !== 0 && (
+								<Button
+									startIcon={
+										<RemoveRoundedIcon fontSize="small" />
+									}
+								>
+									Remove this Education History
+								</Button>
+							)}
+							<Divider />
+						</Grid>
 					</Grid>
-					<Grid item xs={6}>
-						<Stack spacing={1}>
-							<InputLabel htmlFor="degree">Degree</InputLabel>
-							<TextField
-								placeholder="Your degree"
-								name="degree"
-								size="small"
-								value={item.degree}
-								onChange={(e) => {
-									handleChange(e, index);
-								}}
-							/>
-						</Stack>
-					</Grid>
-					<Grid item xs={6}>
-						<Stack spacing={1}>
-							<InputLabel htmlFor="major">Major</InputLabel>
-							<TextField
-								placeholder="Major"
-								name="major"
-								size="small"
-								value={item.major}
-								onChange={(e) => {
-									handleChange(e, index);
-								}}
-							/>
-						</Stack>
-					</Grid>
-					<Grid item xs={6}>
-						<Stack spacing={1}>
-							<InputLabel htmlFor="startDate">
-								Start Date
-							</InputLabel>
-							<TextField
-								placeholder="MM/YYYY"
-								name="startDate"
-								size="small"
-								value={item.startDate}
-								onChange={(e) => {
-									handleChange(e, index);
-								}}
-							/>
-						</Stack>
-					</Grid>
-					<Grid item xs={6}>
-						<Stack spacing={1}>
-							<InputLabel htmlFor="endDate">
-								End Date (or expected)
-							</InputLabel>
-							<TextField
-								placeholder="MM/YYYY"
-								name="endDate"
-								size="small"
-								value={item.endDate}
-								onChange={(e) => {
-									handleChange(e, index);
-								}}
-							/>
-						</Stack>
-					</Grid>
-					<Grid item xs={12}>
-						<Stack spacing={1}>
-							<InputLabel htmlFor="description">
-								Description
-							</InputLabel>
-							<TextField
-								name="description"
-								multiline
-								minRows={2}
-								value={item.description}
-								onChange={(e) => {
-									handleChange(e, index);
-								}}
-							/>
-						</Stack>
-					</Grid>
-					<Grid item xs={12} textAlign="right">
-						{index !== 0 && (
-							<Button
-								startIcon={
-									<RemoveRoundedIcon fontSize="small" />
-								}
-							>
-								Remove this Education History
-							</Button>
-						)}
-						<Divider />
-					</Grid>
-				</Grid>
-			))}
-			<Button
-				startIcon={<AddRoundedIcon fontSize="small" />}
-				onClick={handleAddNewEducation}
-				fullWidth
-			>
-				Add Another Education History
-			</Button>
+				))}
+				<Button
+					startIcon={<AddRoundedIcon fontSize="small" />}
+					onClick={handleAddNewEducation}
+					fullWidth
+				>
+					Add Another Education History
+				</Button>
+			</div>
 		</Stack>
 	);
 }

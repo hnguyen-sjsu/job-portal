@@ -30,10 +30,12 @@ function JobForm(props) {
 		{ title: "Full Time" },
 		{ title: "Part Time" },
 		{ title: "Intern" },
+		{ title: "Contract" },
 	];
 
 	const expLevels = [
 		{ title: "Entry Level" },
+		{ title: "Junior Level" },
 		{ title: "Intermediate Level" },
 		{ title: "Senior Level" },
 		{ title: "Intern Level" },

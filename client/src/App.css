@@ -146,7 +146,6 @@ body {
   color: #C2C4C5;
 }
 
-
 #drag-file-element {
   position: absolute;
   width: 100%;
@@ -156,4 +155,21 @@ body {
   right: 0px;
   bottom: 0px;
   left: 0px;
+}
+
+.search-bar-container {
+  background-color: #FFF;
+  padding: 16px 32px 16px 32px;
+  border-radius: 50px;
+  border: 1px solid #dbdbdb;
+}
+
+.search-bar-container:hover, 
+.search-bar-container:focus-within {
+  border-color: #027CFF;
+}
+
+.search-bar-container button {
+  border-radius: 50px;
+  
 }

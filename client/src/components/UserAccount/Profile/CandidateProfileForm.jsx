@@ -35,14 +35,14 @@ function CandidateProfileForm(props) {
 		}
 	};
 	return (
-		<>
+		<Stack spacing={2}>
 			<Typography variant="h5" fontWeight="bold" gutterBottom>
 				Hi there,
 			</Typography>
 			<Typography variant="h4" fontWeight="bold" gutterBottom>
 				Tell us about yourself
 			</Typography>
-			<Grid container spacing={2}>
+			<Grid container spacing={2} className="container">
 				<Grid item xs={12}>
 					<Stack spacing={1}>
 						<InputLabel htmlFor="fullName">Full Name</InputLabel>
@@ -104,7 +104,7 @@ function CandidateProfileForm(props) {
 					</Stack>
 				</Grid>
 			</Grid>
-		</>
+		</Stack>
 	);
 }
 

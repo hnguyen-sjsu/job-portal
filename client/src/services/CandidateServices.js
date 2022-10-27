@@ -64,9 +64,62 @@ const getCandidateProfile = async () => {
 	}
 };
 
+const addSkill = async (skill) => {
+	const url = "http://localhost:5000/skill/post-one";
+	const headers = getHeaders();
+	const params = {
+		withCredentials: true,
+	};
+
+	const data = { skill: skill };
+
+	try {
+		const response = await axios.post(url, data, params, headers);
+		if (response.status === 201) {
+			return response.data.skill;
+		}
+	} catch (e) {
+		console.error(e);
+	}
+};
+
+const getSkills = async (skill) => {
+	const url = "http://localhost:5000/skill/get";
+	const headers = getHeaders();
+	const params = {
+		withCredentials: true,
+	};
+	try {
+		const response = await axios.get(url, params, headers);
+		if (response.status === 200) {
+			console.log(response);
+			return response.data.skills;
+		}
+	} catch (e) {
+		console.error(e);
+	}
+};
+
+const deleteSkill = async (skillId) => {
+	const url = "http://localhost:5000/skill/delete?ids=" + skillId;
+	const headers = getHeaders();
+	const params = {
+		withCredentials: true,
+	};
+	try {
+		const response = await axios.delete(url, params, headers);
+		return response.status === 200;
+	} catch (e) {
+		console.error(e);
+	}
+};
+
 const CandidateServices = {
 	updateCandidateProfile,
 	getCandidateProfile,
+	getSkills,
+	addSkill,
+	deleteSkill,
 };
 
 export default CandidateServices;

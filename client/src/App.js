@@ -26,6 +26,7 @@ import CompanyProfileForm from "./components/UserAccount/Profile/CompanyProfileF
 import Settings from "./components/UserAccount/Settings/Settings";
 import ManageJobs from "./components/Job/ManageJobs";
 import AuthProvider, { UserContext } from "./providers/AuthProvider";
+import JobSearchForm from "./components/Job/JobSearchForm";
 
 let theme = createTheme({
 	palette: {
@@ -142,6 +143,7 @@ function App() {
 						</Route>
 						<Route path="/job" element={<RecruiterLayout />}>
 							<Route path=":jobId" element={<JobView />} />
+							<Route path="search" element={<JobSearchForm />} />
 						</Route>
 						<Route
 							path="/candidate"

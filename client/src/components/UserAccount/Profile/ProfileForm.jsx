@@ -133,6 +133,9 @@ function ProfileForm(props) {
 		CandidateServices.getCandidateProfile().then((response) => {
 			setUserProfile({ ...response });
 		});
+		CandidateServices.getSkills().then((response) => {
+			setSkills([...response]);
+		});
 	}, []);
 
 	return (

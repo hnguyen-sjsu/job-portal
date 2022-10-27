@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
 import PlaceRoundedIcon from "@mui/icons-material/PlaceRounded";
 import CallRoundedIcon from "@mui/icons-material/CallRounded";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
@@ -46,65 +47,85 @@ function ProfileView(props) {
 	return (
 		<>
 			<Stack spacing={2}>
-				<Typography variant="h4" color="primary" fontWeight="bold">
-					{profile.userProfile.full_name}
-				</Typography>
+				<Stack direction="row" justifyContent="space-between">
+					<Typography variant="h4" color="primary" fontWeight="bold">
+						{profile.userProfile.fullName}
+					</Typography>
+					{user && user.role === "candidate" && (
+						<Button
+							variant="contained"
+							disableElevation
+							href="/candidate/build-profile"
+						>
+							Edit
+						</Button>
+					)}
+				</Stack>
+
 				<Typography>{profile.userProfile.bio}</Typography>
 				<Grid container>
 					<Grid item xs={12} sm={4}>
-						<Stack spacing={2}>
-							<Typography
-								variant="h5"
-								fontWeight="bold"
-								color="primary"
-							>
-								Contact
-							</Typography>
-							<Grid container>
-								<Grid item xs={2}>
-									<PlaceRoundedIcon fontSize="small" />
+						<div className="container">
+							<Stack style={{ marginTop: "16px" }}>
+								<Typography
+									variant="h5"
+									fontWeight="bold"
+									color="primary"
+								>
+									Contact
+								</Typography>
+								<Grid container>
+									<Grid item xs={2}>
+										<PlaceRoundedIcon fontSize="small" />
+									</Grid>
+									<Grid item xs={10}>
+										<Typography>
+											{profile.userProfile.location}
+										</Typography>
+									</Grid>
+									<Grid item xs={2}>
+										<CallRoundedIcon fontSize="small" />
+									</Grid>
+									<Grid item xs={10}>
+										<Typography>
+											{profile.userProfile.phoneNumber}
+										</Typography>
+									</Grid>
+									<Grid item xs={2}>
+										<EmailRoundedIcon fontSize="small" />
+									</Grid>
+									<Grid item xs={10}>
+										<Typography>
+											{profile.userProfile.email}
+										</Typography>
+									</Grid>
 								</Grid>
-								<Grid item xs={10}>
-									<Typography>
-										{profile.userProfile.location}
-									</Typography>
-								</Grid>
-								<Grid item xs={2}>
-									<CallRoundedIcon fontSize="small" />
-								</Grid>
-								<Grid item xs={10}>
-									<Typography>
-										{profile.userProfile.phoneNumber}
-									</Typography>
-								</Grid>
-								<Grid item xs={2}>
-									<EmailRoundedIcon fontSize="small" />
-								</Grid>
-								<Grid item xs={10}>
-									<Typography>
-										{profile.userProfile.email}
-									</Typography>
-								</Grid>
-							</Grid>
-
-							<Typography
-								variant="h5"
-								fontWeight="bold"
-								color="primary"
-							>
-								Skills
-							</Typography>
-							<Stack
-								direction={{ xs: "row", sm: "column" }}
-								spacing={{ xs: 2, sm: 0 }}
-							>
-								{profile.skills.map((skill, index) => (
-									<Typography key={"skill-" + index}>
-										{skill}
-									</Typography>
-								))}
 							</Stack>
-						</Stack>
+						</div>
+						<div
+							className="container"
+							style={{ marginTop: "16px" }}
+						>
+							<Stack spacing={2}>
+								<Typography
+									variant="h5"
+									fontWeight="bold"
+									color="primary"
+								>
+									Skills
+								</Typography>
+								<Stack
+									direction={{ xs: "row", sm: "column" }}
+									spacing={{ xs: 2, sm: 0 }}
+								>
+									{profile.skills.map((skill, index) => (
+										<Typography key={"skill-" + index}>
+											{skill}
+										</Typography>
+									))}
+								</Stack>
+							</Stack>
+						</div>
 					</Grid>
 					<Grid item xs={12} sm={8}>
 						<Stack spacing={2}>

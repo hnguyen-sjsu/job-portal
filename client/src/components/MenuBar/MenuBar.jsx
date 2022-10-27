@@ -18,7 +18,7 @@ import Typography from "@mui/material/Typography";
 import MenuIcon from "@mui/icons-material/Menu";
 
 import appLogo from "../../assets/app-logo.svg";
-import { UserContext } from "../../providers/AuthProvider";
+import AuthProvider, { UserContext } from "../../providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
 import { Avatar } from "@mui/material";
@@ -29,6 +29,7 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
+import { useEffect } from "react";
 
 function MenuBar(props) {
 	const { user, signOut } = useContext(UserContext);
@@ -95,6 +96,8 @@ function MenuBar(props) {
 				},
 		  ]
 		: [];
+
+	useEffect(() => {}, [user]);
 
 	const container =
 		window !== undefined ? () => window().document.body : undefined;
@@ -164,7 +167,11 @@ function MenuBar(props) {
 
 					{showOptions && (
 						<>
-							<Box sx={{ display: { xs: "none", sm: "block" } }}>
+							<Box
+								sx={{
+									display: { xs: "none", sm: "block" },
+								}}
+							>
 								{linkItems.map((item, idx) => (
 									<Button
 										key={idx}

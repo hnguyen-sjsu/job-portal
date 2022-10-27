@@ -5,7 +5,7 @@ import AuthenticationServices from "../services/AuthenticationServices";
 export const UserContext = createContext({ user: null });
 
 export default (props) => {
-	const [user, setUser] = useState(null);
+	const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 
 	useEffect(() => {
 		const myUser = AuthenticationServices.getCurrentUser();

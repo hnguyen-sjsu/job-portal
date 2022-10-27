@@ -67,7 +67,10 @@ const saveJob = async (jobInfo) => {
 
 const getPostedJobs = async () => {
 	const url = baseUrl + "get-posted-jobs";
-	const headers = getHeaders();
+	const headers = {
+		Accept: "application/json",
+		"Content-Type": "application/json",
+	};
 	const params = {
 		withCredentials: true,
 	};
@@ -126,9 +129,26 @@ const deleteJob = async (jobId) => {
 	}
 };
 
+const getJobs = async () => {
+	const url = baseUrl + "get-all";
+	const headers = getHeaders();
+	const params = {
+		withCredentials: true,
+	};
+
+	try {
+		const response = await axios.get(url, params, headers);
+		console.log(response);
+		return response.data.jobs;
+	} catch (e) {
+		console.error(e);
+	}
+};
+
 const JobServices = {
 	saveJob,
 	getJob,
+	getJobs,
 	getPostedJobs,
 	deleteJob,
 };

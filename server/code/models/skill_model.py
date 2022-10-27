@@ -56,7 +56,7 @@ class SkillModel(db.Model):
         skills = db.session.query(
             SkillModel.name).filter_by(user_id=user_id).all()
 
-        return set(skill[0] for skill in skills)
+        return set(skill[0].lower() for skill in skills)
 
     @classmethod
     def find_by_skill_id(cls, skill_id):

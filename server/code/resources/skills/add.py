@@ -63,16 +63,14 @@ class AddOne(Resource):
         if errors:
             abort(400, message=errors)
 
-        data = AddOneSkillSchema().load(request.get_json())
-        # convert to lower case
-        skill = data['skill'].lower()
+        skill = AddOneSkillSchema().load(request.get_json())['skill']
 
         # get a SET of skills of the user
         user_skills = SkillModel.find_all_skills_by_uid(
             get_jwt_identity().get('user_id'))
 
         # Check if the skill already exists
-        if skill in user_skills:
+        if skill.lower() in user_skills:
             abort(400, message='Skill already exists')
 
         # Add the new skill to the database

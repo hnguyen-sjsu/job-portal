@@ -9,16 +9,7 @@ import Stack from "@mui/material/Stack";
 import { UserContext } from "../../../providers/AuthProvider";
 
 function CandidateProfileForm(props) {
-	const { user } = useContext(UserContext);
-
 	const { userProfile, setUserProfile, loading } = props;
-
-	// const [userProfile, setUserProfile] = useState({
-	// 	fullName: "",
-	// 	phoneNumber: "",
-	// 	location: "",
-	// 	bio: "",
-	// });
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -42,7 +33,11 @@ function CandidateProfileForm(props) {
 			<Typography variant="h4" fontWeight="bold" gutterBottom>
 				Tell us about yourself
 			</Typography>
-			<Grid container spacing={2} className="container">
+			<Grid
+				container
+				spacing={2}
+				className={["profile-form-container", "container"]}
+			>
 				<Grid item xs={12}>
 					<Stack spacing={1}>
 						<InputLabel htmlFor="fullName">Full Name</InputLabel>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 
@@ -70,7 +70,7 @@ function ResumeForm(props) {
 			<Typography variant="h4" fontWeight="bold">
 				Upload Your Resume File
 			</Typography>
-			<div className="container" style={{ paddingTop: "32px" }}>
+			<Box className={["profile-form-container", "container"]}>
 				<Stack
 					className="file-upload-container"
 					style={{ minHeight: "20vh" }}
@@ -115,7 +115,7 @@ function ResumeForm(props) {
 						</Stack>
 					</Stack>
 				)}
-			</div>
+			</Box>
 		</>
 	);
 }

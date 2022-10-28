@@ -50,7 +50,7 @@ function EducationHistoryForm(props) {
 			<Typography variant="h4" fontWeight="bold">
 				Education History
 			</Typography>
-			<div className="container">
+			<Box className={["profile-form-container", "container"]}>
 				{educationItems.map((item, index) => (
 					<Grid container key={index} spacing={2}>
 						<Grid item xs={12}>
@@ -166,7 +166,7 @@ function EducationHistoryForm(props) {
 				>
 					Add Another Education History
 				</Button>
-			</div>
+			</Box>
 		</Stack>
 	);
 }

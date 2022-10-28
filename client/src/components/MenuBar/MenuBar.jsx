@@ -97,6 +97,10 @@ function MenuBar(props) {
 		  ]
 		: [];
 
+	useEffect(() => {
+		console.log(user);
+	}, []);
+
 	useEffect(() => {}, [user]);
 
 	const container =

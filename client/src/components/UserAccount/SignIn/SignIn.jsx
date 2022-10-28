@@ -47,38 +47,11 @@ function SignIn({ isRecruiter }) {
 		signIn(loginInfo).then((response) => {
 			setTimeout(() => {
 				if (response.status === 200) {
-					const userInfo = response.data.user_info;
-					AuthenticationServices.getProfile(userInfo.role).then(
-						(response) => {
-							setLoading(false);
-							const profile = {
-								...userInfo,
-								...response.data,
-							};
-							localStorage.setItem(
-								"user",
-								JSON.stringify(profile)
-							);
-							console.log(profile);
-							if (userInfo.role === "candidate") {
-								if (profile.fullName === "") {
-									navigate("/candidate/build-profile");
-								} else {
-									navigate("/");
-								}
-							}
-							if (userInfo.role === "recruiter") {
-								if (profile.companyName === "") {
-									navigate("/recruiter/build-profile");
-								} else {
-									navigate("/");
-								}
-							}
-						}
-					);
+					setLoading(false);
 					setErrorMessage("");
 				} else {
 					setErrorMessage(response.response.data.message);
+					setLoading(false);
 				}
 			}, 1000);
 		});

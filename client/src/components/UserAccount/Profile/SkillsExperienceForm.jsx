@@ -71,7 +71,7 @@ function SkillsExperienceForm(props) {
 			<Typography variant="h4" fontWeight="bold">
 				Skills & Experience
 			</Typography>
-			<div className="container">
+			<Box className={["profile-form-container", "container"]}>
 				<Grid container spacing={2}>
 					<Grid item xs={12}>
 						<Typography
@@ -249,7 +249,7 @@ function SkillsExperienceForm(props) {
 						</Grid>
 					</Grid>
 				))}
-			</div>
+			</Box>
 		</Container>
 	);
 }

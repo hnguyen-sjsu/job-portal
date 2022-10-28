@@ -121,9 +121,9 @@ body {
 }
 
 .container {
-  background: #fff;
+  /* background: #fff;
   border: 1px solid #dbdbdb;
-  border-radius: 8px;
+  border-radius: 8px; */
 }
 
 .container > *:not(:last-child) {
@@ -177,4 +177,17 @@ body {
   border-radius: 8px;
   margin-left: 8px;
   
+}
+
+.job-list-container {
+  height: 70vh;
+  overflow-x: hidden;
+}
+
+.job-preview-container {
+  height: 70vh;
+  background: #fff;
+  border: 1px solid #dbdbdb;
+  border-radius: 8px;
+  overflow-x: hidden;
 }

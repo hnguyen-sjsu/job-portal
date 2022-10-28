@@ -1,31 +1,55 @@
 import React, { useState, useEffect } from "react";
 
-import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import Divider from "@mui/material/Divider";
 
+import { FixedSizeList } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
 import JobListItem from "./JobListItem";
 
 function JobListView(props) {
-	const { jobs, onJobSelected } = props;
+	const { jobs, selectedJob, onJobSelected } = props;
+
+	const Row = ({ index, style }) => (
+		<div style={style}>
+			{
+				<ListItemButton
+					onClick={() => {
+						onJobSelected({
+							...jobs[index],
+							jobId: jobs[index].id,
+						});
+					}}
+					disableGutters
+				>
+					<JobListItem
+						job={jobs[index]}
+						selected={
+							selectedJob && selectedJob.id === jobs[index].id
+						}
+					/>
+					{index !== jobs.length - 1 && <Divider />}
+				</ListItemButton>
+			}
+		</div>
+	);
 
 	return (
-		<List disablePadding>
-			{jobs.map((job, idx) => (
-				<div key={job.id}>
-					<ListItemButton
-						onClick={() => {
-							onJobSelected({ ...job, jobId: job.id });
-						}}
-						disableGutters
+		<div className="job-list-container">
+			<AutoSizer>
+				{({ height, width }) => (
+					<FixedSizeList
+						height={height}
+						width={width}
+						itemSize={120}
+						itemCount={jobs.length}
+						overscanCount={4}
 					>
-						<JobListItem job={job} />
-					</ListItemButton>
-					{idx !== jobs.length - 1 && <Divider />}
-				</div>
-			))}
-			{jobs && jobs.length === 0 && <>No Jobs Available</>}
-		</List>
+						{Row}
+					</FixedSizeList>
+				)}
+			</AutoSizer>
+		</div>
 	);
 }
 

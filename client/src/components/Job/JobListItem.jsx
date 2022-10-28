@@ -8,14 +8,14 @@ import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 
 function JobListItem(props) {
-	const { job } = props;
+	const { job, selected } = props;
 
 	let numeral = require("numeral");
 
 	return (
 		<>
 			{job && (
-				<ListItem alignItems="flex-start">
+				<ListItem alignItems="flex-start" selected={selected}>
 					<ListItemAvatar>
 						<Avatar src={job.company.companyLogoUrl} />
 					</ListItemAvatar>

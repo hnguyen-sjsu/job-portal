@@ -26,9 +26,9 @@ class UserModel(db.Model):
     memberships = db.relationship(
         'MembershipModel', backref='users', lazy=True, cascade='all, delete-orphan')
 
-    # # Create a relationship between User and EducationModel
-    # educations = db.relationship(
-    #     'EducationModel', backref='users', lazy=True, cascade='all, delete-orphan')
+    # Create a relationship between User and EducationModel
+    educations = db.relationship(
+        'EducationModel', backref='users', lazy=True, cascade='all, delete-orphan')
 
     # Create a relationship between User and SkillModel
     skills = db.relationship(

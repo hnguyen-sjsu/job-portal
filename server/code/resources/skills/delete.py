@@ -25,7 +25,7 @@ class DeleteSkillSchema(Schema):
     ids = DelimitedListField(fields.Int(), required=True)
 
 
-class DeleteOneOrMultiple(Resource):
+class DeleteSkill(Resource):
 
     @classmethod
     @jwt_required()

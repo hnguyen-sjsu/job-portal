@@ -30,8 +30,13 @@ from resources.memberships.delete import DeleteMembership
 from resources.skills.add import AddSkillList
 from resources.skills.add import AddOne
 from resources.skills.get import GetAllSkillsByUID
-from resources.skills.delete import DeleteOneOrMultiple
+from resources.skills.delete import DeleteSkill
 from resources.skills.update import UpdateSkill
+from resources.educations.add import AddEducation
+from resources.educations.add import AddBatchEducations
+from resources.educations.delete import DeleteEducation
+from resources.educations.get import GetAllEducationsByUID
+from resources.educations.update import UpdateEducation
 from resources.db_cleaner import *
 from dotenv import load_dotenv
 from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, JWTManager, set_access_cookies
@@ -145,11 +150,17 @@ api.add_resource(GetMembership, '/membership/get')
 api.add_resource(UpdateMembership, '/membership/update')
 api.add_resource(DeleteMembership, '/membership/delete')
 # skills
-api.add_resource(AddSkillList, '/skill/post')
+api.add_resource(AddSkillList, '/skill/post-list')
 api.add_resource(AddOne, '/skill/post-one')
 api.add_resource(GetAllSkillsByUID, '/skill/get')
-api.add_resource(DeleteOneOrMultiple, '/skill/delete')
+api.add_resource(DeleteSkill, '/skill/delete')
 api.add_resource(UpdateSkill, '/skill/update')
+# education
+api.add_resource(GetAllEducationsByUID, '/education/get-all')
+api.add_resource(AddEducation, '/education/post-one')
+api.add_resource(AddBatchEducations, '/education/post-multiple')
+api.add_resource(DeleteEducation, '/education/delete')
+api.add_resource(UpdateEducation, '/education/update')
 if __name__ == '__main__':
     db.init_app(app)
     mail.init_app(app)

@@ -37,7 +37,7 @@ class EducationModel(db.Model):
 
     @classmethod
     def delete_by_id(cls, _id):
-        db.session.delete(cls.query.filter_by(id=_id).first())
+        db.session.delete(cls.query.filter_by(school_id=_id).first())
         db.session.commit()
 
     @classmethod
@@ -48,7 +48,7 @@ class EducationModel(db.Model):
 
     @classmethod
     def find_all_by_uid(cls, user_id):
-        educations = cls.query.filter_by(user_id=user_id).first()
+        educations = cls.query.filter_by(user_id=user_id).all()
 
         return educations
 
@@ -69,3 +69,11 @@ class EducationModel(db.Model):
             return education
 
         return None
+
+    @classmethod
+    def exists(cls, id_list):
+        for _id in id_list:
+            if not cls.query.filter_by(school_id=_id).first():
+                return False
+
+        return True

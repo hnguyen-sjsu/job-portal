@@ -1,5 +1,6 @@
+from cmath import exp
 from flask_restful import Resource
-from models.education_model import EducationModel
+from models.work_experience_model import WorkExperienceModel
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy.exc import SQLAlchemyError
 from helpers import convert_string_to_date
@@ -8,16 +9,16 @@ from flask import request
 from marshmallow import Schema, fields
 
 
-class AddEducationSchema(Schema):
-    school_name = fields.Str(required=True)
-    degree = fields.Str(required=True)
-    major = fields.Str(required=True)
+class AddWorkExperienceSchema(Schema):
+    company_name = fields.Str(required=True)
+    position = fields.Str(required=True)
+    current_job = fields.Bool(required=True)
     start_date = fields.Date(required=True)
     end_date = fields.Date(required=True)
     description = fields.Str(required=True)
 
 
-class AddEducation(Resource):
+class AddWorkExperience(Resource):
 
     @classmethod
     @jwt_required()
@@ -27,7 +28,7 @@ class AddEducation(Resource):
 
         data = request.get_json()
         # Check for invalid data
-        errors = AddEducationSchema().validate(data)
+        errors = AddWorkExperienceSchema().validate(data)
         if errors:
             abort(400, message=errors)
 
@@ -38,51 +39,52 @@ class AddEducation(Resource):
         if data['end_date'] < data['start_date']:
             abort(400, message='Start date cannot be greater than end date')
 
-        # Create a new education model
-        education = EducationModel(
+        # Create a new work experience model
+        work_experiences = WorkExperienceModel(
             **data, user_id=get_jwt_identity().get('user_id'))
 
-        # Save the education model to the database
+        # Save the work experience model to the database
         try:
-            education.save_to_db()
+            work_experiences.save_to_db()
         except SQLAlchemyError as e:
             print(e)
             abort(500, message='An error occurred while adding the job')
 
-        return {'message': 'Education added successfully'}, 201
+        return {'message': 'Work experience added successfully'}, 201
 
 
-class AddBatchEducations(Resource):
+class AddBatchWorkExperiences(Resource):
     @classmethod
     @jwt_required()
     def post(cls):
         if get_jwt_identity().get('role') != 'candidate':
             abort(403, message='You are not authorized to access this resource.')
 
-        educations = request.get_json()
+        work_experiences = request.get_json()
 
         # Check for invalid data
-        for education in educations:
-            errors = AddEducationSchema().validate(education)
+        for experience in work_experiences:
+            errors = AddWorkExperienceSchema().validate(experience)
             if errors:
-                errors.update({'education': education['school_name']})
+                errors.update(
+                    {'company_name': experience['company_name']})
                 abort(400, message=errors)
-            education['start_date'] = convert_string_to_date(
-                education['start_date'])
-            education['end_date'] = convert_string_to_date(
-                education['end_date'])
-            if education['end_date'] < education['start_date']:
+            experience['start_date'] = convert_string_to_date(
+                experience['start_date'])
+            experience['end_date'] = convert_string_to_date(
+                experience['end_date'])
+            if experience['end_date'] < experience['start_date']:
                 abort(400, message='Start date cannot be greater than end date')
 
-        # Create a new education model
-        educations = [EducationModel(
-            **education, user_id=get_jwt_identity().get('user_id')) for education in educations]
+        # Create a new work experience model
+        work_experiences = [WorkExperienceModel(
+            **work_experience, user_id=get_jwt_identity().get('user_id')) for work_experience in work_experiences]
 
-        # Save the education model to the database
+        # Save the work experience model to the database
         try:
-            for education in educations:
-                education.save_to_db()
+            for work_experience in work_experiences:
+                work_experience.save_to_db()
         except SQLAlchemyError as e:
             abort(500, message='An error occurred while adding the job')
 
-        return {'message': 'All educations added successfully'}, 201
+        return {'message': 'Work experiences added successfully'}, 201

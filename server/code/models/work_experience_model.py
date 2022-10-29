@@ -5,9 +5,9 @@ from sqlalchemy.types import Date
 class WorkExperienceModel(db.Model):
     __tablename__ = 'work_experience'
     id = db.Column(db.Integer(), primary_key=True)
-    company_name = db.Column(db.Integer, primary_key=True)
+    company_name = db.Column(db.String(80), nullable=False)
     position = db.Column(db.String(80), nullable=False)
-    current_job = db.Column(db.String(80), nullable=False)
+    current_job = db.Column(db.Boolean(), nullable=False)
     start_date = db.Column(Date(), nullable=False)
     end_date = db.Column(Date(), nullable=False)
     description = db.Column(db.Text(), nullable=False)
@@ -47,8 +47,8 @@ class WorkExperienceModel(db.Model):
         return work_experiences
 
     @classmethod
-    def find_by_uid(cls, user_id):
-        work_experiences = cls.query.filter_by(user_id=user_id).first()
+    def find_all_by_uid(cls, user_id):
+        work_experiences = cls.query.filter_by(user_id=user_id).all()
 
         return work_experiences
 
@@ -60,7 +60,7 @@ class WorkExperienceModel(db.Model):
 
     @classmethod
     def update(cls, **kwargs):
-        work = cls.find_by_work_id(kwargs['work_id'])
+        work = cls.find_by_work_id(kwargs['id'])
         if work:
             for key, value in kwargs.items():
                 setattr(work, key, value)
@@ -69,3 +69,11 @@ class WorkExperienceModel(db.Model):
             return work
 
         return None
+
+    @classmethod
+    def exists(cls, id_list):
+        for _id in id_list:
+            if not cls.query.filter_by(id=_id).first():
+                return False
+
+        return True

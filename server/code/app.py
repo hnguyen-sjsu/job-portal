@@ -37,6 +37,11 @@ from resources.educations.add import AddBatchEducations
 from resources.educations.delete import DeleteEducation
 from resources.educations.get import GetAllEducationsByUID
 from resources.educations.update import UpdateEducation
+from resources.work_experiences.get import GetAllWorkExperiencesByUID
+from resources.work_experiences.add import AddWorkExperience
+from resources.work_experiences.add import AddBatchWorkExperiences
+from resources.work_experiences.update import UpdateWorkExperience
+from resources.work_experiences.delete import DeleteWorkExperience
 from resources.db_cleaner import *
 from dotenv import load_dotenv
 from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, JWTManager, set_access_cookies
@@ -158,9 +163,16 @@ api.add_resource(UpdateSkill, '/skill/update')
 # education
 api.add_resource(GetAllEducationsByUID, '/education/get-all')
 api.add_resource(AddEducation, '/education/post-one')
-api.add_resource(AddBatchEducations, '/education/post-multiple')
+api.add_resource(AddBatchEducations, '/education/post-batch')
 api.add_resource(DeleteEducation, '/education/delete')
 api.add_resource(UpdateEducation, '/education/update')
+# work experience
+api.add_resource(GetAllWorkExperiencesByUID, '/work-experience/get-all')
+api.add_resource(AddWorkExperience, '/work-experience/post-one')
+api.add_resource(AddBatchWorkExperiences, '/work-experience/post-batch')
+api.add_resource(UpdateWorkExperience, '/work-experience/update')
+api.add_resource(DeleteWorkExperience, '/work-experience/delete')
+
 if __name__ == '__main__':
     db.init_app(app)
     mail.init_app(app)

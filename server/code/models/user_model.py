@@ -38,6 +38,10 @@ class UserModel(db.Model):
     work_experiences = db.relationship(
         'WorkExperienceModel', backref='users', lazy=True, cascade='all, delete-orphan')
 
+    # Create a relationship between the User and ApplicationModel.
+    applications = db.relationship(
+        'ApplicationModel', backref='users', lazy=True, cascade="all, delete-orphan")
+
     def __repr__(self):
         return str({column.name: getattr(self, column.name) for column in self.__table__.columns})
 

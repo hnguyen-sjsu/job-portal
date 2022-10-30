@@ -1,5 +1,6 @@
 from models.recruiter_model import RecruiterModel
 from models.candidate_model import CandidateModel
+from models.application_model import ApplicationModel
 from models.user_model import UserModel
 from db import db
 from sqlalchemy.types import Date
@@ -22,9 +23,9 @@ class JobModel(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'),
                         nullable=False)  # foreign key to user id.
-    # # Create a relationship between the job and application.
-    # applications = db.relationship(
-    #     'ApplicationModel', backref='candidate', lazy=True)
+    # Create a relationship between the job and application.
+    applications = db.relationship(
+        'ApplicationModel', backref='jobs', lazy=True, cascade='all, delete-orphan')
 
     def __repr__(self):
         return str({column.name: getattr(self, column.name) for column in self.__table__.columns})
@@ -88,14 +89,16 @@ class JobModel(db.Model):
     @classmethod
     def find_all_joined_results_by_uid(cls, user_id):
         # Join the JobModel table with the RecruiterModel table where user_id = user_id.
-        jobs_company = JobModel.query.\
+        jobs_company_application = JobModel.query.\
             join(RecruiterModel, JobModel.user_id == RecruiterModel.user_id).\
-            add_columns(RecruiterModel).\
-            filter(cls.user_id == user_id).\
+            join(ApplicationModel, JobModel.id == ApplicationModel.job_id).\
+            add_columns(RecruiterModel, ApplicationModel).\
+            order_by(JobModel.id).\
+            filter(JobModel.user_id == user_id).\
             filter(JobModel.end_date > datetime.datetime.now()).\
             all()
 
-        return jobs_company
+        return jobs_company_application
 
     @classmethod
     def find_all_jobs_by_uid(cls, user_id):
@@ -112,14 +115,15 @@ class JobModel(db.Model):
     @classmethod
     def find_one_joined_result_by_job_id(cls, id):
         # Join the JobModel table with the RecruiterModel table where job_id = id.
-        job_company = JobModel.query.\
+        job_company_applications = JobModel.query.\
             join(RecruiterModel, JobModel.user_id == RecruiterModel.user_id).\
-            add_columns(RecruiterModel).\
-            filter(cls.id == id).\
+            join(ApplicationModel, JobModel.id == ApplicationModel.job_id).\
+            add_columns(RecruiterModel, ApplicationModel).\
+            filter(JobModel.id == id).\
             filter(JobModel.end_date > datetime.datetime.now()).\
-            first()
+            all()
 
-        return job_company
+        return job_company_applications
 
     # Where client store the job id?
     @classmethod
@@ -138,16 +142,24 @@ class JobModel(db.Model):
     @classmethod
     def get_joined_table(cls, user_id):
         # Join the JobModel table with the RecruiterModel table.
-        jobs_company = JobModel.query.join(
-            RecruiterModel, JobModel.user_id == RecruiterModel.user_id).join(CandidateModel,
-                                                                             JobModel.user_id == UserModel.id).add_columns(RecruiterModel, UserModel).filter(cls.user_id == user_id).all()
-        results_list = {}
+        print(user_id)
+        jobs_company_application = JobModel.query.\
+            join(RecruiterModel, JobModel.user_id == RecruiterModel.user_id).\
+            join(ApplicationModel, JobModel.id == ApplicationModel.job_id).\
+            add_columns(RecruiterModel, ApplicationModel).\
+            order_by(JobModel.id).\
+            filter(JobModel.user_id == user_id).\
+            filter(JobModel.end_date > datetime.datetime.now()).\
+            all()
 
-        for job, company, user in jobs_company:
-            results = {}
-            results['jobs'] = job.to_dict()
-            results['jobs'].update({'company': company.to_dict()})
-            results['jobs'].update({'user': user.to_dict()})
-            results_list.update(results)
+        return jobs_company_application
 
-        return results_list
+    @ classmethod
+    def is_owner(cls, user_id, job_id):
+        job = cls.query.filter_by(id=job_id).first()
+        if job:
+            if job.user_id == user_id:
+                return True
+            return False
+
+        return False

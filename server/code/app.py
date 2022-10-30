@@ -42,6 +42,10 @@ from resources.work_experiences.add import AddWorkExperience
 from resources.work_experiences.add import AddBatchWorkExperiences
 from resources.work_experiences.update import UpdateWorkExperience
 from resources.work_experiences.delete import DeleteWorkExperience
+from resources.applications.get import GetAllApplicationsByUID
+from resources.applications.add import AddApplication
+from resources.applications.update import UpdateApplication
+from resources.applications.delete import DeleteApplication
 from resources.db_cleaner import *
 from dotenv import load_dotenv
 from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, JWTManager, set_access_cookies
@@ -172,6 +176,12 @@ api.add_resource(AddWorkExperience, '/work-experience/post-one')
 api.add_resource(AddBatchWorkExperiences, '/work-experience/post-batch')
 api.add_resource(UpdateWorkExperience, '/work-experience/update')
 api.add_resource(DeleteWorkExperience, '/work-experience/delete')
+# applications
+api.add_resource(GetAllApplicationsByUID, '/application/get-all')
+api.add_resource(AddApplication, '/application/post-one')
+api.add_resource(UpdateApplication, '/application/update')
+api.add_resource(DeleteApplication, '/application/delete')
+
 
 if __name__ == '__main__':
     db.init_app(app)

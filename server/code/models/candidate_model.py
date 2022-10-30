@@ -13,9 +13,6 @@ class CandidateModel(db.Model):
     # Foreign key that references to the user id in the users table.
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'),
                         nullable=False)
-    # # Create a relationship between the candidate and application.
-    # applications = db.relationship(
-    #     'ApplicationModel', backref='candidate', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
         return str({column.name: getattr(self, column.name) for column in self.__table__.columns})

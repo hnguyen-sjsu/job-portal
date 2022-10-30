@@ -1,6 +1,7 @@
 from flask_restful import Resource
 from models.application_model import ApplicationModel
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from helpers import dict_to_camel_case
 from sqlalchemy.exc import SQLAlchemyError
 from flask_smorest import abort
 
@@ -25,4 +26,4 @@ class GetAllApplicationsByUID(Resource):
             return {'applications': []}, 200
 
         # Return all applications
-        return {'applications': [application.to_dict() for application in applications]}, 200
+        return {'applications': [dict_to_camel_case(application.to_dict()) for application in applications]}, 200

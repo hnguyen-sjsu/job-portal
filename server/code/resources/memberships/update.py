@@ -7,6 +7,7 @@ from flask_smorest import abort
 from flask import request
 from marshmallow import Schema, fields, validate
 from datetime import date
+from helpers import dict_to_camel_case
 
 
 class UpdateMembershipSchema(Schema):
@@ -43,4 +44,4 @@ class UpdateMembership(Resource):
             print(e)
             abort(500, message='An error occurred while adding the job')
 
-        return new_membership.to_dict(), 200
+        return dict_to_camel_case(new_membership.to_dict()), 200

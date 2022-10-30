@@ -3,6 +3,7 @@ from models.education_model import EducationModel
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy.exc import SQLAlchemyError
 from flask_smorest import abort
+from helpers import dict_to_camel_case
 
 
 class GetAllEducationsByUID(Resource):
@@ -20,4 +21,4 @@ class GetAllEducationsByUID(Resource):
             print(e)
             abort(500, message='An error occurred while retrieving the educations.')
 
-        return {'educations': [education.to_dict() for education in educations]}, 200
+        return {'educations': [dict_to_camel_case(education.to_dict()) for education in educations]}, 200

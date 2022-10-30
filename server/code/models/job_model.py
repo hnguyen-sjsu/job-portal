@@ -7,6 +7,49 @@ from sqlalchemy.types import Date
 import datetime
 
 
+class SavedJobModel(db.Model):
+    __tablename__ = 'saved_jobs'
+    id = db.Column(db.Integer, primary_key=True)
+
+    # Create a relationship between the SavedJobModel and JobModel
+    job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=False)
+    # Create a relationship between the SavedJobModel and UserModel
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    def __init__(self, job_id, user_id):
+        self.job_id = job_id
+        self.user_id = user_id
+
+    def to_dict(self):
+        return {column.name: str(getattr(self, column.name)) for column in self.__table__.columns}
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def delete_by_id(cls, _id):
+        cls.query.filter_by(id=_id).delete()
+        db.session.commit()
+
+    @classmethod
+    def job_was_saved(cls, job_id, user_id):
+        job = cls.query.filter_by(job_id=job_id, user_id=user_id).first()
+
+        if job:
+            return True
+
+        return False
+
+    @classmethod
+    def find_all_by_uid(cls, user_id):
+        return cls.query.filter_by(user_id=user_id).all()
+
+    @classmethod
+    def find_one_by_saved_job_id(cls, saved_job_id):
+        return cls.query.filter_by(id=saved_job_id).first()
+
+
 class JobModel(db.Model):
     __tablename__ = 'jobs'
     id = db.Column(db.Integer(), primary_key=True)
@@ -26,6 +69,10 @@ class JobModel(db.Model):
     # Create a relationship between the job and application.
     applications = db.relationship(
         'ApplicationModel', backref='jobs', lazy=True, cascade='all, delete-orphan')
+
+    # Create a relationship between the SavedJobModel and JobModel
+    saved_jobs = db.relationship(
+        'SavedJobModel', backref='jobs', lazy=True, cascade='all, delete-orphan')
 
     def __repr__(self):
         return str({column.name: getattr(self, column.name) for column in self.__table__.columns})

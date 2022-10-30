@@ -2,6 +2,7 @@ from flask_restful import Resource
 from models.skill_model import SkillModel
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_smorest import abort
+from helpers import dict_to_camel_case
 
 
 class GetAllSkillsByUID(Resource):
@@ -17,4 +18,4 @@ class GetAllSkillsByUID(Resource):
         # get a SET of skills of the user
         user_skills = SkillModel.find_all_by_uid(user_id)
 
-        return {'skills': [skill.to_dict() for skill in user_skills]}, 200
+        return {'skills': [dict_to_camel_case(skill.to_dict()) for skill in user_skills]}, 200

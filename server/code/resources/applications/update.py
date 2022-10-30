@@ -6,6 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_smorest import abort
 from flask import request
 from marshmallow import Schema, fields, validate
+from helpers import dict_to_camel_case
 
 
 class UpdateApplicationSchema(Schema):
@@ -45,4 +46,4 @@ class UpdateApplication(Resource):
         except SQLAlchemyError as e:
             print(e)
             abort(500, message='An error occurred while updating the application')
-        return {'message': 'Application status updated successfully'}, 201
+        return {'application': dict_to_camel_case(application.to_dict())}, 201

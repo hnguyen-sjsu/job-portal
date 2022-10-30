@@ -44,4 +44,4 @@ class AddMembership(Resource):
             print(e)
             abort(500, message='An error occurred while adding the job')
 
-        return new_membership.to_dict(), 201
+        return {'message': 'Membership added successfully.'}, 201

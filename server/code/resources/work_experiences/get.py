@@ -3,6 +3,7 @@ from models.work_experience_model import WorkExperienceModel
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy.exc import SQLAlchemyError
 from flask_smorest import abort
+from helpers import dict_to_camel_case
 
 
 class GetAllWorkExperiencesByUID(Resource):
@@ -19,4 +20,4 @@ class GetAllWorkExperiencesByUID(Resource):
             print(e)
             abort(500, message='An error occurred while retrieving the work experiences.')
 
-        return {'work_experiences': [work.to_dict() for work in work_experiences]}, 200
+        return {'work_experiences': [dict_to_camel_case(work.to_dict()) for work in work_experiences]}, 200

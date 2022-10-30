@@ -7,6 +7,7 @@ from flask_smorest import abort
 from flask import request
 from marshmallow import Schema, fields
 from marshmallow.validate import Range
+from helpers import dict_to_camel_case
 
 
 class UpdateWorkExperienceSchema(Schema):
@@ -50,4 +51,4 @@ class UpdateWorkExperience(Resource):
             print(e)
             abort(500, message='An error occurred while updating the work experience')
 
-        return {'work experience': new_work_experience.to_dict()}, 200
+        return {'work experience': dict_to_camel_case(new_work_experience.to_dict())}, 200

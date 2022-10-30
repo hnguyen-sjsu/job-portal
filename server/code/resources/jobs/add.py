@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from models.job_model import JobModel
+from models.job_model import JobModel, SavedJobModel
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy.exc import SQLAlchemyError
 from helpers import convert_string_to_date
@@ -64,3 +64,35 @@ class AddJob(Resource):
             abort(500, message='An error occurred while adding the job')
 
         return {'message': 'Job created successfully.'}, 201
+
+
+class SavedJobSchema(Schema):
+    job_id = fields.Int(required=True)
+
+
+class SaveJob(Resource):
+    @classmethod
+    @jwt_required()
+    def post(cls):
+        if get_jwt_identity().get('role') != 'candidate':
+            abort(403, message='You are not authorized to access this resource.')
+
+        # Check for invalid data
+        errors = SavedJobSchema().validate(request.get_json())
+        if errors:
+            abort(400, message=errors)
+        data = request.get_json()
+        user_id = get_jwt_identity().get('user_id')
+        job_id = data.get('job_id')
+
+        try:
+            # Check if job_id exists
+            if SavedJobModel.job_was_saved(user_id=user_id, job_id=job_id):
+                abort(400, message='Job already saved.')
+
+            new_saved_job = SavedJobModel(user_id=user_id, job_id=job_id)
+            SavedJobModel.save_to_db(new_saved_job)
+        except SQLAlchemyError as e:
+            print(e)
+            abort(500, message='An error occurred while saving the job')
+        return {'message': 'Job saved successfully.'}, 201

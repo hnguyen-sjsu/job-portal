@@ -19,9 +19,9 @@ from resources.candidates.update import UpdateCandidateProfile
 from resources.candidates.get import GetCandidateProfile
 from resources.recruiters.update import UpdateRecruiterProfile
 from resources.recruiters.get import GetRecruiterProfile
-from resources.jobs.add import AddJob
-from resources.jobs.get import GetAll, GetTen, GetAllByUID, GetOne
-from resources.jobs.delete import DeleteJob
+from resources.jobs.add import AddJob, SaveJob
+from resources.jobs.get import GetAll, GetTen, GetAllByUID, GetOne, GetSavedJobs
+from resources.jobs.delete import DeleteJob, DeleteSavedJob
 from resources.jobs.update import UpdateJob
 from resources.memberships.add import AddMembership
 from resources.memberships.get import GetMembership
@@ -153,6 +153,9 @@ api.add_resource(GetAllByUID, '/job/get-posted-jobs')
 api.add_resource(AddJob, '/job/post')
 api.add_resource(UpdateJob, '/job/update')
 api.add_resource(DeleteJob, '/job/delete')
+api.add_resource(GetSavedJobs, '/job/get-saved-jobs')
+api.add_resource(SaveJob, '/job/post-saved-job')
+api.add_resource(DeleteSavedJob, '/job/delete-saved-job')
 # membership
 api.add_resource(AddMembership, '/membership/post')
 api.add_resource(GetMembership, '/membership/get')

@@ -1,6 +1,7 @@
 from flask_restful import Resource
 from models.membership_model import MembershipModel
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from helpers import dict_to_camel_case
 from sqlalchemy.exc import SQLAlchemyError
 from helpers import convert_string_to_date
 from flask_smorest import abort
@@ -21,6 +22,6 @@ class GetMembership(Resource):
 
         # Return membership information
         if membership:
-            return membership.to_dict(), 200
+            return dict_to_camel_case(membership.to_dict()), 200
         else:
             abort(404, message='You have not subscribed to any membership yet.')

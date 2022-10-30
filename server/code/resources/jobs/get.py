@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from models.job_model import JobModel
+from models.job_model import JobModel, SavedJobModel
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from helpers import dict_to_camel_case
 from flask_smorest import abort
@@ -34,7 +34,6 @@ def unpack_jobs(jobs):
             # if job id is in results, append the application to the current application list of that job.
             if job_id_in_results:
                 # Add application to the current application list
-                print("Hehe")
                 for j in results.get('jobs'):
                     if int(j['id']) == int(job.get('id')):
                         j['applications'].append(
@@ -139,3 +138,18 @@ class GetAllByUID(Resource):
         results_list = unpack_jobs(jobs_company)
 
         return results_list, 200
+
+
+class GetSavedJobs(Resource):
+    @classmethod
+    @jwt_required()
+    def get(cls):
+        if get_jwt_identity().get('role') != 'candidate':
+            abort(401, message="Unauthorized")
+
+        user_id = get_jwt_identity().get('user_id')
+
+        # Get saved job ids
+        saved_job_ids = SavedJobModel.find_all_by_uid(user_id)
+
+        return {'savedJobs': [dict_to_camel_case(saved_job.to_dict()) for saved_job in saved_job_ids]}, 200

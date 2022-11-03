@@ -135,6 +135,17 @@ class JobModel(db.Model):
 
     @classmethod
     def find_all_joined_results_by_uid(cls, user_id):
+        applications = ApplicationModel.find_by_user_id(user_id)
+        if len(applications) == 0:
+            jobs_company = JobModel.query.\
+                join(RecruiterModel, JobModel.user_id == RecruiterModel.user_id).\
+                add_columns(RecruiterModel).\
+                filter(JobModel.end_date > datetime.datetime.now()).\
+                filter(JobModel.user_id == user_id).\
+                all()
+
+            return jobs_company
+
         # Join the JobModel table with the RecruiterModel table where user_id = user_id.
         jobs_company_application = JobModel.query.\
             join(RecruiterModel, JobModel.user_id == RecruiterModel.user_id).\
@@ -161,6 +172,16 @@ class JobModel(db.Model):
 
     @classmethod
     def find_one_joined_result_by_job_id(cls, id):
+        applications = ApplicationModel.find_by_job_id(id)
+        if len(applications) == 0:
+            jobs_company = JobModel.query.\
+                join(RecruiterModel, JobModel.user_id == RecruiterModel.user_id).\
+                add_columns(RecruiterModel).\
+                filter(JobModel.end_date > datetime.datetime.now()).\
+                filter(JobModel.id == id).\
+                all()
+
+            return jobs_company
         # Join the JobModel table with the RecruiterModel table where job_id = id.
         job_company_applications = JobModel.query.\
             join(RecruiterModel, JobModel.user_id == RecruiterModel.user_id).\

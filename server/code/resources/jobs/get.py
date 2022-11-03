@@ -132,10 +132,10 @@ class GetAllByUID(Resource):
         user_id = get_jwt_identity().get('user_id')
 
         # Get all jobs and company info that belong to the current recruiter.
-        jobs_company = JobModel.find_all_joined_results_by_uid(user_id)
+        jobs = JobModel.find_all_joined_results_by_uid(user_id)
 
         # Create an empty dict to store the child dicts.
-        results_list = unpack_jobs(jobs_company)
+        results_list = unpack_jobs(jobs)
 
         return results_list, 200
 

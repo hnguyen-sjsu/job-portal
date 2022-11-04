@@ -47,7 +47,7 @@ class WorkExperienceModel(db.Model):
         return work_experiences
 
     @classmethod
-    def find_all_by_uid(cls, user_id):
+    def find_all_by_user_id(cls, user_id):
         work_experiences = cls.query.filter_by(user_id=user_id).all()
 
         return work_experiences

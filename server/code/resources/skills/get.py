@@ -16,6 +16,6 @@ class GetAllSkillsByUID(Resource):
         user_id = get_jwt_identity().get('user_id')
 
         # get a SET of skills of the user
-        user_skills = SkillModel.find_all_by_uid(user_id)
+        user_skills = SkillModel.find_all_by_user_id(user_id)
 
         return {'skills': [dict_to_camel_case(skill.to_dict()) for skill in user_skills]}, 200

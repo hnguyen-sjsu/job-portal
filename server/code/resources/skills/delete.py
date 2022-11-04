@@ -42,7 +42,7 @@ class DeleteSkill(Resource):
         ids_to_delete = data.get('ids')
 
         # Get a list of skill_id of the user
-        user_skills = SkillModel.find_all_by_uid(
+        user_skills = SkillModel.find_all_by_user_id(
             get_jwt_identity().get('user_id'))
         ids_list = [skill.id for skill in user_skills]
 

@@ -14,7 +14,7 @@ class GetAllWorkExperiencesByUID(Resource):
             abort(403, message='You are not authorized to access this resource.')
 
         try:
-            work_experiences = WorkExperienceModel.find_all_by_uid(
+            work_experiences = WorkExperienceModel.find_all_by_user_id(
                 get_jwt_identity().get('user_id'))
         except SQLAlchemyError as e:
             print(e)

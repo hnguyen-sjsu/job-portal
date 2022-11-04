@@ -15,7 +15,7 @@ class GetAllEducationsByUID(Resource):
 
         # Get all educations from the database
         try:
-            educations = EducationModel.find_all_by_uid(
+            educations = EducationModel.find_all_by_user_id(
                 get_jwt_identity().get('user_id'))
         except SQLAlchemyError as e:
             print(e)

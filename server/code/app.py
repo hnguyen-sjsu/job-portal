@@ -19,6 +19,7 @@ from resources.candidates.update import UpdateCandidateProfile
 from resources.candidates.get import GetCandidateProfile
 from resources.recruiters.update import UpdateRecruiterProfile
 from resources.recruiters.get import GetRecruiterProfile
+from resources.recruiters.get import GetCandidateProfiles
 from resources.jobs.add import AddJob, SaveJob
 from resources.jobs.get import GetAll, GetTen, GetAllByUID, GetOne, GetSavedJobs
 from resources.jobs.delete import DeleteJob, DeleteSavedJob
@@ -145,6 +146,7 @@ api.add_resource(GetCandidateProfile, '/candidate/get-profile')
 # recruiters
 api.add_resource(UpdateRecruiterProfile, '/recruiter/update')
 api.add_resource(GetRecruiterProfile, '/recruiter/get-profile')
+api.add_resource(GetCandidateProfiles, '/recruiter/get-candidate-profiles')
 # job
 api.add_resource(GetAll, '/job/get-all')
 api.add_resource(GetOne, '/job/get-one')

@@ -27,28 +27,40 @@ class UpdateWorkExperience(Resource):
     def put(cls):
         if get_jwt_identity().get('role') != 'candidate':
             abort(403, message='You are not authorized to access this resource.')
+        ids_to_update = []
+        data_list = request.get_json()
+        for data in data_list:
+            # Check for invalid data
+            errors = UpdateWorkExperienceSchema().validate(data)
+            if errors:
+                abort(400, message=errors)
 
-        data = request.get_json()
-        # Check for invalid data
-        errors = UpdateWorkExperienceSchema().validate(data)
-        if errors:
-            abort(400, message=errors)
+            data['start_date'] = convert_string_to_date(data['start_date'])
+            data['end_date'] = convert_string_to_date(data['end_date'])
 
-        data['start_date'] = convert_string_to_date(data['start_date'])
-        data['end_date'] = convert_string_to_date(data['end_date'])
+            # Check if the end date is in the past
+            if data['end_date'] < data['start_date']:
+                abort(400, message='Start date cannot be greater than end date')
 
-        # Check if the end date is in the past
-        if data['end_date'] < data['start_date']:
-            abort(400, message='Start date cannot be greater than end date')
+            # Save the work experience model to the database
+            try:
+                new_work_experience = WorkExperienceModel.update(**data)
+                if not new_work_experience:
+                    abort(400, message='Work experience id not found')
 
-        # Save the work experience model to the database
+                ids_to_update.append(new_work_experience.id)
+
+            except SQLAlchemyError as e:
+                print(e)
+                abort(
+                    500, message='An error occurred while updating the work experience')
         try:
-            new_work_experience = WorkExperienceModel.update(**data)
-            if not new_work_experience:
-                abort(400, message='Work experience id not found')
-
+            work_experiences = []
+            for id in ids_to_update:
+                work_experiences.append(
+                    WorkExperienceModel.find_by_work_id(id))
         except SQLAlchemyError as e:
             print(e)
-            abort(500, message='An error occurred while updating the work experience')
+            abort(500, message='An error occurred while retrieving the work experiences.')
 
-        return {'work experience': dict_to_camel_case(new_work_experience.to_dict())}, 200
+        return {'work_experiences': [dict_to_camel_case(work.to_dict()) for work in work_experiences]}, 200

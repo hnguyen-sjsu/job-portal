@@ -47,7 +47,7 @@ class EducationModel(db.Model):
         return educations
 
     @classmethod
-    def find_all_by_uid(cls, user_id):
+    def find_all_by_user_id(cls, user_id):
         educations = cls.query.filter_by(user_id=user_id).all()
 
         return educations

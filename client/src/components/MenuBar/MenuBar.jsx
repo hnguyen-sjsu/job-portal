@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -27,124 +27,146 @@ import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
-import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
-import { useEffect } from "react";
+import CasesOutlinedIcon from "@mui/icons-material/CasesOutlined";
+import PersonSearchOutlinedIcon from "@mui/icons-material/PersonSearchOutlined";
+import BallotOutlinedIcon from "@mui/icons-material/BallotOutlined";
+import ManageSearchOutlinedIcon from "@mui/icons-material/ManageSearchOutlined";
+import SaveAltOutlinedIcon from "@mui/icons-material/SaveAltOutlined";
+import BookmarksOutlinedIcon from "@mui/icons-material/BookmarksOutlined";
 
 function MenuBar(props) {
-	const { user, signOut } = useContext(UserContext);
+    const { user, signOut } = useContext(UserContext);
 
-	const { window, showOptions } = props;
+    const { window, showOptions } = props;
 
-	const [mobileOpen, setMobileOpen] = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
 
-	const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
 
-	const handleAccountClick = (event) => {
-		setAnchorEl(event.currentTarget);
-	};
+    const handleAccountClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
 
-	const handleAccountClose = () => {
-		setAnchorEl(null);
-	};
+    const handleAccountClose = () => {
+        setAnchorEl(null);
+    };
 
-	const open = Boolean(anchorEl);
+    const open = Boolean(anchorEl);
 
-	const handleDrawerToggle = () => {
-		setMobileOpen(!mobileOpen);
-	};
+    const handleDrawerToggle = () => {
+        setMobileOpen(!mobileOpen);
+    };
 
-	let navigate = useNavigate();
+    let navigate = useNavigate();
 
-	const linkItems = user
-		? user.role === "recruiter"
-			? [
-					{
-						title: "Find Candidates",
-						url: "/recruiter/candidates",
-					},
-					{
-						title: "Post Jobs",
-						url: "/recruiter/post-jobs",
-					},
-					{ title: "Manage Jobs", url: "/recruiter/manage-jobs" },
-			  ]
-			: [
-					{ title: "Find Jobs", url: "/job/search" },
-					{ title: "Applications", url: "/applications" },
-			  ]
-		: [
-				{ title: "Login", url: "/account/login", primary: false },
-				{
-					title: "Create Account",
-					url: "/account/signup",
-					primary: true,
-				},
-		  ];
+    const linkItems = user
+        ? user.role === "recruiter"
+            ? [
+                  {
+                      title: "Find Candidates",
+                      url: "/recruiter/candidates",
+                      icon: <PersonSearchOutlinedIcon />,
+                  },
+                  {
+                      title: "Post Jobs",
+                      url: "/recruiter/post-jobs",
+                      icon: <CasesOutlinedIcon />,
+                  },
+                  {
+                      title: "Manage Jobs",
+                      url: "/recruiter/manage-jobs",
+                      icon: <BallotOutlinedIcon />,
+                  },
+              ]
+            : [
+                  {
+                      title: "Find Jobs",
+                      url: "/job/search",
+                      icon: <ManageSearchOutlinedIcon />,
+                  },
+                  {
+                      title: "Saved Jobs",
+                      url: "/job/saved",
+                      icon: <BookmarksOutlinedIcon />,
+                  },
+                  {
+                      title: "Applications",
+                      url: "/applications",
+                      icon: <SaveAltOutlinedIcon />,
+                  },
+              ]
+        : [
+              { title: "Login", url: "/account/login", primary: false },
+              {
+                  title: "Create Account",
+                  url: "/account/signup",
+                  primary: true,
+              },
+          ];
 
-	const profileMenuItems = user
-		? [
-				{
-					title: "Profile",
-					url: "/" + user.role + "/profile",
-					icon: <AccountCircleOutlinedIcon />,
-				},
-				{
-					title: "Settings",
-					url: "/" + user.role + "/settings",
-					icon: <SettingsOutlinedIcon />,
-				},
-		  ]
-		: [];
+    const profileMenuItems = user
+        ? [
+              {
+                  title: "Profile",
+                  url: "/" + user.role + "/profile",
+                  icon: <AccountCircleOutlinedIcon />,
+              },
+              {
+                  title: "Settings",
+                  url: "/" + user.role + "/settings",
+                  icon: <SettingsOutlinedIcon />,
+              },
+          ]
+        : [];
 
-	useEffect(() => {
-		console.log(user);
-	}, []);
+    useEffect(() => {
+        console.log(user);
+    }, []);
 
-	useEffect(() => {}, [user]);
+    useEffect(() => {}, [user]);
 
-	const container =
-		window !== undefined ? () => window().document.body : undefined;
+    const container =
+        window !== undefined ? () => window().document.body : undefined;
 
-	const drawer = (
-		<Box onClick={handleDrawerToggle}>
-			<Typography variant="h6" sx={{ my: 2, paddingLeft: 2 }}>
-				Job Portal
-			</Typography>
-			<Divider />
-			<List>
-				{linkItems.map((item, idx) => (
-					<ListItem key={idx} disablePadding>
-						<ListItemButton>
-							<ListItemText primary={item.title} />
-						</ListItemButton>
-					</ListItem>
-				))}
-				{!user && (
-					<ListItem disablePadding>
-						<ListItemButton>Login</ListItemButton>
-					</ListItem>
-				)}
-				{!user && (
-					<ListItem disablePadding>
-						<ListItemButton>Create Account</ListItemButton>
-					</ListItem>
-				)}
-			</List>
-		</Box>
-	);
+    const drawer = (
+        <Box onClick={handleDrawerToggle}>
+            <Typography variant="h6" sx={{ my: 2, paddingLeft: 2 }}>
+                Job Portal
+            </Typography>
+            <Divider />
+            <List>
+                {linkItems.map((item, idx) => (
+                    <ListItem key={idx} disablePadding>
+                        <ListItemButton>
+                            <ListItemText primary={item.title} />
+                        </ListItemButton>
+                    </ListItem>
+                ))}
+                {!user && (
+                    <ListItem disablePadding>
+                        <ListItemButton>Login</ListItemButton>
+                    </ListItem>
+                )}
+                {!user && (
+                    <ListItem disablePadding>
+                        <ListItemButton>Create Account</ListItemButton>
+                    </ListItem>
+                )}
+            </List>
+        </Box>
+    );
 
-	return (
-		<>
-			<AppBar
-				component="nav"
-				color="inherit"
-				elevation={0}
-				position="sticky"
-				className="menu-bar"
-			>
-				<Toolbar>
-					{/* {showOptions && (
+    return (
+        <>
+            <AppBar
+                component="nav"
+                color="inherit"
+                elevation={0}
+                position="sticky"
+                className="menu-bar"
+            >
+                <Toolbar>
+                    {/* {showOptions && (
 						<IconButton
 							color="inherit"
 							aria-label="open drawer"
@@ -155,141 +177,141 @@ function MenuBar(props) {
 							<MenuIcon />
 						</IconButton>
 					)} */}
-					<a href="/">
-						<img src={appLogo} height={40} />
-					</a>
+                    <a href="/">
+                        <img src={appLogo} height={40} />
+                    </a>
 
-					<Typography
-						variant="h6"
-						component="div"
-						sx={{
-							flexGrow: 1,
-						}}
-					>
-						Job Finder
-					</Typography>
+                    <Typography
+                        variant="h6"
+                        component="div"
+                        sx={{
+                            flexGrow: 1,
+                        }}
+                    >
+                        Job Finder
+                    </Typography>
 
-					{showOptions && (
-						<>
-							<Box
-								sx={{
-									display: { xs: "none", sm: "block" },
-								}}
-							>
-								{linkItems.map((item, idx) => (
-									<Button
-										key={idx}
-										color={
-											item.primary ? "primary" : "inherit"
-										}
-										href={item.url}
-										variant={
-											item.primary ? "contained" : "text"
-										}
-										disableElevation
-									>
-										{item.title}
-									</Button>
-								))}
-							</Box>
-							<Box>
-								{user && (
-									<IconButton
-										onClick={handleAccountClick}
-										size="small"
-										sx={{ ml: 2 }}
-									>
-										{user.role === "candidate" &&
-											(user.fullName.length > 0 ? (
-												<Avatar
-													{...stringAvatar(
-														user.fullName
-													)}
-												/>
-											) : (
-												<AccountCircleRoundedIcon />
-											))}
-										{user.role === "recruiter" &&
-											(user.companyLogoUrl.length > 0 ? (
-												<Avatar
-													src={user.companyLogoUrl}
-												/>
-											) : (
-												<AccountCircleRoundedIcon />
-											))}
-									</IconButton>
-								)}
-							</Box>
-						</>
-					)}
-				</Toolbar>
-			</AppBar>
-			<Menu
-				anchorEl={anchorEl}
-				open={open}
-				onClose={handleAccountClose}
-				onClick={handleAccountClose}
-				PaperProps={{
-					elevation: 0,
-					sx: {
-						overflow: "visible",
-						filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-						mt: 1.5,
-						"& .MuiAvatar-root": {
-							width: 32,
-							height: 32,
-							ml: -0.5,
-							mr: 1,
-						},
-						"&:before": {
-							content: '""',
-							display: "block",
-							position: "absolute",
-							top: 0,
-							right: 14,
-							width: 10,
-							height: 10,
-							bgcolor: "background.paper",
-							transform: "translateY(-50%) rotate(45deg)",
-							zIndex: 0,
-						},
-						minWidth: "200px",
-					},
-				}}
-				transformOrigin={{ horizontal: "right", vertical: "top" }}
-				anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-			>
-				{profileMenuItems.map((item) => (
-					<MenuItem
-						key={item.title}
-						onClick={() => {
-							navigate(item.url);
-						}}
-					>
-						<ListItemIcon>{item.icon}</ListItemIcon>
-						{item.title}
-					</MenuItem>
-				))}
-				{linkItems.map((item) => (
-					<MenuItem
-						key={item.title}
-						onClick={() => {
-							navigate(item.url);
-						}}
-					>
-						<ListItemIcon></ListItemIcon>
-						{item.title}
-					</MenuItem>
-				))}
+                    {showOptions && (
+                        <>
+                            <Box
+                                sx={{
+                                    display: { xs: "none", sm: "block" },
+                                }}
+                            >
+                                {linkItems.map((item, idx) => (
+                                    <Button
+                                        key={idx}
+                                        color={
+                                            item.primary ? "primary" : "inherit"
+                                        }
+                                        href={item.url}
+                                        variant={
+                                            item.primary ? "contained" : "text"
+                                        }
+                                        disableElevation
+                                    >
+                                        {item.title}
+                                    </Button>
+                                ))}
+                            </Box>
+                            <Box>
+                                {user && (
+                                    <IconButton
+                                        onClick={handleAccountClick}
+                                        size="small"
+                                        sx={{ ml: 2 }}
+                                    >
+                                        {user.role === "candidate" &&
+                                            (user.fullName.length > 0 ? (
+                                                <Avatar
+                                                    {...stringAvatar(
+                                                        user.fullName
+                                                    )}
+                                                />
+                                            ) : (
+                                                <AccountCircleRoundedIcon />
+                                            ))}
+                                        {user.role === "recruiter" &&
+                                            (user.companyLogoUrl.length > 0 ? (
+                                                <Avatar
+                                                    src={user.companyLogoUrl}
+                                                />
+                                            ) : (
+                                                <AccountCircleRoundedIcon />
+                                            ))}
+                                    </IconButton>
+                                )}
+                            </Box>
+                        </>
+                    )}
+                </Toolbar>
+            </AppBar>
+            <Menu
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleAccountClose}
+                onClick={handleAccountClose}
+                sx={{ backdropFilter: "blur(5px)" }}
+                PaperProps={{
+                    elevation: 0,
+                    sx: {
+                        overflow: "visible",
+                        filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                        mt: 1.5,
+                        "& .MuiAvatar-root": {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1,
+                        },
+                        "&:before": {
+                            content: '""',
+                            display: "block",
+                            position: "absolute",
+                            top: 0,
+                            right: 14,
+                            width: 10,
+                            height: 10,
+                            bgcolor: "background.paper",
+                            zIndex: 0,
+                        },
+                        minWidth: "200px",
+                    },
+                }}
+                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            >
+                {profileMenuItems.map((item) => (
+                    <MenuItem
+                        key={item.title}
+                        onClick={() => {
+                            navigate(item.url);
+                        }}
+                    >
+                        <ListItemIcon>{item.icon}</ListItemIcon>
+                        {item.title}
+                    </MenuItem>
+                ))}
+                {linkItems.map((item) => (
+                    <MenuItem
+                        key={item.title}
+                        onClick={() => {
+                            navigate(item.url);
+                        }}
+                    >
+                        <ListItemIcon>{item.icon && item.icon}</ListItemIcon>
+                        {item.title}
+                    </MenuItem>
+                ))}
 
-				<MenuItem onClick={signOut}>
-					<ListItemIcon>
-						<LogoutOutlinedIcon />
-					</ListItemIcon>
-					Sign Out
-				</MenuItem>
-			</Menu>
-			{/* <Box component="nav">
+                <MenuItem onClick={signOut}>
+                    <ListItemIcon>
+                        <LogoutOutlinedIcon />
+                    </ListItemIcon>
+                    Sign Out
+                </MenuItem>
+            </Menu>
+            {/* <Box component="nav">
 				<Drawer
 					container={container}
 					variant="temporary"
@@ -310,46 +332,46 @@ function MenuBar(props) {
 					{drawer}
 				</Drawer>
 			</Box> */}
-		</>
-	);
+        </>
+    );
 }
 
 export default MenuBar;
 
 function stringToColor(string) {
-	let hash = 0;
-	let i;
+    let hash = 0;
+    let i;
 
-	if (string === undefined) {
-		string = "Unnamed User";
-	}
+    if (string === undefined) {
+        string = "Unnamed User";
+    }
 
-	/* eslint-disable no-bitwise */
-	for (i = 0; i < string.length; i += 1) {
-		hash = string.charCodeAt(i) + ((hash << 5) - hash);
-	}
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+        hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
 
-	let color = "#";
+    let color = "#";
 
-	for (i = 0; i < 3; i += 1) {
-		const value = (hash >> (i * 8)) & 0xff;
-		color += `00${value.toString(16)}`.slice(-2);
-	}
-	/* eslint-enable no-bitwise */
+    for (i = 0; i < 3; i += 1) {
+        const value = (hash >> (i * 8)) & 0xff;
+        color += `00${value.toString(16)}`.slice(-2);
+    }
+    /* eslint-enable no-bitwise */
 
-	return color;
+    return color;
 }
 
 function stringAvatar(name) {
-	if (name === undefined) {
-		name = "Unnamed User";
-	}
-	return {
-		sx: {
-			bgcolor: stringToColor(name),
-			width: 32,
-			height: 32,
-		},
-		children: `${name.split(" ")[0][0]}`,
-	};
+    if (name === undefined) {
+        name = "Unnamed User";
+    }
+    return {
+        sx: {
+            bgcolor: stringToColor(name),
+            width: 32,
+            height: 32,
+        },
+        children: `${name.split(" ")[0][0]}`,
+    };
 }

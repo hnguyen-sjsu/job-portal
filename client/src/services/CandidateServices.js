@@ -137,11 +137,10 @@ const saveEducationHistory = async (educationItems) => {
             (item) => item.schoolId != null
         );
 
-        console.log(newItems);
-        console.log(updateItems);
-
-        const [res1] = await Promise.all([addNewEducationHistory(newItems)]);
-        console.log(res1);
+        const [res1, res2] = await Promise.all([
+            addNewEducationHistory(newItems),
+            updateEducationHistory(updateItems),
+        ]);
     } catch (e) {
         console.error(e);
     }
@@ -166,7 +165,6 @@ const addNewEducationHistory = async (educationItems) => {
     });
 
     try {
-        console.log(data);
         const response = await axios.post(url, data, params, headers);
         return response;
     } catch (e) {
@@ -174,9 +172,32 @@ const addNewEducationHistory = async (educationItems) => {
     }
 };
 
-// const updateEducationHistory = async (educationItems) => {
+const updateEducationHistory = async (educationItems) => {
+    const url = educationBaseUrl + "update";
+    const headers = getHeaders();
+    const params = {
+        withCredentials: true,
+    };
 
-// }
+    const data = educationItems.map((item) => {
+        return {
+            school_id: item.schoolId,
+            school_name: item.schoolName,
+            degree: item.degree,
+            major: item.major,
+            start_date: moment(item.startDate).format(DATE_FORMAT),
+            end_date: moment(item.endDate).format(DATE_FORMAT),
+            description: item.description,
+        };
+    });
+
+    try {
+        const response = await axios.put(url, data, params, headers);
+        return response;
+    } catch (e) {
+        console.error(e);
+    }
+};
 
 const CandidateServices = {
     getEducationItems,

@@ -13,7 +13,7 @@ class AddEducationSchema(Schema):
     degree = fields.Str(required=True)
     major = fields.Str(required=True)
     start_date = fields.Date(required=True)
-    end_date = fields.Date(required=True)
+    end_date = fields.Date(required=False, allow_none=True)
     description = fields.Str(required=True)
 
 
@@ -32,11 +32,12 @@ class AddEducation(Resource):
             abort(400, message=errors)
 
         data['start_date'] = convert_string_to_date(data['start_date'])
-        data['end_date'] = convert_string_to_date(data['end_date'])
+        if data['end_date']:
+            data['end_date'] = convert_string_to_date(data['end_date'])
 
-        # Check if the end date is in the past
-        if data['end_date'] < data['start_date']:
-            abort(400, message='Start date cannot be greater than end date')
+            # Check if the end date is in the past
+            if data['end_date'] < data['start_date']:
+                abort(400, message='Start date cannot be greater than end date')
 
         # Create a new education model
         education = EducationModel(
@@ -69,10 +70,11 @@ class AddBatchEducations(Resource):
                 abort(400, message=errors)
             education['start_date'] = convert_string_to_date(
                 education['start_date'])
-            education['end_date'] = convert_string_to_date(
-                education['end_date'])
-            if education['end_date'] < education['start_date']:
-                abort(400, message='Start date cannot be greater than end date')
+            if education['end_date']:
+                education['end_date'] = convert_string_to_date(
+                    education['end_date'])
+                if education['end_date'] < education['start_date']:
+                    abort(400, message='Start date cannot be greater than end date')
 
         # Create a new education model
         educations = [EducationModel(

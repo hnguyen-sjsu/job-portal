@@ -1,4 +1,5 @@
 from db import db
+from sqlalchemy.orm import defer
 
 
 class CandidateModel(db.Model):
@@ -42,6 +43,10 @@ class CandidateModel(db.Model):
         return cls.query.filter_by(user_id=user_id).first()
 
     @classmethod
+    def find_by_user_id_for_recruiter(cls, user_id):
+        return cls.query.filter_by(user_id=user_id).first()
+
+    @ classmethod
     def update(cls, _id, **kwargs):
         # find candidate
         candidate = cls.query.filter_by(id=_id).first()

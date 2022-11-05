@@ -68,23 +68,31 @@ class RecruiterModel(db.Model):
     @classmethod
     def find_all_candidates(cls):
         results = []
-        candidates_users = UserModel.query.filter_by(role='candidate').all()
+        candidates_users = UserModel.query.with_entities(
+            UserModel.id).filter_by(role='candidate').all()
+
         for candidate_user in candidates_users:
             user_id = candidate_user.id
             # get candidate's profile
-            profile = CandidateModel.find_by_user_id(user_id)
+            profile = CandidateModel.find_by_user_id_for_recruiter(user_id)
             profile = dict_to_camel_case(profile.to_dict())
+
             # get candidate's education
             educations = EducationModel.find_all_by_user_id(user_id)
             educations = [dict_to_camel_case(
                 education.to_dict()) for education in educations]
+
             # get candidate's work experience
             work_experiences = WorkExperienceModel.find_all_by_user_id(user_id)
             work_experiences = [dict_to_camel_case(
                 work_experience.to_dict()) for work_experience in work_experiences]
+
             # get candidate's skills
             skills = SkillModel.find_all_by_user_id(user_id)
             skills = [dict_to_camel_case(skill.to_dict()) for skill in skills]
+
+            # add to results
             results.append({'profile': profile, 'educations': educations,
                            'work_experiences': work_experiences, 'skills': skills})
+
         return results

@@ -206,7 +206,17 @@ class JobModel(db.Model):
 
         return None
 
+    @ classmethod
+    def is_owner(cls, user_id, job_id):
+        job = cls.query.filter_by(id=job_id).first()
+        if job:
+            if job.user_id == user_id:
+                return True
+            return False
+
+        return False
     # Testing join tables
+
     @classmethod
     def get_joined_table(cls, user_id):
         # Join the JobModel table with the RecruiterModel table.
@@ -221,13 +231,3 @@ class JobModel(db.Model):
             all()
 
         return jobs_company_application
-
-    @ classmethod
-    def is_owner(cls, user_id, job_id):
-        job = cls.query.filter_by(id=job_id).first()
-        if job:
-            if job.user_id == user_id:
-                return True
-            return False
-
-        return False

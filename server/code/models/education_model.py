@@ -9,7 +9,7 @@ class EducationModel(db.Model):
     degree = db.Column(db.String(80), nullable=False)
     major = db.Column(db.String(80), nullable=False)
     start_date = db.Column(Date(), nullable=False)
-    end_date = db.Column(Date(), nullable=False)
+    end_date = db.Column(Date(), nullable=True)
     description = db.Column(db.Text(), nullable=False)
 
     # Foreign key to user id.
@@ -19,7 +19,7 @@ class EducationModel(db.Model):
     def __repr__(self):
         return str({column.name: getattr(self, column.name) for column in self.__table__.columns})
 
-    def __init__(self, school_name, degree, major, start_date, end_date, description, user_id):
+    def __init__(self, school_name, degree, major, start_date,  description, user_id, end_date=None):
         self.school_name = school_name
         self.degree = degree
         self.major = major

@@ -14,7 +14,7 @@ class AddWorkExperienceSchema(Schema):
     position = fields.Str(required=True)
     current_job = fields.Bool(required=True)
     start_date = fields.Date(required=True)
-    end_date = fields.Date(required=True)
+    end_date = fields.Date(required=True, allow_none=True)
     description = fields.Str(required=True)
 
 
@@ -33,11 +33,12 @@ class AddWorkExperience(Resource):
             abort(400, message=errors)
 
         data['start_date'] = convert_string_to_date(data['start_date'])
-        data['end_date'] = convert_string_to_date(data['end_date'])
+        if data['end_date']:
+            data['end_date'] = convert_string_to_date(data['end_date'])
 
-        # Check if the end date is in the past
-        if data['end_date'] < data['start_date']:
-            abort(400, message='Start date cannot be greater than end date')
+            # Check if the end date is in the past
+            if data['end_date'] < data['start_date']:
+                abort(400, message='Start date cannot be greater than end date')
 
         # Create a new work experience model
         work_experiences = WorkExperienceModel(
@@ -71,10 +72,11 @@ class AddBatchWorkExperiences(Resource):
                 abort(400, message=errors)
             experience['start_date'] = convert_string_to_date(
                 experience['start_date'])
-            experience['end_date'] = convert_string_to_date(
-                experience['end_date'])
-            if experience['end_date'] < experience['start_date']:
-                abort(400, message='Start date cannot be greater than end date')
+            if experience['end_date']:
+                experience['end_date'] = convert_string_to_date(
+                    experience['end_date'])
+                if experience['end_date'] < experience['start_date']:
+                    abort(400, message='Start date cannot be greater than end date')
 
         # Create a new work experience model
         work_experiences = [WorkExperienceModel(

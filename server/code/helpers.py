@@ -26,7 +26,14 @@ def string_to_camel_case(snake_str):
 
 
 def dict_to_camel_case(dict):
-    return {string_to_camel_case(key): value for key, value in dict.items()}
+    outputs = {}
+    for key, value in dict.items():
+        key = string_to_camel_case(key)
+        if value == 'None':
+            value = None
+        outputs[key] = value
+
+    return outputs
 
 
 def convert_string_to_date(string):

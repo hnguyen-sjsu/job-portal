@@ -199,6 +199,21 @@ const updateEducationHistory = async (educationItems) => {
     }
 };
 
+const deleteEducationHistory = async (jobId) => {
+    const url = educationBaseUrl + "delete?ids=" + jobId;
+    const headers = getHeaders();
+    const params = {
+        withCredentials: true,
+    };
+
+    try {
+        const response = await axios.delete(url, params, headers);
+        return response.status === 200;
+    } catch (e) {
+        console.error(e);
+    }
+};
+
 const CandidateServices = {
     getEducationItems,
     updateCandidateProfile,
@@ -208,6 +223,7 @@ const CandidateServices = {
     deleteSkill,
     getEducationItems,
     saveEducationHistory,
+    deleteEducationHistory,
 };
 
 export default CandidateServices;

@@ -109,6 +109,7 @@ function ProfileForm(props) {
                     userProfile={userProfile}
                     setUserProfile={setUserProfile}
                     loading={loading}
+                    setLoading={setLoading}
                 />
             ),
         },
@@ -119,6 +120,7 @@ function ProfileForm(props) {
                     loading={loading}
                     educationItems={educationItems}
                     setEducationItems={setEducationItems}
+                    setLoading={setLoading}
                 />
             ),
         },
@@ -131,6 +133,7 @@ function ProfileForm(props) {
                     experienceItems={experienceItems}
                     setExperienceItems={setExperienceItems}
                     loading={loading}
+                    setLoading={setLoading}
                 />
             ),
         },
@@ -145,20 +148,33 @@ function ProfileForm(props) {
 
     const loadProfile = async () => {
         setLoading(true);
-        const [profileResponse, educationResponse, skillsResponse] =
-            await Promise.all([
-                CandidateServices.getCandidateProfile(),
-                CandidateServices.getEducationItems(),
-                CandidateServices.getSkills(),
-            ]);
-        if (profileResponse && educationResponse && skillsResponse) {
-            setUserProfile({ ...profileResponse });
-            setSkills([...skillsResponse]);
-            setEducationItems([...educationResponse]);
-            setTimeout(() => {
-                setLoading(false);
-            }, 1000);
-        }
+        // const [profileResponse, educationResponse, skillsResponse] =
+        //     await Promise.all([
+        //         CandidateServices.getCandidateProfile(),
+        //         CandidateServices.getEducationItems(),
+        //         CandidateServices.getSkills(),
+        //     ]);
+        // if (profileResponse && educationResponse && skillsResponse) {
+        //     setUserProfile({ ...profileResponse });
+        //     setSkills([...skillsResponse]);
+        //     setEducationItems([...educationResponse]);
+        //     setTimeout(() => {
+        //         setLoading(false);
+        //     }, 1000);
+        // }
+        // const [profileResponse, skillsResponse] = await Promise.all([
+        //     CandidateServices.getCandidateProfile(),
+
+        //     CandidateServices.getSkills(),
+        // ]);
+        // if (profileResponse && skillsResponse) {
+        //     setUserProfile({ ...profileResponse });
+        //     setSkills([...skillsResponse]);
+
+        //     setTimeout(() => {
+        //         setLoading(false);
+        //     }, 1000);
+        // }
     };
 
     useEffect(() => {

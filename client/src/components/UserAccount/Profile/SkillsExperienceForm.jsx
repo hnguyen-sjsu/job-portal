@@ -4,19 +4,18 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
 import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Input from "@mui/material/Input";
+
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import CandidateServices from "../../../services/CandidateServices";
 
@@ -29,6 +28,17 @@ function SkillsExperienceForm(props) {
         loading,
         setLoading,
     } = props;
+
+    const newItem = {
+        id: null,
+        position: "",
+        companyName: "",
+        startDate: null,
+        endDate: null,
+        currentJob: false,
+        description: "",
+        location: "",
+    };
 
     const handleAddSkill = (e) => {
         const { value } = e.target;
@@ -50,7 +60,6 @@ function SkillsExperienceForm(props) {
         });
 
         setExperienceItems([...updatedItems]);
-        console.log(experienceItems);
     };
 
     const handleDeleteSkill = (skillId) => {
@@ -67,21 +76,50 @@ function SkillsExperienceForm(props) {
     };
 
     const handleAddNewExperience = () => {
-        setExperienceItems([...experienceItems, { isCurrentJob: false }]);
+        setExperienceItems([...experienceItems, { ...newItem }]);
+    };
+
+    const handleStartDateChange = (index, newValue) => {
+        const updatedItems = experienceItems.map((item, i) => {
+            return index === i ? { ...item, startDate: newValue } : item;
+        });
+        setExperienceItems([...updatedItems]);
+    };
+
+    const handleEndDateChange = (index, newValue) => {
+        const updatedItems = experienceItems.map((item, i) => {
+            return index === i ? { ...item, endDate: newValue } : item;
+        });
+        setExperienceItems([...updatedItems]);
+    };
+
+    const loadData = async () => {
+        setLoading(true);
+        const [skillsRes, expRes] = await Promise.all([
+            CandidateServices.getSkills(),
+            CandidateServices.getWorkHistoryItems(),
+        ]);
+        if (skillsRes && expRes) {
+            setSkills([...skillsRes]);
+            if (expRes.length > 0) {
+                setExperienceItems([...expRes]);
+            }
+            setTimeout(() => {
+                setLoading(false);
+            }, 500);
+        }
     };
 
     useEffect(() => {
-        CandidateServices.getSkills().then((response) => {
-            setSkills([...response]);
-        });
+        loadData();
     }, []);
 
     return (
-        <Container disableGutters>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Typography variant="h4" fontWeight="bold">
                 Skills & Experience
             </Typography>
-            <Box className={["profile-form-container", "container"]}>
+            <Box className={["profile-form-container", "container"].join(" ")}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <Typography
@@ -135,12 +173,14 @@ function SkillsExperienceForm(props) {
                     <Grid container spacing={2} key={index}>
                         <Grid item xs={12}>
                             <Stack spacing={1}>
-                                <InputLabel htmlFor="title">Title</InputLabel>
+                                <InputLabel htmlFor="position">
+                                    Title
+                                </InputLabel>
                                 <TextField
                                     placeholder="Your position/title"
-                                    name="title"
+                                    name="position"
                                     size="small"
-                                    value={item.title}
+                                    value={item.position}
                                     onChange={(e) => {
                                         handleChange(e, index);
                                     }}
@@ -165,14 +205,14 @@ function SkillsExperienceForm(props) {
                         </Grid>
                         <Grid item xs={6}>
                             <Stack spacing={1}>
-                                <InputLabel htmlFor="companyLocation">
+                                <InputLabel htmlFor="location">
                                     Location
                                 </InputLabel>
                                 <TextField
                                     placeholder="Company Location"
-                                    name="companyLocation"
+                                    name="location"
                                     size="small"
-                                    value={item.companyLocation}
+                                    value={item.location}
                                     onChange={(e) => {
                                         handleChange(e, index);
                                     }}
@@ -183,8 +223,8 @@ function SkillsExperienceForm(props) {
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={item.isCurrentJob}
-                                        name="isCurrentJob"
+                                        checked={item.currentJob}
+                                        name="currentJob"
                                         onChange={(e) => {
                                             const event = {
                                                 target: {
@@ -204,14 +244,26 @@ function SkillsExperienceForm(props) {
                                 <InputLabel htmlFor="startDate">
                                     Start Date
                                 </InputLabel>
-                                <TextField
-                                    placeholder="MM/YYYY"
+                                <DatePicker
+                                    views={["month", "year"]}
+                                    inputFormat="MM/yyyy"
                                     name="startDate"
-                                    size="small"
                                     value={item.startDate}
-                                    onChange={(e) => {
-                                        handleChange(e, index);
+                                    onChange={(newValue) => {
+                                        handleStartDateChange(index, newValue);
                                     }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            placeholder="MM/YYYY"
+                                            name="startDate"
+                                            size="small"
+                                            value={item.startDate}
+                                            onChange={(e) => {
+                                                handleChange(e, index);
+                                            }}
+                                        />
+                                    )}
                                 />
                             </Stack>
                         </Grid>
@@ -220,15 +272,27 @@ function SkillsExperienceForm(props) {
                                 <InputLabel htmlFor="endDate">
                                     End Date
                                 </InputLabel>
-                                <TextField
-                                    placeholder="MM/YYYY"
+                                <DatePicker
+                                    views={["month", "year"]}
+                                    inputFormat="MM/yyyy"
                                     name="endDate"
-                                    size="small"
                                     value={item.endDate}
-                                    onChange={(e) => {
-                                        handleChange(e, index);
+                                    onChange={(newValue) => {
+                                        handleEndDateChange(index, newValue);
                                     }}
-                                    disabled={item.isCurrentJob}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            placeholder="MM/YYYY"
+                                            name="endDate"
+                                            size="small"
+                                            value={item.endDate}
+                                            onChange={(e) => {
+                                                handleChange(e, index);
+                                            }}
+                                        />
+                                    )}
+                                    disabled={item.currentJob}
                                 />
                             </Stack>
                         </Grid>
@@ -253,6 +317,11 @@ function SkillsExperienceForm(props) {
                             <Button
                                 onClick={handleAddNewExperience}
                                 startIcon={<AddRoundedIcon fontSize="small" />}
+                                disabled={
+                                    experienceItems[0].companyName.length ==
+                                        0 &&
+                                    experienceItems[0].position.length == 0
+                                }
                             >
                                 Add Another Work Experience
                             </Button>
@@ -260,7 +329,7 @@ function SkillsExperienceForm(props) {
                     </Grid>
                 ))}
             </Box>
-        </Container>
+        </LocalizationProvider>
     );
 }
 export default SkillsExperienceForm;

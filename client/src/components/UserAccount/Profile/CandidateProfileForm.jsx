@@ -27,9 +27,12 @@ function CandidateProfileForm(props) {
     };
 
     useEffect(() => {
+        setLoading(true);
         CandidateServices.getCandidateProfile().then((response) => {
             setUserProfile({ ...response });
-            setLoading(false);
+            setTimeout(() => {
+                setLoading(false);
+            }, 500);
         });
     }, []);
 
@@ -44,7 +47,7 @@ function CandidateProfileForm(props) {
             <Grid
                 container
                 spacing={2}
-                className={["profile-form-container", "container"]}
+                className={["profile-form-container", "container"].join(" ")}
             >
                 <Grid item xs={12}>
                     <Stack spacing={1}>

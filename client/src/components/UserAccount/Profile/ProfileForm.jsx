@@ -15,6 +15,7 @@ import CandidateProfileForm from "./CandidateProfileForm";
 import CandidateServices from "../../../services/CandidateServices";
 import EducationHistoryForm from "./EducationHistoryForm";
 import SkillsExperienceForm from "./SkillsExperienceForm";
+import ProfileView from "./ProfileView";
 import ResumeForm from "./ResumeForm";
 
 function ProfileForm(props) {
@@ -44,7 +45,16 @@ function ProfileForm(props) {
 
     const [skills, setSkills] = useState([]);
     const [experienceItems, setExperienceItems] = useState([
-        { isCurrentJob: false },
+        {
+            id: null,
+            position: "",
+            companyName: "",
+            startDate: null,
+            endDate: null,
+            currentJob: false,
+            description: "",
+            location: "",
+        },
     ]);
     const [activeStep, setActiveStep] = useState(0);
 
@@ -69,24 +79,24 @@ function ProfileForm(props) {
             case 0:
                 CandidateServices.updateCandidateProfile(userProfile).then(
                     (response) => {
-                        setTimeout(() => {
-                            moveNext();
-                            setLoading(false);
-                        }, 1000);
+                        moveNext();
                     }
                 );
                 break;
             case 1:
                 CandidateServices.saveEducationHistory(educationItems).then(
                     (response) => {
-                        setTimeout(() => {
-                            moveNext();
-                            setLoading(false);
-                        }, 1000);
+                        moveNext();
                     }
                 );
                 break;
             case 2:
+                CandidateServices.saveWorkHistory(experienceItems).then(
+                    (response) => {
+                        moveNext();
+                    }
+                );
+                break;
             case 3:
             case 4:
             default:
@@ -95,10 +105,12 @@ function ProfileForm(props) {
     };
 
     const moveNext = () => {
-        if (activeStep < totalSteps() - 1) {
-            setActiveStep(activeStep + 1);
-        }
-        setLoading(false);
+        setTimeout(() => {
+            if (activeStep < totalSteps() - 1) {
+                setActiveStep(activeStep + 1);
+            }
+            setLoading(false);
+        }, 500);
     };
 
     const steps = [
@@ -142,44 +154,10 @@ function ProfileForm(props) {
             component: <ResumeForm />,
         },
         {
-            title: "Review & Submit",
+            title: "Done",
+            component: <ProfileView editable={false} />,
         },
     ];
-
-    const loadProfile = async () => {
-        setLoading(true);
-        // const [profileResponse, educationResponse, skillsResponse] =
-        //     await Promise.all([
-        //         CandidateServices.getCandidateProfile(),
-        //         CandidateServices.getEducationItems(),
-        //         CandidateServices.getSkills(),
-        //     ]);
-        // if (profileResponse && educationResponse && skillsResponse) {
-        //     setUserProfile({ ...profileResponse });
-        //     setSkills([...skillsResponse]);
-        //     setEducationItems([...educationResponse]);
-        //     setTimeout(() => {
-        //         setLoading(false);
-        //     }, 1000);
-        // }
-        // const [profileResponse, skillsResponse] = await Promise.all([
-        //     CandidateServices.getCandidateProfile(),
-
-        //     CandidateServices.getSkills(),
-        // ]);
-        // if (profileResponse && skillsResponse) {
-        //     setUserProfile({ ...profileResponse });
-        //     setSkills([...skillsResponse]);
-
-        //     setTimeout(() => {
-        //         setLoading(false);
-        //     }, 1000);
-        // }
-    };
-
-    useEffect(() => {
-        loadProfile();
-    }, []);
 
     return (
         <>
@@ -214,6 +192,9 @@ function ProfileForm(props) {
                             href="/candidate/profile"
                             type="submit"
                             disabled={loading}
+                            sx={{
+                                display: isLastStep() ? "none" : "block",
+                            }}
                         >
                             Skip and Complete Later
                         </Button>
@@ -227,7 +208,7 @@ function ProfileForm(props) {
                             type="submit"
                             disabled={loading}
                         >
-                            Next
+                            Save and Continue
                         </Button>
                         {isLastStep() && (
                             <Button
@@ -237,7 +218,7 @@ function ProfileForm(props) {
                                 sx={{ ml: 2 }}
                                 disabled={loading}
                             >
-                                Submit
+                                Done
                             </Button>
                         )}
                     </Stack>

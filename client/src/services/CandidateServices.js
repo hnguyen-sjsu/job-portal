@@ -2,7 +2,9 @@ import axios from "axios";
 import moment from "moment";
 
 const baseUrl = "http://localhost:5000/candidate/";
+const skillBaseUrl = "http://localhost:5000/skill/";
 const educationBaseUrl = "http://localhost:5000/education/";
+const workBaseUrl = "http://localhost:5000/work-experience/";
 
 const DATE_FORMAT = "YYYY-MM-DD";
 
@@ -66,7 +68,7 @@ const getCandidateProfile = async () => {
 };
 
 const addSkill = async (skill) => {
-    const url = "http://localhost:5000/skill/post-one";
+    const url = skillBaseUrl + "post-one";
     const headers = getHeaders();
     const params = {
         withCredentials: true,
@@ -85,7 +87,7 @@ const addSkill = async (skill) => {
 };
 
 const getSkills = async (skill) => {
-    const url = "http://localhost:5000/skill/get";
+    const url = skillBaseUrl + "get";
     const headers = getHeaders();
     const params = {
         withCredentials: true,
@@ -101,7 +103,7 @@ const getSkills = async (skill) => {
 };
 
 const deleteSkill = async (skillId) => {
-    const url = "http://localhost:5000/skill/delete?ids=" + skillId;
+    const url = skillBaseUrl + "delete?ids=" + skillId;
     const headers = getHeaders();
     const params = {
         withCredentials: true,
@@ -121,7 +123,14 @@ const getEducationItems = async () => {
     try {
         const response = await axios.get(url, params, headers);
         if (response.status === 200) {
-            return response.data.educations;
+            return response.data.educations.map((item) => {
+                return {
+                    ...item,
+                    startDate:
+                        item.startDate === "None" ? null : item.startDate,
+                    endDate: item.endDate === "None" ? null : item.endDate,
+                };
+            });
         } else {
             return [];
         }
@@ -132,9 +141,11 @@ const getEducationItems = async () => {
 
 const saveEducationHistory = async (educationItems) => {
     try {
-        const newItems = educationItems.filter((item) => item.schoolId == null);
+        const newItems = educationItems.filter(
+            (item) => item.schoolId == null && item.schoolName.length > 0
+        );
         const updateItems = educationItems.filter(
-            (item) => item.schoolId != null
+            (item) => item.schoolId != null && item.schoolName.length > 0
         );
 
         const [res1, res2] = await Promise.all([
@@ -158,8 +169,12 @@ const addNewEducationHistory = async (educationItems) => {
             school_name: item.schoolName,
             degree: item.degree,
             major: item.major,
-            start_date: moment(item.startDate).format(DATE_FORMAT),
-            end_date: moment(item.endDate).format(DATE_FORMAT),
+            start_date: item.startDate
+                ? moment(item.startDate).format(DATE_FORMAT)
+                : null,
+            end_date: item.endDate
+                ? moment(item.endDate).format(DATE_FORMAT)
+                : null,
             description: item.description,
         };
     });
@@ -185,8 +200,12 @@ const updateEducationHistory = async (educationItems) => {
             school_name: item.schoolName,
             degree: item.degree,
             major: item.major,
-            start_date: moment(item.startDate).format(DATE_FORMAT),
-            end_date: moment(item.endDate).format(DATE_FORMAT),
+            start_date: item.startDate
+                ? moment(item.startDate).format(DATE_FORMAT)
+                : null,
+            end_date: item.endDate
+                ? moment(item.endDate).format(DATE_FORMAT)
+                : null,
             description: item.description,
         };
     });
@@ -214,6 +233,115 @@ const deleteEducationHistory = async (jobId) => {
     }
 };
 
+const getWorkHistoryItems = async () => {
+    const url = workBaseUrl + "get-all";
+    const headers = getHeaders();
+    const params = {
+        withCredentials: true,
+    };
+
+    try {
+        const response = await axios.get(url, params, headers);
+        if (response.status === 200) {
+            return response.data.work_experiences.map((item) => {
+                return {
+                    ...item,
+                    currentJob: item.currentJob.toLowerCase() === "true",
+                    startDate:
+                        item.startDate === "None" ? null : item.startDate,
+                    endDate: item.endDate === "None" ? null : item.endDate,
+                };
+            });
+        } else {
+            return [];
+        }
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+const saveWorkHistory = async (items) => {
+    console.log(items);
+    try {
+        const newItems = items.filter(
+            (item) => item.id == null && item.position.length > 0
+        );
+        const updateItems = items.filter(
+            (item) => item.id != null && item.position.length > 0
+        );
+
+        const [res1, res2] = await Promise.all([
+            addNewWorkHistory(newItems),
+            updateWorkHistory(updateItems),
+        ]);
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+const addNewWorkHistory = async (items) => {
+    const url = workBaseUrl + "post-batch";
+    const headers = getHeaders();
+    const params = {
+        withCredentials: true,
+    };
+
+    const data = items.map((item) => {
+        return {
+            company_name: item.companyName,
+            position: item.position,
+            current_job: item.currentJob,
+            start_date: item.startDate
+                ? moment(item.startDate).format(DATE_FORMAT)
+                : null,
+            end_date: item.endDate
+                ? moment(item.endDate).format(DATE_FORMAT)
+                : null,
+            description: item.description,
+            location: item.location,
+        };
+    });
+
+    try {
+        const response = await axios.post(url, data, params, headers);
+        return response;
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+const updateWorkHistory = async (items) => {
+    const url = workBaseUrl + "update";
+    const headers = getHeaders();
+    const params = {
+        withCredentials: true,
+    };
+
+    const data = items.map((item) => {
+        return {
+            id: item.id,
+            company_name: item.companyName,
+            position: item.position,
+            current_job: item.currentJob,
+            start_date: item.startDate
+                ? moment(item.startDate).format(DATE_FORMAT)
+                : null,
+            end_date: item.endDate
+                ? moment(item.endDate).format(DATE_FORMAT)
+                : null,
+            description: item.description,
+            location: item.location,
+        };
+    });
+
+    try {
+        const response = await axios.put(url, data, params, headers);
+        return response;
+    } catch (e) {
+        console.error(e);
+    }
+};
+
 const CandidateServices = {
     getEducationItems,
     updateCandidateProfile,
@@ -224,6 +352,8 @@ const CandidateServices = {
     getEducationItems,
     saveEducationHistory,
     deleteEducationHistory,
+    getWorkHistoryItems,
+    saveWorkHistory,
 };
 
 export default CandidateServices;

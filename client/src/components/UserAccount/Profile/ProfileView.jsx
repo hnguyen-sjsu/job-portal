@@ -2,205 +2,293 @@ import React, { useContext, useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import PlaceRoundedIcon from "@mui/icons-material/PlaceRounded";
-import CallRoundedIcon from "@mui/icons-material/CallRounded";
-import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import Stack from "@mui/material/Stack";
+import Chip from "@mui/material/Chip";
+import Card from "@mui/material/Card";
+import Divider from "@mui/material/Divider";
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
+import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
+import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
 import { UserContext } from "../../../providers/AuthProvider";
 
+import CandidateServices from "../../../services/CandidateServices";
+import moment from "moment";
+
 function ProfileView(props) {
-	const { user } = useContext(UserContext);
+    const { user } = useContext(UserContext);
 
-	const { userProfile, skills, educations, experiences } = props;
+    const { editable } = props;
 
-	const [profile, setProfile] = useState({
-		userProfile: {},
-		skills: [],
-		educations: [],
-		experiences: [],
-	});
+    const [profile, setProfile] = useState({
+        userProfile: {},
+        skills: [],
+        educations: [],
+        experiences: [],
+    });
 
-	useEffect(() => {
-		if (userProfile && skills && educations && experiences) {
-			// Profile Review - Data not submitted to database
-			setProfile({
-				userProfile: { ...userProfile },
-				skills: [...skills],
-				educations: [...educations],
-				experiences: [...experiences],
-			});
-		} else {
-			// Profile View - Data loading from database
-			if (user) {
-				console.log(user);
-				setProfile({
-					userProfile: { ...user },
-					skills: [],
-					educations: [],
-					experiences: [],
-				});
-			}
-		}
-	}, [user]);
+    const loadProfile = async () => {
+        const [profileRes, educationRes, skillsRes, expRes] = await Promise.all(
+            [
+                CandidateServices.getCandidateProfile(),
+                CandidateServices.getEducationItems(),
+                CandidateServices.getSkills(),
+                CandidateServices.getWorkHistoryItems(),
+            ]
+        );
 
-	return (
-		<>
-			<Stack spacing={2}>
-				<Stack direction="row" justifyContent="space-between">
-					<Typography variant="h4" color="primary" fontWeight="bold">
-						{profile.userProfile.fullName}
-					</Typography>
-					{user && user.role === "candidate" && (
-						<Button
-							variant="contained"
-							disableElevation
-							href="/candidate/build-profile"
-						>
-							Edit
-						</Button>
-					)}
-				</Stack>
+        if (profileRes && educationRes && skillsRes && expRes) {
+            setProfile({
+                ...profile,
+                userProfile: { ...profileRes },
+                skills: [...skillsRes],
+                educations: [...educationRes],
+                experiences: [...expRes],
+            });
+        }
+    };
 
-				<Typography>{profile.userProfile.bio}</Typography>
-				<Grid container>
-					<Grid item xs={12} sm={4}>
-						<div className="container">
-							<Stack style={{ marginTop: "16px" }}>
-								<Typography
-									variant="h5"
-									fontWeight="bold"
-									color="primary"
-								>
-									Contact
-								</Typography>
-								<Grid container>
-									<Grid item xs={2}>
-										<PlaceRoundedIcon fontSize="small" />
-									</Grid>
-									<Grid item xs={10}>
-										<Typography>
-											{profile.userProfile.location}
-										</Typography>
-									</Grid>
-									<Grid item xs={2}>
-										<CallRoundedIcon fontSize="small" />
-									</Grid>
-									<Grid item xs={10}>
-										<Typography>
-											{profile.userProfile.phoneNumber}
-										</Typography>
-									</Grid>
-									<Grid item xs={2}>
-										<EmailRoundedIcon fontSize="small" />
-									</Grid>
-									<Grid item xs={10}>
-										<Typography>
-											{profile.userProfile.email}
-										</Typography>
-									</Grid>
-								</Grid>
-							</Stack>
-						</div>
-						<div
-							className="container"
-							style={{ marginTop: "16px" }}
-						>
-							<Stack spacing={2}>
-								<Typography
-									variant="h5"
-									fontWeight="bold"
-									color="primary"
-								>
-									Skills
-								</Typography>
-								<Stack
-									direction={{ xs: "row", sm: "column" }}
-									spacing={{ xs: 2, sm: 0 }}
-								>
-									{profile.skills.map((skill, index) => (
-										<Typography key={"skill-" + index}>
-											{skill}
-										</Typography>
-									))}
-								</Stack>
-							</Stack>
-						</div>
-					</Grid>
-					<Grid item xs={12} sm={8}>
-						<Stack spacing={2}>
-							<Typography
-								variant="h5"
-								fontWeight="bold"
-								color="primary"
-							>
-								Education
-							</Typography>
-							{profile.educations.map((item, index) => (
-								<Grid container key={"education-" + index}>
-									<Grid item xs={6}>
-										<Typography fontWeight="bold">
-											{item.schoolName}
-										</Typography>
-									</Grid>
-									<Grid item xs={6}>
-										<Typography align="right">
-											{item.startDate +
-												" - " +
-												item.endDate}
-										</Typography>
-									</Grid>
-									<Grid item xs={12}>
-										<Typography>
-											{item.degree + ", " + item.major}
-										</Typography>
-									</Grid>
-									<Grid item xs={12}>
-										<Typography paragraph={true}>
-											{item.description}
-										</Typography>
-									</Grid>
-								</Grid>
-							))}
-							<Typography
-								variant="h5"
-								fontWeight="bold"
-								color="primary"
-							>
-								Experience
-							</Typography>
-							{profile.experiences.map((item, index) => (
-								<Grid container key={"experience-" + index}>
-									<Grid item xs={6}>
-										<Typography fontWeight="bold">
-											{item.companyName}
-											{item.companyLocation}
-										</Typography>
-									</Grid>
-									<Grid item xs={6}>
-										<Typography align="right">
-											{item.startDate + " - "}
-											{item.isCurrentJob
-												? "Present"
-												: item.endDate}
-										</Typography>
-									</Grid>
-									<Grid item xs={12}>
-										<Typography>{item.title}</Typography>
-									</Grid>
-									<Grid item xs={12}>
-										<Typography paragraph={true}>
-											{item.description}
-										</Typography>
-									</Grid>
-								</Grid>
-							))}
-						</Stack>
-					</Grid>
-				</Grid>
-			</Stack>
-		</>
-	);
+    useEffect(() => {
+        loadProfile();
+    }, [user]);
+
+    return (
+        <>
+            <Stack spacing={2}>
+                <Stack direction="row" justifyContent="space-between">
+                    <Typography variant="h4" color="primary" fontWeight="bold">
+                        {profile.userProfile.fullName}
+                    </Typography>
+                    {user && user.role === "candidate" && editable && (
+                        <Button
+                            variant="contained"
+                            disableElevation
+                            href="/candidate/build-profile"
+                        >
+                            Edit
+                        </Button>
+                    )}
+                </Stack>
+                <Typography>{profile.userProfile.bio}</Typography>
+                <ContactInfoSection profile={profile.userProfile} />
+                <ResumeSection resumeUrl={profile.userProfile.resumeUrl} />
+                <SkillsSection skills={profile.skills} />
+                <EducationSection educations={profile.educations} />
+                <ExperienceSection experiences={profile.experiences} />
+            </Stack>
+        </>
+    );
 }
+
+const ContactInfoSection = (props) => {
+    const { profile } = props;
+
+    return (
+        <>
+            <Typography variant="h5" fontWeight="bold">
+                Contact Information
+            </Typography>
+            <Card variant="outlined" sx={{ p: 2 }}>
+                <Grid container>
+                    <Grid item xs={12} sm={4}>
+                        <Stack
+                            direction="row"
+                            justifyContent="flex-start"
+                            alignItems="center"
+                            spacing={2}
+                        >
+                            <LocationOnOutlinedIcon fontSize="small" />
+                            <span>{profile.location}</span>
+                        </Stack>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                        <Stack
+                            direction="row"
+                            justifyContent="flex-start"
+                            alignItems="center"
+                            spacing={2}
+                        >
+                            <PhoneOutlinedIcon fontSize="small" />
+                            <span>{profile.phoneNumber}</span>
+                        </Stack>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                        <Stack
+                            direction="row"
+                            justifyContent="flex-start"
+                            alignItems="center"
+                            spacing={2}
+                        >
+                            <EmailOutlinedIcon fontSize="small" />
+                            <span>{profile.email}</span>
+                        </Stack>
+                    </Grid>
+                </Grid>
+            </Card>
+        </>
+    );
+};
+
+const SkillsSection = (props) => {
+    const { skills } = props;
+
+    return (
+        <>
+            <Typography variant="h5" fontWeight="bold">
+                Skills
+            </Typography>
+            <Card variant="outlined" sx={{ p: 2 }}>
+                {skills.map((skill) => (
+                    <Chip
+                        variant="outlined"
+                        key={skill.id}
+                        label={skill.name}
+                        sx={{ mr: 2 }}
+                    />
+                ))}
+            </Card>
+        </>
+    );
+};
+
+const EducationSection = (props) => {
+    const { educations } = props;
+
+    return (
+        <>
+            <Typography variant="h5" fontWeight="bold">
+                Education History
+            </Typography>
+            <Card variant="outlined" sx={{ p: 2 }}>
+                {educations.map((item, index) => (
+                    <div key={item.schoolId}>
+                        {index > 0 && (
+                            <Divider sx={{ marginTop: 1, marginBottom: 1 }} />
+                        )}
+                        <Grid container>
+                            <Grid item xs={6}>
+                                <Typography fontWeight="bold">
+                                    {item.schoolName}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Typography align="right">
+                                    {item.startDate &&
+                                        moment(item.startDate).format(
+                                            "MMM yyyy"
+                                        )}
+                                    {item.endDate &&
+                                        moment(item.endDate).format(
+                                            "- MMM yyyy"
+                                        )}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Typography>
+                                    {item.degree + ", " + item.major}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Typography paragraph={true}>
+                                    {item.description}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </div>
+                ))}
+            </Card>
+        </>
+    );
+};
+
+const ExperienceSection = (props) => {
+    const { experiences } = props;
+
+    return (
+        <>
+            <Typography variant="h5" fontWeight="bold">
+                Work & Experience
+            </Typography>
+            <Card variant="outlined" sx={{ p: 2 }}>
+                {experiences.map((item, index) => (
+                    <div key={item.id}>
+                        {index > 0 && (
+                            <Divider sx={{ marginTop: 1, marginBottom: 1 }} />
+                        )}
+                        <Grid container>
+                            <Grid item xs={6}>
+                                <Typography fontWeight="bold">
+                                    {item.companyName}
+                                    {item.companyLocation}
+                                </Typography>
+                                <Typography>{item.position}</Typography>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Typography align="right">
+                                    {item.startDate &&
+                                        moment(item.startDate).format(
+                                            "MMM yyyy"
+                                        )}
+                                    {item.currentJob
+                                        ? " - Present"
+                                        : item.endDate &&
+                                          moment(item.endDate).format(
+                                              " - MMM yyyy"
+                                          )}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Typography>{item.title}</Typography>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Typography paragraph={true}>
+                                    {item.description}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </div>
+                ))}
+            </Card>
+        </>
+    );
+};
+
+const ResumeSection = (props) => {
+    const { resumeUrl } = props;
+    return (
+        <>
+            <Typography variant="h5" fontWeight="bold">
+                Resume
+            </Typography>
+            <Card variant="outlined" sx={{ p: 2 }}>
+                {resumeUrl != null && (
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                    >
+                        <Stack direction="row" spacing={2}>
+                            <InsertDriveFileOutlinedIcon color="primary" />
+                            <span>
+                                {resumeUrl.split("/").length > 0 &&
+                                    resumeUrl.split("/").slice(-1)[0]}
+                            </span>
+                        </Stack>
+                        <Button
+                            variant="contained"
+                            href={resumeUrl}
+                            disableElevation
+                            endIcon={<FileDownloadOutlinedIcon />}
+                        >
+                            Download
+                        </Button>
+                    </Stack>
+                )}
+            </Card>
+        </>
+    );
+};
 
 export default ProfileView;

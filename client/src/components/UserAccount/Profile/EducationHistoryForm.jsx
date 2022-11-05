@@ -98,8 +98,14 @@ function EducationHistoryForm(props) {
     };
 
     useEffect(() => {
+        setLoading(true);
         CandidateServices.getEducationItems().then((response) => {
-            setEducationItems([...response]);
+            if (response.length > 0) {
+                setEducationItems([...response]);
+            }
+            setTimeout(() => {
+                setLoading(false);
+            }, 500);
         });
     }, []);
 
@@ -109,12 +115,16 @@ function EducationHistoryForm(props) {
                 <Typography variant="h4" fontWeight="bold">
                     Education History
                 </Typography>
-                <Box className={["profile-form-container", "container"]}>
+                <Box
+                    className={["profile-form-container", "container"].join(
+                        " "
+                    )}
+                >
                     {educationItems.map((item, index) => (
                         <Grid container key={index} spacing={2}>
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="schoolName">
+                                    <InputLabel htmlFor="schoolName" required>
                                         School
                                     </InputLabel>
                                     <TextField
@@ -125,6 +135,7 @@ function EducationHistoryForm(props) {
                                         onChange={(e) => {
                                             handleChange(e, index);
                                         }}
+                                        required
                                     />
                                 </Stack>
                             </Grid>
@@ -270,13 +281,15 @@ function EducationHistoryForm(props) {
                             </Grid>
                         </Grid>
                     ))}
-                    <Button
-                        startIcon={<AddRoundedIcon fontSize="small" />}
-                        onClick={handleAddNewEducation}
-                        disabled={educationItems[0].schoolName.length == 0}
-                    >
-                        Add Another Education History
-                    </Button>
+                    {educationItems.length > 0 && (
+                        <Button
+                            startIcon={<AddRoundedIcon fontSize="small" />}
+                            onClick={handleAddNewEducation}
+                            disabled={educationItems[0].schoolName.length == 0}
+                        >
+                            Add Another Education History
+                        </Button>
+                    )}
                     <div></div>
                 </Box>
             </Stack>

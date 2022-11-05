@@ -11,6 +11,7 @@ from marshmallow import Schema, fields
 class AddWorkExperienceSchema(Schema):
     company_name = fields.Str(required=True)
     position = fields.Str(required=True)
+    location = fields.Str(required=True, allow_none=True)
     current_job = fields.Bool(required=True, allow_none=True)
     start_date = fields.Date(required=True, allow_none=True)
     end_date = fields.Date(required=True, allow_none=True)

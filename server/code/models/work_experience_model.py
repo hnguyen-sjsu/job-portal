@@ -11,6 +11,7 @@ class WorkExperienceModel(db.Model):
     start_date = db.Column(Date(), nullable=True)
     end_date = db.Column(Date(), nullable=True)
     description = db.Column(db.Text(), nullable=True)
+    location = db.Column(db.Text(), nullable=True)
 
     # Foreign key to user id.
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'),
@@ -19,9 +20,10 @@ class WorkExperienceModel(db.Model):
     def __repr__(self):
         return str({column.name: getattr(self, column.name) for column in self.__table__.columns})
 
-    def __init__(self, company_name, position, user_id, current_job=None, description=None, start_date=None, end_date=None):
+    def __init__(self, company_name, location, position, user_id, current_job=None, description=None, start_date=None, end_date=None):
         self.company_name = company_name
         self.position = position
+        self.location = location
         self.current_job = current_job
         self.start_date = start_date
         self.end_date = end_date

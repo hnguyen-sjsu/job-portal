@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
@@ -15,9 +15,13 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 
-function EducationHistoryForm(props) {
-    const { loading, educationItems, setEducationItems } = props;
+import ConfirmDialog from "../../Utils/ConfirmDialog";
+import CandidateServices from "../../../services/CandidateServices";
 
+function EducationHistoryForm(props) {
+    const { loading, setLoading, educationItems, setEducationItems } = props;
+    const [showDialog, setShowDialog] = useState(false);
+    const [selectedItemId, setSelectedItemId] = useState(-1);
     const degreeTypes = [
         { title: "High School Degree" },
         { title: "Associate's Degree" },
@@ -75,9 +79,29 @@ function EducationHistoryForm(props) {
         setEducationItems([...updatedItems]);
     };
 
-    const handleDeleteEducation = () => {
-        console.log("Need to be deleted");
+    const onDeleteClick = (id) => {
+        setSelectedItemId(id);
+        setShowDialog(true);
     };
+
+    const handleDeleteEducation = () => {
+        setLoading(true);
+        CandidateServices.deleteEducationHistory(selectedItemId).then((res) => {
+            setLoading(false);
+            if (res) {
+                const updatedItems = educationItems.filter(
+                    (item) => item.schoolId != selectedItemId
+                );
+                setEducationItems(updatedItems);
+            }
+        });
+    };
+
+    useEffect(() => {
+        CandidateServices.getEducationItems().then((response) => {
+            setEducationItems([...response]);
+        });
+    }, []);
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -235,7 +259,9 @@ function EducationHistoryForm(props) {
                                         startIcon={
                                             <RemoveRoundedIcon fontSize="small" />
                                         }
-                                        onClick={handleDeleteEducation}
+                                        onClick={() => {
+                                            onDeleteClick(item.schoolId);
+                                        }}
                                     >
                                         Remove this Education History
                                     </Button>
@@ -247,13 +273,36 @@ function EducationHistoryForm(props) {
                     <Button
                         startIcon={<AddRoundedIcon fontSize="small" />}
                         onClick={handleAddNewEducation}
-                        fullWidth
                         disabled={educationItems[0].schoolName.length == 0}
                     >
                         Add Another Education History
                     </Button>
+                    <div></div>
                 </Box>
             </Stack>
+            <ConfirmDialog
+                title="Confirm"
+                message="Do you want to delete this education history?"
+                showDialog={showDialog}
+                actions={[
+                    {
+                        title: "Close",
+                        primary: false,
+                        color: "primary",
+                        action: () => {
+                            setShowDialog(false);
+                        },
+                    },
+                    {
+                        title: "Delete",
+                        primary: true,
+                        color: "error",
+                        action: () => {
+                            handleDeleteEducation();
+                        },
+                    },
+                ]}
+            />
         </LocalizationProvider>
     );
 }

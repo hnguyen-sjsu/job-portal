@@ -10,11 +10,11 @@ from marshmallow import Schema, fields
 
 class AddEducationSchema(Schema):
     school_name = fields.Str(required=True)
-    degree = fields.Str(required=True)
-    major = fields.Str(required=True)
-    start_date = fields.Date(required=True)
-    end_date = fields.Date(required=False, allow_none=True)
-    description = fields.Str(required=True)
+    degree = fields.Str(required=True, allow_none=True)
+    major = fields.Str(required=True, allow_none=True)
+    start_date = fields.Date(required=True, allow_none=True)
+    end_date = fields.Date(required=True, allow_none=True)
+    description = fields.Str(required=True, allow_none=True)
 
 
 class AddEducation(Resource):
@@ -30,8 +30,9 @@ class AddEducation(Resource):
         errors = AddEducationSchema().validate(data)
         if errors:
             abort(400, message=errors)
+        if data['start_date']:
+            data['start_date'] = convert_string_to_date(data['start_date'])
 
-        data['start_date'] = convert_string_to_date(data['start_date'])
         if data['end_date']:
             data['end_date'] = convert_string_to_date(data['end_date'])
 
@@ -68,11 +69,14 @@ class AddBatchEducations(Resource):
             if errors:
                 errors.update({'education': education['school_name']})
                 abort(400, message=errors)
-            education['start_date'] = convert_string_to_date(
-                education['start_date'])
+            if education['start_date']:
+                education['start_date'] = convert_string_to_date(
+                    education['start_date'])
+
             if education['end_date']:
                 education['end_date'] = convert_string_to_date(
                     education['end_date'])
+
                 if education['end_date'] < education['start_date']:
                     abort(400, message='Start date cannot be greater than end date')
 

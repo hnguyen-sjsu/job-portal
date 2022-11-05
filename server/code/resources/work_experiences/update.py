@@ -15,10 +15,10 @@ class UpdateWorkExperienceSchema(Schema):
         min=1, error="Value must be greater than 0")])
     company_name = fields.Str(required=True)
     position = fields.Str(required=True)
-    current_job = fields.Bool(required=True)
-    start_date = fields.Date(required=True)
-    end_date = fields.Date(required=True)
-    description = fields.Str(required=True)
+    current_job = fields.Bool(required=True, allow_none=True)
+    start_date = fields.Date(required=True, allow_none=True)
+    end_date = fields.Date(required=True, allow_none=True)
+    description = fields.Str(required=True, allow_none=True)
 
 
 class UpdateWorkExperience(Resource):
@@ -35,12 +35,15 @@ class UpdateWorkExperience(Resource):
             if errors:
                 abort(400, message=errors)
 
-            data['start_date'] = convert_string_to_date(data['start_date'])
-            data['end_date'] = convert_string_to_date(data['end_date'])
+            if data['start_date']:
+                data['start_date'] = convert_string_to_date(data['start_date'])
 
-            # Check if the end date is in the past
-            if data['end_date'] < data['start_date']:
-                abort(400, message='Start date cannot be greater than end date')
+            if data['end_date']:
+                data['end_date'] = convert_string_to_date(data['end_date'])
+
+                # Check if the end date is in the past
+                if data['end_date'] < data['start_date']:
+                    abort(400, message='Start date cannot be greater than end date')
 
             # Save the work experience model to the database
             try:

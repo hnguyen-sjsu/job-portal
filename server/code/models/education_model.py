@@ -6,11 +6,11 @@ class EducationModel(db.Model):
     __tablename__ = 'education'
     school_id = db.Column(db.Integer, primary_key=True)
     school_name = db.Column(db.String(80), nullable=False)
-    degree = db.Column(db.String(80), nullable=False)
-    major = db.Column(db.String(80), nullable=False)
-    start_date = db.Column(Date(), nullable=False)
+    degree = db.Column(db.String(80), nullable=True)
+    major = db.Column(db.String(80), nullable=True)
+    start_date = db.Column(Date(), nullable=True)
     end_date = db.Column(Date(), nullable=True)
-    description = db.Column(db.Text(), nullable=False)
+    description = db.Column(db.Text(), nullable=True)
 
     # Foreign key to user id.
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'),
@@ -19,7 +19,7 @@ class EducationModel(db.Model):
     def __repr__(self):
         return str({column.name: getattr(self, column.name) for column in self.__table__.columns})
 
-    def __init__(self, school_name, degree, major, start_date,  description, user_id, end_date=None):
+    def __init__(self, school_name, user_id, degree=None, major=None, start_date=None,  description=None, end_date=None):
         self.school_name = school_name
         self.degree = degree
         self.major = major

@@ -14,11 +14,11 @@ class UpdateEducationSchema(Schema):
     school_id = fields.Int(required=True, validate=[Range(
         min=1, error="Value must be greater than 0")])
     school_name = fields.Str(required=True)
-    degree = fields.Str(required=True)
-    major = fields.Str(required=True)
-    start_date = fields.Date(required=True)
-    end_date = fields.Date(required=True)
-    description = fields.Str(required=True)
+    degree = fields.Str(required=True, allow_none=True)
+    major = fields.Str(required=True, allow_none=True)
+    start_date = fields.Date(required=True, allow_none=True)
+    end_date = fields.Date(required=True, allow_none=True)
+    description = fields.Str(required=True, allow_none=True)
 
 
 class UpdateEducation(Resource):
@@ -35,13 +35,14 @@ class UpdateEducation(Resource):
             errors = UpdateEducationSchema().validate(data)
             if errors:
                 abort(400, message=errors)
+            if data['start_date']:
+                data['start_date'] = convert_string_to_date(data['start_date'])
+            if data['end_date']:
+                data['end_date'] = convert_string_to_date(data['end_date'])
 
-            data['start_date'] = convert_string_to_date(data['start_date'])
-            data['end_date'] = convert_string_to_date(data['end_date'])
-
-            # Check if the end date is in the past
-            if data['end_date'] < data['start_date']:
-                abort(400, message='Start date cannot be greater than end date')
+                # Check if the end date is in the past
+                if data['end_date'] < data['start_date']:
+                    abort(400, message='Start date cannot be greater than end date')
 
             # Save the education model to the database
             try:

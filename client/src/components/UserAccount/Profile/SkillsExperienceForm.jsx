@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Container from "@mui/material/Container";
+
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
@@ -18,6 +18,9 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import CandidateServices from "../../../services/CandidateServices";
+import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
+
+import ConfirmDialog from "../../Utils/ConfirmDialog";
 
 function SkillsExperienceForm(props) {
     const {
@@ -39,6 +42,9 @@ function SkillsExperienceForm(props) {
         description: "",
         location: "",
     };
+
+    const [showDialog, setShowDialog] = useState(false);
+    const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
 
     const handleAddSkill = (e) => {
         const { value } = e.target;
@@ -93,6 +99,35 @@ function SkillsExperienceForm(props) {
         setExperienceItems([...updatedItems]);
     };
 
+    const onDeleteClick = (index) => {
+        setSelectedItemIndex(index);
+        setShowDialog(true);
+    };
+
+    const handleDeleteExperienceItem = () => {
+        const selectedItem = experienceItems[selectedItemIndex];
+        if (selectedItem.id) {
+            // Delete item that already saved in the database
+            setLoading(true);
+            CandidateServices.deleteWorkHistory(selectedItem.id).then((res) => {
+                setLoading(false);
+                if (res) {
+                    const updatedItems = experienceItems.filter(
+                        (item) => item.id != selectedItem.id
+                    );
+                    setExperienceItems(updatedItems);
+                }
+            });
+        } else {
+            // Delete temporary item
+            const updatedItems = experienceItems.filter(
+                (item, index) => index != selectedItemIndex
+            );
+            setExperienceItems(updatedItems);
+        }
+        setShowDialog(false);
+    };
+
     const loadData = async () => {
         setLoading(true);
         const [skillsRes, expRes] = await Promise.all([
@@ -116,219 +151,260 @@ function SkillsExperienceForm(props) {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Typography variant="h4" fontWeight="bold">
-                Skills & Experience
-            </Typography>
-            <Box className={["profile-form-container", "container"].join(" ")}>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <Typography
-                            variant="h6"
-                            fontWeight="bold"
-                            style={{ paddingTop: "16px" }}
-                        >
-                            Skills
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Grid container spacing={1}>
-                            {skills.map((skill) => (
-                                <Grid item key={skill.id}>
-                                    <Chip
-                                        label={skill.name}
-                                        color="primary"
-                                        onDelete={() => {
-                                            handleDeleteSkill(skill.id);
-                                        }}
-                                    />
-                                </Grid>
-                            ))}
-                            <Grid item xs={12}>
-                                <TextField
-                                    placeholder="Enter a skill"
-                                    size="small"
-                                    fullWidth
-                                    onKeyDown={handleAddSkill}
-                                    InputProps={{
-                                        endAdornment: (
-                                            <Button onClick={handleAddSkill}>
-                                                Add
-                                            </Button>
-                                        ),
-                                    }}
-                                    disabled={loading}
-                                />
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Grid>
-                <Typography
-                    variant="h6"
-                    fontWeight="bold"
-                    style={{ paddingTop: "16px" }}
-                >
-                    Work Experience
+            <Stack spacing={2}>
+                <Typography variant="h4" fontWeight="bold">
+                    Skills
                 </Typography>
-                {experienceItems.map((item, index) => (
-                    <Grid container spacing={2} key={index}>
+                <Box
+                    className={["profile-form-container", "container"].join(
+                        " "
+                    )}
+                >
+                    <div></div>
+                    <Grid container spacing={1}>
                         <Grid item xs={12}>
-                            <Stack spacing={1}>
-                                <InputLabel htmlFor="position">
-                                    Title
-                                </InputLabel>
-                                <TextField
-                                    placeholder="Your position/title"
-                                    name="position"
-                                    size="small"
-                                    value={item.position}
-                                    onChange={(e) => {
-                                        handleChange(e, index);
-                                    }}
-                                />
-                            </Stack>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Stack spacing={1}>
-                                <InputLabel htmlFor="companyName">
-                                    Company Name
-                                </InputLabel>
-                                <TextField
-                                    placeholder="Enter the company name"
-                                    name="companyName"
-                                    size="small"
-                                    value={item.companyName}
-                                    onChange={(e) => {
-                                        handleChange(e, index);
-                                    }}
-                                />
-                            </Stack>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Stack spacing={1}>
-                                <InputLabel htmlFor="location">
-                                    Location
-                                </InputLabel>
-                                <TextField
-                                    placeholder="Company Location"
-                                    name="location"
-                                    size="small"
-                                    value={item.location}
-                                    onChange={(e) => {
-                                        handleChange(e, index);
-                                    }}
-                                />
-                            </Stack>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={item.currentJob}
-                                        name="currentJob"
-                                        onChange={(e) => {
-                                            const event = {
-                                                target: {
-                                                    name: e.target.name,
-                                                    value: e.target.checked,
-                                                },
-                                            };
-                                            handleChange(event, index);
-                                        }}
-                                    />
-                                }
-                                label="Currently work here"
+                            <TextField
+                                placeholder="Enter a skill"
+                                size="small"
+                                fullWidth
+                                onKeyDown={handleAddSkill}
+                                InputProps={{
+                                    endAdornment: (
+                                        <Button onClick={handleAddSkill}>
+                                            Add
+                                        </Button>
+                                    ),
+                                }}
+                                disabled={loading}
                             />
                         </Grid>
-                        <Grid item xs={6}>
-                            <Stack spacing={1}>
-                                <InputLabel htmlFor="startDate">
-                                    Start Date
-                                </InputLabel>
-                                <DatePicker
-                                    views={["month", "year"]}
-                                    inputFormat="MM/yyyy"
-                                    name="startDate"
-                                    value={item.startDate}
-                                    onChange={(newValue) => {
-                                        handleStartDateChange(index, newValue);
-                                    }}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            placeholder="MM/YYYY"
-                                            name="startDate"
-                                            size="small"
-                                            value={item.startDate}
-                                            onChange={(e) => {
-                                                handleChange(e, index);
-                                            }}
-                                        />
-                                    )}
-                                />
-                            </Stack>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Stack spacing={1}>
-                                <InputLabel htmlFor="endDate">
-                                    End Date
-                                </InputLabel>
-                                <DatePicker
-                                    views={["month", "year"]}
-                                    inputFormat="MM/yyyy"
-                                    name="endDate"
-                                    value={item.endDate}
-                                    onChange={(newValue) => {
-                                        handleEndDateChange(index, newValue);
-                                    }}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            placeholder="MM/YYYY"
-                                            name="endDate"
-                                            size="small"
-                                            value={item.endDate}
-                                            onChange={(e) => {
-                                                handleChange(e, index);
-                                            }}
-                                        />
-                                    )}
-                                    disabled={item.currentJob}
-                                />
-                            </Stack>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Stack spacing={1}>
-                                <InputLabel htmlFor="description">
-                                    Description
-                                </InputLabel>
-                                <TextField
-                                    name="description"
-                                    multiline
-                                    minRows={2}
-                                    value={item.description}
-                                    onChange={(e) => {
-                                        handleChange(e, index);
+                        {skills.map((skill) => (
+                            <Grid item key={skill.id}>
+                                <Chip
+                                    label={skill.name}
+                                    color="primary"
+                                    onDelete={() => {
+                                        handleDeleteSkill(skill.id);
                                     }}
                                 />
-                            </Stack>
-                        </Grid>
-                        <Grid item xs={12} textAlign="right">
-                            <Divider />
-                            <Button
-                                onClick={handleAddNewExperience}
-                                startIcon={<AddRoundedIcon fontSize="small" />}
-                                disabled={
-                                    experienceItems[0].companyName.length ==
-                                        0 &&
-                                    experienceItems[0].position.length == 0
-                                }
-                            >
-                                Add Another Work Experience
-                            </Button>
-                        </Grid>
+                            </Grid>
+                        ))}
                     </Grid>
-                ))}
-            </Box>
+                </Box>
+                <Typography variant="h4" fontWeight="bold">
+                    Work & Experience
+                </Typography>
+                <Box
+                    className={["profile-form-container", "container"].join(
+                        " "
+                    )}
+                >
+                    {experienceItems.map((item, index) => (
+                        <Grid container spacing={2} key={index}>
+                            <Grid item xs={12}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="position">
+                                        Title
+                                    </InputLabel>
+                                    <TextField
+                                        placeholder="Your position/title"
+                                        name="position"
+                                        size="small"
+                                        value={item.position}
+                                        onChange={(e) => {
+                                            handleChange(e, index);
+                                        }}
+                                    />
+                                </Stack>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="companyName">
+                                        Company Name
+                                    </InputLabel>
+                                    <TextField
+                                        placeholder="Enter the company name"
+                                        name="companyName"
+                                        size="small"
+                                        value={item.companyName}
+                                        onChange={(e) => {
+                                            handleChange(e, index);
+                                        }}
+                                    />
+                                </Stack>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="location">
+                                        Location
+                                    </InputLabel>
+                                    <TextField
+                                        placeholder="Company Location"
+                                        name="location"
+                                        size="small"
+                                        value={item.location}
+                                        onChange={(e) => {
+                                            handleChange(e, index);
+                                        }}
+                                    />
+                                </Stack>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={item.currentJob}
+                                            name="currentJob"
+                                            onChange={(e) => {
+                                                const event = {
+                                                    target: {
+                                                        name: e.target.name,
+                                                        value: e.target.checked,
+                                                    },
+                                                };
+                                                handleChange(event, index);
+                                            }}
+                                        />
+                                    }
+                                    label="Currently work here"
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="startDate">
+                                        Start Date
+                                    </InputLabel>
+                                    <DatePicker
+                                        views={["month", "year"]}
+                                        inputFormat="MM/yyyy"
+                                        name="startDate"
+                                        value={item.startDate}
+                                        onChange={(newValue) => {
+                                            handleStartDateChange(
+                                                index,
+                                                newValue
+                                            );
+                                        }}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                placeholder="MM/YYYY"
+                                                name="startDate"
+                                                size="small"
+                                                value={item.startDate}
+                                                onChange={(e) => {
+                                                    handleChange(e, index);
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                </Stack>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="endDate">
+                                        End Date
+                                    </InputLabel>
+                                    <DatePicker
+                                        views={["month", "year"]}
+                                        inputFormat="MM/yyyy"
+                                        name="endDate"
+                                        value={item.endDate}
+                                        onChange={(newValue) => {
+                                            handleEndDateChange(
+                                                index,
+                                                newValue
+                                            );
+                                        }}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                placeholder="MM/YYYY"
+                                                name="endDate"
+                                                size="small"
+                                                value={item.endDate}
+                                                onChange={(e) => {
+                                                    handleChange(e, index);
+                                                }}
+                                            />
+                                        )}
+                                        disabled={item.currentJob}
+                                    />
+                                </Stack>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Stack spacing={1}>
+                                    <InputLabel htmlFor="description">
+                                        Description
+                                    </InputLabel>
+                                    <TextField
+                                        name="description"
+                                        multiline
+                                        minRows={2}
+                                        value={item.description}
+                                        onChange={(e) => {
+                                            handleChange(e, index);
+                                        }}
+                                    />
+                                </Stack>
+                            </Grid>
+                            <Grid item xs={12} textAlign="right">
+                                {index !== 0 && (
+                                    <Button
+                                        startIcon={
+                                            <RemoveRoundedIcon fontSize="small" />
+                                        }
+                                        onClick={() => {
+                                            onDeleteClick(index);
+                                        }}
+                                    >
+                                        Remove this Work & Experience History
+                                    </Button>
+                                )}
+                                <Divider />
+                            </Grid>
+                        </Grid>
+                    ))}
+                    {experienceItems.length > 0 && (
+                        <Button
+                            onClick={handleAddNewExperience}
+                            startIcon={<AddRoundedIcon fontSize="small" />}
+                            disabled={
+                                experienceItems[experienceItems.length - 1]
+                                    .companyName.length == 0 &&
+                                experienceItems[experienceItems.length - 1]
+                                    .position.length == 0
+                            }
+                        >
+                            Add Another Work/Experience
+                        </Button>
+                    )}
+                    <div></div>
+                </Box>
+            </Stack>
+            <ConfirmDialog
+                title="Confirm"
+                message="Do you want to delete this work/experience history?"
+                showDialog={showDialog}
+                actions={[
+                    {
+                        title: "Close",
+                        primary: false,
+                        color: "primary",
+                        action: () => {
+                            setShowDialog(false);
+                        },
+                    },
+                    {
+                        title: "Delete",
+                        primary: true,
+                        color: "error",
+                        action: () => {
+                            handleDeleteExperienceItem();
+                        },
+                    },
+                ]}
+            />
         </LocalizationProvider>
     );
 }

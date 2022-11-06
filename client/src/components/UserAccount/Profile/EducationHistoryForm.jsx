@@ -21,7 +21,7 @@ import CandidateServices from "../../../services/CandidateServices";
 function EducationHistoryForm(props) {
     const { loading, setLoading, educationItems, setEducationItems } = props;
     const [showDialog, setShowDialog] = useState(false);
-    const [selectedItemId, setSelectedItemId] = useState(-1);
+    const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
     const degreeTypes = [
         { title: "High School Degree" },
         { title: "Associate's Degree" },
@@ -79,22 +79,35 @@ function EducationHistoryForm(props) {
         setEducationItems([...updatedItems]);
     };
 
-    const onDeleteClick = (id) => {
-        setSelectedItemId(id);
+    const onDeleteClick = (index) => {
+        setSelectedItemIndex(index);
         setShowDialog(true);
     };
 
     const handleDeleteEducation = () => {
-        setLoading(true);
-        CandidateServices.deleteEducationHistory(selectedItemId).then((res) => {
-            setLoading(false);
-            if (res) {
-                const updatedItems = educationItems.filter(
-                    (item) => item.schoolId != selectedItemId
-                );
-                setEducationItems(updatedItems);
-            }
-        });
+        const selectedItem = educationItems[selectedItemIndex];
+        if (selectedItem.schoolId) {
+            // Delete item that already saved in the database
+            setLoading(true);
+            CandidateServices.deleteEducationHistory(
+                selectedItem.schoolId
+            ).then((res) => {
+                setLoading(false);
+                if (res) {
+                    const updatedItems = educationItems.filter(
+                        (item) => item.schoolId != selectedItem.schoolId
+                    );
+                    setEducationItems(updatedItems);
+                }
+            });
+        } else {
+            // Delete temporary item
+            const updatedItems = educationItems.filter(
+                (item, index) => index != selectedItemIndex
+            );
+            setEducationItems(updatedItems);
+        }
+        setShowDialog(false);
     };
 
     useEffect(() => {
@@ -271,7 +284,7 @@ function EducationHistoryForm(props) {
                                             <RemoveRoundedIcon fontSize="small" />
                                         }
                                         onClick={() => {
-                                            onDeleteClick(item.schoolId);
+                                            onDeleteClick(index);
                                         }}
                                     >
                                         Remove this Education History
@@ -285,7 +298,10 @@ function EducationHistoryForm(props) {
                         <Button
                             startIcon={<AddRoundedIcon fontSize="small" />}
                             onClick={handleAddNewEducation}
-                            disabled={educationItems[0].schoolName.length == 0}
+                            disabled={
+                                educationItems[educationItems.length - 1]
+                                    .schoolName.length == 0
+                            }
                         >
                             Add Another Education History
                         </Button>

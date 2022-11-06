@@ -218,8 +218,8 @@ const updateEducationHistory = async (educationItems) => {
     }
 };
 
-const deleteEducationHistory = async (jobId) => {
-    const url = educationBaseUrl + "delete?ids=" + jobId;
+const deleteEducationHistory = async (id) => {
+    const url = educationBaseUrl + "delete?ids=" + id;
     const headers = getHeaders();
     const params = {
         withCredentials: true,
@@ -342,6 +342,21 @@ const updateWorkHistory = async (items) => {
     }
 };
 
+const deleteWorkHistory = async (id) => {
+    const url = workBaseUrl + "delete?ids=" + id;
+    const headers = getHeaders();
+    const params = {
+        withCredentials: true,
+    };
+
+    try {
+        const response = await axios.delete(url, params, headers);
+        return response.status === 200;
+    } catch (e) {
+        console.error(e);
+    }
+};
+
 const CandidateServices = {
     getEducationItems,
     updateCandidateProfile,
@@ -354,6 +369,7 @@ const CandidateServices = {
     deleteEducationHistory,
     getWorkHistoryItems,
     saveWorkHistory,
+    deleteWorkHistory,
 };
 
 export default CandidateServices;

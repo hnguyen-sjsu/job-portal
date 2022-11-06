@@ -9,6 +9,8 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
 
 import { UserContext } from "../../../providers/AuthProvider";
 import CandidateProfileForm from "./CandidateProfileForm";
@@ -155,7 +157,7 @@ function ProfileForm(props) {
         },
         {
             title: "Done",
-            component: <ProfileView editable={false} />,
+            component: <ReviewSection />,
         },
     ];
 
@@ -236,5 +238,21 @@ function ProfileForm(props) {
         </>
     );
 }
+
+const ReviewSection = (props) => {
+    return (
+        <>
+            <Typography variant="h5" fontWeight="bold">
+                Congratulations on completing your profile!
+            </Typography>
+            <Typography>
+                Below is the preview of how your profile will be presented to
+                impress recruiters
+            </Typography>
+            <Divider />
+            <ProfileView editable={false} />
+        </>
+    );
+};
 
 export default ProfileForm;

@@ -155,7 +155,11 @@ function App() {
                             element={<WithMenuBarLayout />}
                         >
                             <Route
-                                path="build-profile"
+                                path="build-profile/:step"
+                                element={<ProfileForm />}
+                            />
+                            <Route
+                                path="build-profile/"
                                 element={<ProfileForm />}
                             />
                         </Route>

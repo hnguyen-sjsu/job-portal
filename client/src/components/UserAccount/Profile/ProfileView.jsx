@@ -12,6 +12,8 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
+import AutoFixHighOutlinedIcon from "@mui/icons-material/AutoFixHighOutlined";
+
 import { UserContext } from "../../../providers/AuthProvider";
 
 import CandidateServices from "../../../services/CandidateServices";
@@ -67,7 +69,7 @@ function ProfileView(props) {
                             disableElevation
                             href="/candidate/build-profile"
                         >
-                            Edit
+                            Update Profile
                         </Button>
                     )}
                 </Stack>
@@ -136,16 +138,26 @@ const SkillsSection = (props) => {
 
     return (
         <>
-            <Typography variant="h5" fontWeight="bold">
-                Skills
-            </Typography>
+            <Stack direction="row" justifyContent="space-between">
+                <Typography variant="h5" fontWeight="bold">
+                    Skills
+                </Typography>
+                <Button
+                    variant="text"
+                    startIcon={<AutoFixHighOutlinedIcon />}
+                    href="/candidate/build-profile/3"
+                >
+                    Update
+                </Button>
+            </Stack>
+
             <Card variant="outlined" sx={{ p: 2 }}>
                 {skills.map((skill) => (
                     <Chip
                         variant="outlined"
                         key={skill.id}
                         label={skill.name}
-                        sx={{ mr: 2 }}
+                        sx={{ mr: 2, mt: 0.5, mb: 0.5 }}
                     />
                 ))}
             </Card>
@@ -158,9 +170,18 @@ const EducationSection = (props) => {
 
     return (
         <>
-            <Typography variant="h5" fontWeight="bold">
-                Education History
-            </Typography>
+            <Stack direction="row" justifyContent="space-between">
+                <Typography variant="h5" fontWeight="bold">
+                    Education History
+                </Typography>
+                <Button
+                    variant="text"
+                    startIcon={<AutoFixHighOutlinedIcon />}
+                    href="/candidate/build-profile/2"
+                >
+                    Update
+                </Button>
+            </Stack>
             <Card variant="outlined" sx={{ p: 2 }}>
                 {educations.map((item, index) => (
                     <div key={item.schoolId}>
@@ -208,9 +229,19 @@ const ExperienceSection = (props) => {
 
     return (
         <>
-            <Typography variant="h5" fontWeight="bold">
-                Work & Experience
-            </Typography>
+            <Stack direction="row" justifyContent="space-between">
+                <Typography variant="h5" fontWeight="bold">
+                    Work & Experience
+                </Typography>
+                <Button
+                    variant="text"
+                    startIcon={<AutoFixHighOutlinedIcon />}
+                    href="/candidate/build-profile/3"
+                >
+                    Update
+                </Button>
+            </Stack>
+
             <Card variant="outlined" sx={{ p: 2 }}>
                 {experiences.map((item, index) => (
                     <div key={item.id}>
@@ -259,9 +290,18 @@ const ResumeSection = (props) => {
     const { resumeUrl } = props;
     return (
         <>
-            <Typography variant="h5" fontWeight="bold">
-                Resume
-            </Typography>
+            <Stack direction="row" justifyContent="space-between">
+                <Typography variant="h5" fontWeight="bold">
+                    Resume
+                </Typography>
+                <Button
+                    variant="text"
+                    startIcon={<AutoFixHighOutlinedIcon />}
+                    href="/candidate/build-profile/4"
+                >
+                    Update
+                </Button>
+            </Stack>
             <Card variant="outlined" sx={{ p: 2 }}>
                 {resumeUrl != null && (
                     <Stack

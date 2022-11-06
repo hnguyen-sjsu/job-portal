@@ -20,7 +20,11 @@ import SkillsExperienceForm from "./SkillsExperienceForm";
 import ProfileView from "./ProfileView";
 import ResumeForm from "./ResumeForm";
 
+import { useParams } from "react-router-dom";
+
 function ProfileForm(props) {
+    const { step } = useParams();
+
     const { user } = useContext(UserContext);
 
     const [loading, setLoading] = useState(false);
@@ -161,6 +165,13 @@ function ProfileForm(props) {
         },
     ];
 
+    useEffect(() => {
+        console.log("CurrentStep", step);
+        if (step >= 1 && step <= 5) {
+            setActiveStep(parseInt(step) - 1);
+        }
+    }, []);
+
     return (
         <>
             <Container maxWidth="md">
@@ -241,7 +252,7 @@ function ProfileForm(props) {
 
 const ReviewSection = (props) => {
     return (
-        <>
+        <Box {...props}>
             <Typography variant="h5" fontWeight="bold">
                 Congratulations on completing your profile!
             </Typography>
@@ -249,9 +260,9 @@ const ReviewSection = (props) => {
                 Below is the preview of how your profile will be presented to
                 impress recruiters
             </Typography>
-            <Divider />
+            <Divider style={{ margin: 2 }} />
             <ProfileView editable={false} />
-        </>
+        </Box>
     );
 };
 

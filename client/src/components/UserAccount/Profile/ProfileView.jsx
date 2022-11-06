@@ -288,6 +288,12 @@ const ExperienceSection = (props) => {
 
 const ResumeSection = (props) => {
     const { resumeUrl } = props;
+    setTimeout(() => {
+        if (resumeUrl) {
+            console.log(resumeUrl.length);
+        }
+    }, 1000);
+
     return (
         <>
             <Stack direction="row" justifyContent="space-between">
@@ -303,7 +309,7 @@ const ResumeSection = (props) => {
                 </Button>
             </Stack>
             <Card variant="outlined" sx={{ p: 2 }}>
-                {resumeUrl != null && (
+                {resumeUrl && (
                     <Stack
                         direction="row"
                         alignItems="center"

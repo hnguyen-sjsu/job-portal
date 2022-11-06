@@ -28,6 +28,7 @@ import ManageJobs from "./components/Job/ManageJobs";
 import AuthProvider, { UserContext } from "./providers/AuthProvider";
 import JobSearchForm from "./components/Job/JobSearchForm";
 import Pricing from "./components/UserAccount/Membership/Pricing";
+import ApplicationList from "./components/Applications/ApplicationList";
 
 let theme = createTheme({
     palette: {
@@ -161,6 +162,10 @@ function App() {
                             <Route
                                 path="build-profile/"
                                 element={<ProfileForm />}
+                            />
+                            <Route
+                                path="applied-jobs"
+                                element={<ApplicationList />}
                             />
                         </Route>
                         <Route path="/account" element={<NoMenuBarLayout />}>

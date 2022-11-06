@@ -90,8 +90,8 @@ function MenuBar(props) {
                       icon: <BookmarksOutlinedIcon />,
                   },
                   {
-                      title: "Applications",
-                      url: "/applications",
+                      title: "Applied Jobs",
+                      url: "/candidate/applied-jobs",
                       icon: <SaveAltOutlinedIcon />,
                   },
               ]

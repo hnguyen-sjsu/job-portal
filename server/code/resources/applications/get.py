@@ -28,8 +28,8 @@ class GetAllApplicationsByUID(Resource):
         results = []
         # Get job info for each application
         for application in applications:
-            application = application.to_dict()
-            job_info = JobModel.find_by_job_id(application['job_id'])
+            application = dict_to_camel_case(application.to_dict())
+            job_info = JobModel.find_by_job_id(application['jobId'])
             application['jobInfo'] = dict_to_camel_case(job_info.to_dict())
             results.append(application)
 

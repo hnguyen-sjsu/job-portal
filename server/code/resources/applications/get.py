@@ -1,5 +1,6 @@
 from flask_restful import Resource
 from models.application_model import ApplicationModel
+from models.job_model import JobModel
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from helpers import dict_to_camel_case
 from sqlalchemy.exc import SQLAlchemyError
@@ -24,6 +25,13 @@ class GetAllApplicationsByUID(Resource):
         # Check if there are no applications
         if not applications:
             return {'applications': []}, 200
+        results = []
+        # Get job info for each application
+        for application in applications:
+            application = application.to_dict()
+            job_info = JobModel.find_by_job_id(application['job_id'])
+            application['jobInfo'] = job_info.to_dict()
+            results.append(application)
 
         # Return all applications
-        return {'applications': [dict_to_camel_case(application.to_dict()) for application in applications]}, 200
+        return {'applications': results}, 200

@@ -96,41 +96,37 @@ class GetOneSchema(Schema):
 class GetOne(Resource):
 
     @ classmethod
-    @ jwt_required()
+    @ jwt_required(optional=True)
     def get(cls):
+
         # Validate job_id
         errors = GetOneSchema().validate(request.args)
         if errors:
             abort(400, message=errors)
 
         job_id = request.args.get('job_id')
-        user_id = get_jwt_identity().get('user_id')
 
-        # Find the job based on job_id.
-        if get_jwt_identity().get('role') == 'recruiter':
-            job_company_application = JobModel.find_one_job_company_application(
-                job_id)
-            # Check if user is the owner of the job.
-            if JobModel.is_owner(user_id, job_id):
-                result = unpack_jobs(job_company_application)
-                return result, 200
-            else:
-                abort(401, message="Unauthorized")
+        # Case 1: User is logged in as a recruiter
+        if get_jwt_identity() is not None:
+            user_id = get_jwt_identity().get('user_id')
+            if get_jwt_identity().get('role') == 'recruiter':
+                job_company_application = JobModel.find_one_job_company_application(
+                    job_id)
+                # Check if user is the owner of the job.
+                if JobModel.is_owner(user_id, job_id):
+                    result = unpack_jobs(job_company_application)
+                    return result, 200
+                else:
+                    abort(401, message="Unauthorized")
+
+        # Case 2: User is logged in as a candidate or not logged in at all
+        job_company = JobModel.find_one_job_company_by_job_id(job_id)
+        if job_company:
+            result = unpack_jobs([job_company])
+
+            return result, 200
         else:
-            # If user is a candidate, find and return the job information.
-            job_company = JobModel.find_one_job_company_by_job_id(job_id)
-
-            if job_company:
-                job, company = job_company
-
-                # convert job to camel case
-                job = dict_to_camel_case(job.to_dict())
-                # add company to job
-                job.update({'company': dict_to_camel_case(company.to_dict())})
-
-                return {'jobInfo': job}, 200
-            else:
-                abort(404, message="Job not found")
+            abort(404, message="Job not found")
 
 
 class GetAllByUID(Resource):

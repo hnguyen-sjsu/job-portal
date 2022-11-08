@@ -1,6 +1,7 @@
 from flask_restful import Resource
 from models.application_model import ApplicationModel
 from models.job_model import JobModel
+from models.recruiter_model import RecruiterModel
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from helpers import dict_to_camel_case
 from sqlalchemy.exc import SQLAlchemyError
@@ -31,6 +32,9 @@ class GetAllApplicationsByUID(Resource):
             application = dict_to_camel_case(application.to_dict())
             job_info = JobModel.find_by_job_id(application['jobId'])
             application['jobInfo'] = dict_to_camel_case(job_info.to_dict())
+            
+            recruiter_info = RecruiterModel.find_by_user_id(application['jobInfo']['userId'])
+            application['companyInfo'] = dict_to_camel_case(recruiter_info.to_dict())
             results.append(application)
 
         # Return all applications

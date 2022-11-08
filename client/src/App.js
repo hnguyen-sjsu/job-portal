@@ -150,6 +150,7 @@ function App() {
                         <Route path="/job" element={<RecruiterLayout />}>
                             <Route path=":jobId" element={<JobView />} />
                             <Route path="search" element={<JobSearchForm />} />
+                            <Route path="saved" element={<JobSearchForm />} />
                         </Route>
                         <Route
                             path="/candidate"

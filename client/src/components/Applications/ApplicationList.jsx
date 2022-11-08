@@ -3,6 +3,9 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 import Chip from "@mui/material/Chip";
+import Avatar from "@mui/material/Avatar";
+
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
 import ApplicationServices from "../../services/ApplicationServices";
 import ApplicationListItem from "./ApplicationListItem";
@@ -76,6 +79,29 @@ function ApplicationList(props) {
                 {displayedJobs.map((job) => (
                     <ApplicationListItem key={job.id} item={job} />
                 ))}
+                {jobs.length !== 0 && displayedJobs.length === 0 && (
+                    <Stack alignItems="center">
+                        <Avatar variant="rounded">
+                            <SearchOutlinedIcon />
+                        </Avatar>
+                        <Typography variant="h6">
+                            Sorry, we couldn't find any matches your queries.
+                        </Typography>
+                        <Typography>
+                            Please try again with other options.
+                        </Typography>
+                    </Stack>
+                )}
+                {jobs.length === 0 && (
+                    <Stack alignItems="center">
+                        <Avatar variant="rounded">
+                            <SearchOutlinedIcon />
+                        </Avatar>
+                        <Typography variant="h6">
+                            You have no applied jobs available.
+                        </Typography>
+                    </Stack>
+                )}
             </Stack>
         </Stack>
     );

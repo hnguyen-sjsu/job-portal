@@ -98,27 +98,28 @@ class GetOne(Resource):
     @ classmethod
     @ jwt_required()
     def get(cls):
-        # Check role
-        if get_jwt_identity().get('role') != 'recruiter':
-            abort(401, message="Unauthorized")
-
         # Validate job_id
         errors = GetOneSchema().validate(request.args)
         if errors:
             abort(400, message=errors)
 
         job_id = request.args.get('job_id')
-
-        # Find the job based on job_id.
-        job_company = JobModel.find_one_joined_result_by_job_id(job_id)
         user_id = get_jwt_identity().get('user_id')
 
-        # Check if user is the owner of the job.
-        if JobModel.is_owner(user_id, job_id):
-            result = unpack_jobs(job_company)
-            return result, 200
+        # Find the job based on job_id.
+        if get_jwt_identity().get('role') == 'recruiter':
+            job_company = JobModel.find_one_joined_result_by_job_id(job_id)
+            # Check if user is the owner of the job.
+            if JobModel.is_owner(user_id, job_id):
+                result = unpack_jobs(job_company)
+                return result, 200
+            else:
+                abort(401, message="Unauthorized")
         else:
-            abort(401, message="Unauthorized")
+            # If user is a candidate, find and return the job information.
+            job = JobModel.find_by_job_id(job_id)
+            if job:
+                return {'jobInfo': dict_to_camel_case(job.to_dict())}, 200
 
 
 class GetAllByUID(Resource):

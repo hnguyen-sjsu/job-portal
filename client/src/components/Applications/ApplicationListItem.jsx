@@ -8,7 +8,6 @@ import Link from "@mui/material/Link";
 
 function ApplicationListItem(props) {
     const { item } = props;
-
     const getStatusColor = () => {
         switch (item.status) {
             case "Processing":
@@ -31,7 +30,7 @@ function ApplicationListItem(props) {
                         />
                         <Stack sx={{ m: 1, width: "100%" }}>
                             <Link
-                                href={`/job/jobId:${item.id}`}
+                                href={`/job/jobId:${item.jobId}`}
                                 underline="none"
                                 color="inherit"
                             >

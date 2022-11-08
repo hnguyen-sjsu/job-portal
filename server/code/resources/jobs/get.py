@@ -58,7 +58,7 @@ class GetAll(Resource):
 
     @ classmethod
     def get(cls):
-        jobs_company = JobModel.find_all_joined_results()
+        jobs_company = JobModel.find_all_job_company()
 
         # Create an empty dict to store the child dicts.
         results_list = unpack_jobs(jobs_company)
@@ -81,7 +81,7 @@ class GetTen(Resource):
 
         offset = request.args.get('offset')
 
-        jobs_company = JobModel.find_ten_joined_results(offset=offset)
+        jobs_company = JobModel.find_ten_job_company(offset=offset)
 
         # Create an empty dict to store the child dicts.
         results_list = unpack_jobs(jobs_company)
@@ -108,18 +108,29 @@ class GetOne(Resource):
 
         # Find the job based on job_id.
         if get_jwt_identity().get('role') == 'recruiter':
-            job_company = JobModel.find_one_joined_result_by_job_id(job_id)
+            job_company_application = JobModel.find_one_job_company_application(
+                job_id)
             # Check if user is the owner of the job.
             if JobModel.is_owner(user_id, job_id):
-                result = unpack_jobs(job_company)
+                result = unpack_jobs(job_company_application)
                 return result, 200
             else:
                 abort(401, message="Unauthorized")
         else:
             # If user is a candidate, find and return the job information.
-            job = JobModel.find_by_job_id(job_id)
-            if job:
-                return {'jobInfo': dict_to_camel_case(job.to_dict())}, 200
+            job_company = JobModel.find_one_job_company_by_job_id(job_id)
+
+            if job_company:
+                job, company = job_company
+
+                # convert job to camel case
+                job = dict_to_camel_case(job.to_dict())
+                # add company to job
+                job.update({'company': dict_to_camel_case(company.to_dict())})
+
+                return {'jobInfo': job}, 200
+            else:
+                abort(404, message="Job not found")
 
 
 class GetAllByUID(Resource):
@@ -133,7 +144,7 @@ class GetAllByUID(Resource):
         user_id = get_jwt_identity().get('user_id')
 
         # Get all jobs and company info that belong to the current recruiter.
-        jobs = JobModel.find_all_joined_results_by_uid(user_id)
+        jobs = JobModel.find_all_job_company_by_uid(user_id)
 
         # Create an empty dict to store the child dicts.
         results_list = unpack_jobs(jobs)

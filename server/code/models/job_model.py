@@ -110,7 +110,7 @@ class JobModel(db.Model):
             job.delete_from_db()
 
     @classmethod
-    def find_all_joined_results(cls):
+    def find_all_job_company(cls):
         jobs_company = JobModel.query.\
             join(RecruiterModel, JobModel.user_id == RecruiterModel.user_id).\
             add_columns(RecruiterModel).\
@@ -120,7 +120,7 @@ class JobModel(db.Model):
         return jobs_company
 
     @classmethod
-    def find_ten_joined_results(cls, offset):
+    def find_ten_job_company(cls, offset):
         """
         Return 10 jobs in the database starting from index (offset + 1)
         The front end should keep track of the offset and increment it by 10 each time the user scrolls down or presses load more.
@@ -134,7 +134,7 @@ class JobModel(db.Model):
         return jobs_company
 
     @classmethod
-    def find_all_joined_results_by_uid(cls, user_id):
+    def find_all_job_company_by_uid(cls, user_id):
         applications = ApplicationModel.find_by_user_id(user_id)
         if len(applications) == 0:
             jobs_company = JobModel.query.\
@@ -171,7 +171,7 @@ class JobModel(db.Model):
             first()
 
     @classmethod
-    def find_one_joined_result_by_job_id(cls, id):
+    def find_one_job_company_application(cls, id):
         applications = ApplicationModel.find_by_job_id(id)
         if len(applications) == 0:
             jobs_company = JobModel.query.\
@@ -192,6 +192,15 @@ class JobModel(db.Model):
             all()
 
         return job_company_applications
+
+    @classmethod
+    def find_one_job_company_by_job_id(cls, job_id):
+        return cls.query.\
+            join(RecruiterModel, JobModel.user_id == RecruiterModel.user_id).\
+            add_columns(RecruiterModel).\
+            filter(JobModel.end_date > datetime.datetime.now()).\
+            filter(JobModel.id == job_id).\
+            first()
 
     # Where client store the job id?
     @classmethod

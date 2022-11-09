@@ -8,7 +8,6 @@ from helpers import dict_to_camel_case
 from sqlalchemy.exc import SQLAlchemyError
 from flask_smorest import abort
 from flask import request
-from marshmallow import Schema, fields
 
 
 class GetAllApplicationsByUID(Resource):
@@ -50,7 +49,7 @@ class GetAllApplicationsByJobID(Resource):
     @classmethod
     @jwt_required()
     def get(cls):
-        if get_jwt_identity().get('role') != 'candidate':
+        if get_jwt_identity().get('role') != 'recruiter':
             abort(403, message='You are not authorized to access this resource.')
 
         if request.args.get('job_id') is None:

@@ -61,6 +61,10 @@ class GetAllApplicationsByJobID(Resource):
         except ValueError:
             abort(400, message='job_id must be an integer')
 
+        # check if job_id belongs to recruiter
+        if not JobModel.is_owner(get_jwt_identity().get('user_id'), job_id):
+            abort(403, message='You are not authorized to access this resource.')
+
         # Get all applications by job_id
         applications = ApplicationModel.find_by_job_id(job_id)
         # Check if there are no applications

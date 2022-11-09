@@ -44,6 +44,7 @@ from resources.work_experiences.add import AddBatchWorkExperiences
 from resources.work_experiences.update import UpdateWorkExperience
 from resources.work_experiences.delete import DeleteWorkExperience
 from resources.applications.get import GetAllApplicationsByUID
+from resources.applications.get import GetAllApplicationsByJobID
 from resources.applications.add import AddApplication
 from resources.applications.update import UpdateApplication
 from resources.applications.delete import DeleteApplication
@@ -185,6 +186,7 @@ api.add_resource(UpdateWorkExperience, '/work-experience/update')
 api.add_resource(DeleteWorkExperience, '/work-experience/delete')
 # applications
 api.add_resource(GetAllApplicationsByUID, '/application/get-all')
+api.add_resource(GetAllApplicationsByJobID, '/application/get-all-by-job-id')
 api.add_resource(AddApplication, '/application/post-one')
 api.add_resource(UpdateApplication, '/application/update')
 api.add_resource(DeleteApplication, '/application/delete')

@@ -96,10 +96,8 @@ const getJob = async (jobId) => {
 
     try {
         const response = await axios.get(url, params, headers);
-        console.log(response.data);
         if (response.status === 200) {
-            // jobInfo = response.data.jobs[0];
-            jobInfo = response.data.jobInfo;
+            jobInfo = response.data.jobs[0];
         }
     } catch (e) {
         console.error(e);

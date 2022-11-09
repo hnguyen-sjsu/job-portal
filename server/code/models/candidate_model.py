@@ -1,5 +1,9 @@
 from db import db
 from sqlalchemy.orm import defer
+from helpers import dict_to_camel_case
+from models.education_model import EducationModel
+from models.skill_model import SkillModel
+from models.work_experience_model import WorkExperienceModel
 
 
 class CandidateModel(db.Model):
@@ -57,6 +61,28 @@ class CandidateModel(db.Model):
             candidate.save_to_db()
             return candidate
 
+    @classmethod
+    def find_candidate_profile(cls, user_id):
+        # get candidate's profile
+        profile = CandidateModel.find_by_user_id_for_recruiter(user_id)
+        profile = dict_to_camel_case(profile.to_dict())
+
+        # get candidate's education
+        educations = EducationModel.find_all_by_user_id(user_id)
+        educations = [dict_to_camel_case(
+            education.to_dict()) for education in educations]
+
+        # get candidate's work experience
+        work_experiences = WorkExperienceModel.find_all_by_user_id(user_id)
+        work_experiences = [dict_to_camel_case(
+            work_experience.to_dict()) for work_experience in work_experiences]
+
+        # get candidate's skills
+        skills = SkillModel.find_all_by_user_id(user_id)
+        skills = [dict_to_camel_case(skill.to_dict()) for skill in skills]
+
+        # return a dictionary of candidate's profile, education, work experience, and skills
+        return {'profile': profile, 'educations': educations, 'workExperiences': work_experiences, 'skills': skills}
     # @classmethod
     # def delete_by_user_id(cls, user_id):
     #     user = cls.query.filter_by(user_id=user_id).first()

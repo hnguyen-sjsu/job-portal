@@ -1,5 +1,6 @@
 from db import db
 from sqlalchemy.types import Date
+from sqlalchemy import or_, and_, all_, any_
 
 
 class SkillModel(db.Model):
@@ -65,6 +66,15 @@ class SkillModel(db.Model):
         return skill
 
     @classmethod
+    def find_all_by_skill_names(cls, skills):
+
+        like_clauses = [cls.name.like(f'%{skill}%') for skill in skills]
+
+        results = cls.query.filter(or_(*like_clauses)).all()
+        candidate_ids = set(result.user_id for result in results)
+        return candidate_ids
+
+    @ classmethod
     def update(cls, **kwargs):
         skill = cls.find_by_skill_id(kwargs['skill_id'])
         if skill:

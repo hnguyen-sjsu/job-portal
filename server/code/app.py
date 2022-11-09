@@ -47,6 +47,8 @@ from resources.applications.get import GetAllApplicationsByUID
 from resources.applications.add import AddApplication
 from resources.applications.update import UpdateApplication
 from resources.applications.delete import DeleteApplication
+from resources.search.get import SearchByLocationAndTitle
+from resources.search.get import SearchBySkills
 from resources.db_cleaner import *
 from dotenv import load_dotenv
 from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, JWTManager, set_access_cookies
@@ -186,7 +188,9 @@ api.add_resource(GetAllApplicationsByUID, '/application/get-all')
 api.add_resource(AddApplication, '/application/post-one')
 api.add_resource(UpdateApplication, '/application/update')
 api.add_resource(DeleteApplication, '/application/delete')
-
+# search
+api.add_resource(SearchByLocationAndTitle, '/search/title-and-location')
+api.add_resource(SearchBySkills, '/search/skills')
 
 if __name__ == '__main__':
     db.init_app(app)

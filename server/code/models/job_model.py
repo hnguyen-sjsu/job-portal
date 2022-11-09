@@ -42,6 +42,17 @@ class SavedJobModel(db.Model):
         return False
 
     @classmethod
+    def find_all_job_company_by_title(cls, job_title):
+        job_company = JobModel.query.\
+            join(RecruiterModel, JobModel.user_id == RecruiterModel.user_id).\
+            add_columns(RecruiterModel).\
+            filter(JobModel.end_date > datetime.datetime.now()).\
+            filter(JobModel.title.like(f'%{job_title}%')).\
+            all()
+
+        return job_company
+
+    @classmethod
     def find_all_by_uid(cls, user_id):
         return cls.query.filter_by(user_id=user_id).all()
 
@@ -115,6 +126,46 @@ class JobModel(db.Model):
             join(RecruiterModel, JobModel.user_id == RecruiterModel.user_id).\
             add_columns(RecruiterModel).\
             filter(JobModel.end_date > datetime.datetime.now()).\
+            all()
+
+        return jobs_company
+
+    @classmethod
+    def find_all_job_company_by_job_title(cls, job_title):
+        jobs_company = JobModel.query.\
+            join(RecruiterModel, JobModel.user_id == RecruiterModel.user_id).\
+            add_columns(RecruiterModel).\
+            filter(JobModel.end_date > datetime.datetime.now()).\
+            filter(JobModel.title.like(f'%{job_title}%')).\
+            all()
+
+        return jobs_company
+
+    @classmethod
+    def find_all_job_company_by_location(cls, location):
+        jobs_company = JobModel.query.\
+            join(RecruiterModel, JobModel.user_id == RecruiterModel.user_id).\
+            add_columns(RecruiterModel).\
+            filter(JobModel.end_date > datetime.datetime.now()).\
+            filter(JobModel.location.like(f'%{location}%')).\
+            all()
+
+        return jobs_company
+
+    @classmethod
+    def find_all_job_company_by_title_location(cls, job_title, location):
+        if job_title and not location:
+            return cls.find_all_job_company_by_job_title(job_title)
+
+        if location and not job_title:
+            return cls.find_all_job_company_by_location(location)
+
+        jobs_company = JobModel.query.\
+            join(RecruiterModel, JobModel.user_id == RecruiterModel.user_id).\
+            add_columns(RecruiterModel).\
+            filter(JobModel.end_date > datetime.datetime.now()).\
+            filter(JobModel.title.like(f'%{job_title}%')).\
+            filter(JobModel.location.like(f'%{location}%')).\
             all()
 
         return jobs_company
@@ -227,16 +278,14 @@ class JobModel(db.Model):
     # Testing join tables
 
     @classmethod
-    def get_joined_table(cls, user_id):
+    def get_joined_table(cls, job_title, location):
         # Join the JobModel table with the RecruiterModel table.
-        print(user_id)
-        jobs_company_application = JobModel.query.\
+        job_company = JobModel.query.\
             join(RecruiterModel, JobModel.user_id == RecruiterModel.user_id).\
-            join(ApplicationModel, JobModel.id == ApplicationModel.job_id).\
-            add_columns(RecruiterModel, ApplicationModel).\
-            order_by(JobModel.id).\
-            filter(JobModel.user_id == user_id).\
+            add_columns(RecruiterModel).\
             filter(JobModel.end_date > datetime.datetime.now()).\
+            filter(JobModel.title.like(f'%{job_title}%')).\
+            filter(JobModel.location.like(f'%{location}%')).\
             all()
 
-        return jobs_company_application
+        return job_company

@@ -51,7 +51,6 @@ function SkillsExperienceForm(props) {
         if (e.key.toLowerCase() === "enter") {
             setLoading(true);
             CandidateServices.addSkill(value).then((response) => {
-                console.log(response);
                 setSkills([...skills, response]);
                 setLoading(false);
                 e.target.value = "";

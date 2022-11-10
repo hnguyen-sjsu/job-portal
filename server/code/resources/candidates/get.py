@@ -13,7 +13,7 @@ class GetCandidateProfile(Resource):
             abort(401, message='You are not authorized to access this route')
 
         # get candidate by user_id
-        candidate = CandidateModel.find_candidate_profile(
+        candidate = CandidateModel.find_by_user_id(
             get_jwt_identity().get('user_id'))
 
         if candidate is None:

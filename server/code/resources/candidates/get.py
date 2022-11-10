@@ -19,4 +19,4 @@ class GetCandidateProfile(Resource):
         if candidate is None:
             abort(404, message='Candidate not found')
 
-        return candidate, 200
+        return dict_to_camel_case(candidate.to_dict()), 200

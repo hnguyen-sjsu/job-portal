@@ -68,6 +68,7 @@ const getApplicationsByJobId = async (jobId) => {
         });
     } catch (e) {
         console.error(e);
+        return [];
     }
 };
 

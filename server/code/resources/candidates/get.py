@@ -13,10 +13,10 @@ class GetCandidateProfile(Resource):
             abort(401, message='You are not authorized to access this route')
 
         # get candidate by user_id
-        candidate = CandidateModel.find_by_user_id(
+        candidate = CandidateModel.find_candidate_profile(
             get_jwt_identity().get('user_id'))
 
         if candidate is None:
             abort(404, message='Candidate not found')
 
-        return dict_to_camel_case(candidate.to_dict()), 200
+        return candidate, 200

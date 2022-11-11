@@ -1,6 +1,7 @@
 from db import db
 from sqlalchemy.orm import defer
 from helpers import dict_to_camel_case
+from models.user_model import UserModel
 from models.education_model import EducationModel
 from models.skill_model import SkillModel
 from models.work_experience_model import WorkExperienceModel
@@ -63,9 +64,13 @@ class CandidateModel(db.Model):
 
     @classmethod
     def find_candidate_profile(cls, user_id):
+        # get user's email
+        user_email = UserModel.find_by_id(user_id).email
+
         # get candidate's profile
         profile = CandidateModel.find_by_user_id_for_recruiter(user_id)
         profile = dict_to_camel_case(profile.to_dict())
+        profile['email'] = user_email
 
         # get candidate's education
         educations = EducationModel.find_all_by_user_id(user_id)

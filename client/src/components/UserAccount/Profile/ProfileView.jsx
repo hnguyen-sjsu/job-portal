@@ -13,6 +13,11 @@ import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutl
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
 import AutoFixHighOutlinedIcon from "@mui/icons-material/AutoFixHighOutlined";
+import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
+import ContactPhoneRoundedIcon from "@mui/icons-material/ContactPhoneRounded";
+import WorkRoundedIcon from "@mui/icons-material/WorkRounded";
+import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
+import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 
 import { UserContext } from "../../../providers/AuthProvider";
 
@@ -41,17 +46,8 @@ function ProfileView(props) {
                 experiences: [...candidateProfile.workExperiences],
             });
         } else {
-            // const [profileRes, educationRes, skillsRes, expRes] =
-            //     await Promise.all([
-            //         CandidateServices.getCandidateProfile(),
-            //         CandidateServices.getEducationItems(),
-            //         CandidateServices.getSkills(),
-            //         CandidateServices.getWorkHistoryItems(),
-            //     ]);
-
             const profileRes = await CandidateServices.getCandidateProfile();
 
-            // if (profileRes && educationRes && skillsRes && expRes) {
             if (profileRes) {
                 console.log(profileRes);
                 setProfile({
@@ -61,13 +57,6 @@ function ProfileView(props) {
                     educations: [...profileRes.educations],
                     experiences: [...profileRes.workExperiences],
                 });
-                // setProfile({
-                //     ...profile,
-                //     userProfile: { ...profileRes.profile },
-                //     skills: [...skillsRes],
-                //     educations: [...educationRes],
-                //     experiences: [...expRes],
-                // });
             }
         }
     };
@@ -121,9 +110,13 @@ const ContactInfoSection = (props) => {
 
     return (
         <>
-            <Typography variant="h5" fontWeight="bold">
-                Contact Information
-            </Typography>
+            <Stack direction="row" alignItems="center" spacing={2}>
+                <ContactPhoneRoundedIcon />
+                <Typography variant="h5" fontWeight="bold">
+                    Contact Information
+                </Typography>
+            </Stack>
+
             <Card variant="outlined" sx={{ p: 2 }}>
                 <Grid container>
                     <Grid item xs={12} sm={4}>
@@ -171,9 +164,13 @@ const SkillsSection = (props) => {
     return (
         <>
             <Stack direction="row" justifyContent="space-between">
-                <Typography variant="h5" fontWeight="bold">
-                    Skills
-                </Typography>
+                <Stack direction="row" alignItems="center" spacing={2}>
+                    <AutoAwesomeRoundedIcon />
+                    <Typography variant="h5" fontWeight="bold">
+                        Skills
+                    </Typography>
+                </Stack>
+
                 {editable && (
                     <Button
                         variant="text"
@@ -205,9 +202,13 @@ const EducationSection = (props) => {
     return (
         <>
             <Stack direction="row" justifyContent="space-between">
-                <Typography variant="h5" fontWeight="bold">
-                    Education History
-                </Typography>
+                <Stack direction="row" alignItems="center" spacing={2}>
+                    <SchoolRoundedIcon />
+                    <Typography variant="h5" fontWeight="bold">
+                        Education History
+                    </Typography>
+                </Stack>
+
                 {editable && (
                     <Button
                         variant="text"
@@ -255,6 +256,9 @@ const EducationSection = (props) => {
                         </Grid>
                     </div>
                 ))}
+                {educations.length === 0 && (
+                    <Typography>No Education History Available</Typography>
+                )}
             </Card>
         </>
     );
@@ -266,9 +270,12 @@ const ExperienceSection = (props) => {
     return (
         <>
             <Stack direction="row" justifyContent="space-between">
-                <Typography variant="h5" fontWeight="bold">
-                    Work & Experience
-                </Typography>
+                <Stack direction="row" alignItems="center" spacing={2}>
+                    <WorkRoundedIcon />
+                    <Typography variant="h5" fontWeight="bold">
+                        Work & Experience
+                    </Typography>
+                </Stack>
                 {editable && (
                     <Button
                         variant="text"
@@ -319,6 +326,9 @@ const ExperienceSection = (props) => {
                         </Grid>
                     </div>
                 ))}
+                {experiences.length === 0 && (
+                    <Typography>No Work Experience Available</Typography>
+                )}
             </Card>
         </>
     );
@@ -330,9 +340,13 @@ const ResumeSection = (props) => {
     return (
         <>
             <Stack direction="row" justifyContent="space-between">
-                <Typography variant="h5" fontWeight="bold">
-                    Resume
-                </Typography>
+                <Stack direction="row" alignItems="center" spacing={2}>
+                    <DescriptionRoundedIcon />
+                    <Typography variant="h5" fontWeight="bold">
+                        Resume
+                    </Typography>
+                </Stack>
+
                 {editable && (
                     <Button
                         variant="text"
@@ -344,7 +358,7 @@ const ResumeSection = (props) => {
                 )}
             </Stack>
             <Card variant="outlined" sx={{ p: 2 }}>
-                {resumeUrl && (
+                {resumeUrl ? (
                     <Stack
                         direction="row"
                         alignItems="center"
@@ -366,6 +380,8 @@ const ResumeSection = (props) => {
                             Download
                         </Button>
                     </Stack>
+                ) : (
+                    <>No Resume Available</>
                 )}
             </Card>
         </>

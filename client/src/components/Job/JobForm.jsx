@@ -75,6 +75,7 @@ function JobForm(props) {
         },
         startDate: null,
         endDate: null,
+        applications: [],
     };
 
     const [job, setJob] = useState({
@@ -108,6 +109,7 @@ function JobForm(props) {
         setLoading(true);
         try {
             const job = await JobServices.getJob(jobId);
+            console.log(job);
             setJob({ ...job });
         } catch (e) {
             console.error(e);
@@ -128,15 +130,12 @@ function JobForm(props) {
     return (
         <>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <Stack
-                    component="form"
-                    onSubmit={handleSubmit}
-                    className="container"
-                >
+                <Stack component="form" onSubmit={handleSubmit}>
                     <Typography variant="h4">
                         {job.id ? "Edit Job" : "Post Job"}
                     </Typography>
                     <Grid container spacing={2}>
+                        <Grid item xs={12}></Grid>
                         <Grid item xs={12}>
                             <InputLabel htmlFor="title">Title</InputLabel>
                             <TextField
@@ -311,7 +310,7 @@ function JobForm(props) {
                         </Grid>
                         <Grid item xs={6}>
                             <InputLabel htmlFor="startDate">
-                                Start Date
+                                Available for Apply From
                             </InputLabel>
                             <DatePicker
                                 value={job.startDate}
@@ -335,7 +334,7 @@ function JobForm(props) {
                             />
                         </Grid>
                         <Grid item xs={6}>
-                            <InputLabel htmlFor="endDate">End Date</InputLabel>
+                            <InputLabel htmlFor="endDate">To</InputLabel>
                             <DatePicker
                                 value={job.endDate}
                                 onChange={(newValue) => {
@@ -412,6 +411,7 @@ function JobForm(props) {
                                 </Stack>
                             </Stack>
                         </Grid>
+                        <Grid item></Grid>
                     </Grid>
                 </Stack>
             </LocalizationProvider>

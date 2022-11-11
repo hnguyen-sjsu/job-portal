@@ -27,6 +27,7 @@ const updateCandidateProfile = async (profile) => {
     const params = {
         withCredentials: true,
     };
+    console.log(profile);
     const data = {
         full_name: profile.fullName,
         location: profile.location,

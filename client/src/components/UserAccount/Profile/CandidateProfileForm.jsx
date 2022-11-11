@@ -29,7 +29,7 @@ function CandidateProfileForm(props) {
     useEffect(() => {
         setLoading(true);
         CandidateServices.getCandidateProfile().then((response) => {
-            setUserProfile({ ...response });
+            setUserProfile({ ...response.profile });
             setTimeout(() => {
                 setLoading(false);
             }, 500);

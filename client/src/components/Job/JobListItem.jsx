@@ -19,7 +19,9 @@ function JobListItem(props) {
                         <Avatar src={job.company.companyLogoUrl} />
                     </ListItemAvatar>
                     <Stack>
-                        <Typography variant="body1">{job.title}</Typography>
+                        <Typography variant="body1" fontWeight={500}>
+                            {job.title}
+                        </Typography>
                         <Typography variant="body2">
                             {job.type + " - " + job.experienceLevel}
                         </Typography>

@@ -52,9 +52,29 @@ const getApplications = async () => {
     }
 };
 
+const getApplicationsByJobId = async (jobId) => {
+    const url = baseUrl + "get-all-by-job-id?job_id=" + jobId;
+    const headers = getHeaders();
+    const params = {
+        withCredentials: true,
+    };
+    try {
+        const response = await axios.get(url, params, headers);
+        return response.data.map((item) => {
+            return {
+                ...item.candidateInfo,
+                applicationInfo: { ...item.applicationInfo },
+            };
+        });
+    } catch (e) {
+        console.error(e);
+    }
+};
+
 const ApplicationServices = {
     apply,
     getApplications,
+    getApplicationsByJobId,
 };
 
 export default ApplicationServices;

@@ -11,7 +11,7 @@ function JobListView(props) {
     const { jobs, selectedJob, onJobSelected } = props;
 
     const Row = ({ index, style }) => (
-        <div style={style}>
+        <div style={style} className="list-item">
             {
                 <ListItemButton
                     onClick={() => {
@@ -41,7 +41,7 @@ function JobListView(props) {
                     <FixedSizeList
                         height={height}
                         width={width}
-                        itemSize={110}
+                        itemSize={140}
                         itemCount={jobs.length}
                         overscanCount={4}
                     >

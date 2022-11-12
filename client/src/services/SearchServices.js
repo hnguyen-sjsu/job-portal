@@ -37,8 +37,45 @@ const searchJobs = async (title, location) => {
     }
 };
 
+const searchCandidates = async (skills) => {
+    const arrSkills = skills
+        .split(",")
+        .map((skill) => skill.toLowerCase().trim());
+    const url = baseUrl + "skills?skills=" + skills;
+    const headers = getHeaders();
+    const params = {
+        withCredentials: true,
+    };
+
+    try {
+        const response = await axios.get(url, params, headers);
+        if (response.status === 200) {
+            const candidates = response.data.candidates.map((candidate) => {
+                return {
+                    ...candidate,
+                    skills: candidate.skills.map((item) => {
+                        return {
+                            ...item,
+                            matched: arrSkills.includes(
+                                item.name.toLowerCase()
+                            ),
+                        };
+                    }),
+                };
+            });
+            return candidates;
+        } else {
+            return [];
+        }
+    } catch (e) {
+        console.error(e);
+        return [];
+    }
+};
+
 const SearchServices = {
     searchJobs,
+    searchCandidates,
 };
 
 export default SearchServices;

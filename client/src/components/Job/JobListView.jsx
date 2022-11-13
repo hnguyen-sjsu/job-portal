@@ -1,56 +1,84 @@
 import React, { useState, useEffect } from "react";
 
 import ListItemButton from "@mui/material/ListItemButton";
-import Divider from "@mui/material/Divider";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 
-import { FixedSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import JobListItem from "./JobListItem";
 
 function JobListView(props) {
+    const pageSize = 5;
     const { jobs, selectedJob, onJobSelected } = props;
+    const [pages, setPages] = useState(1);
+    const [currPageIndex, setCurrPageIndex] = useState(1);
+    const [displayedJobs, setDisplayedJobs] = useState([]);
 
-    const Row = ({ index, style }) => (
-        <div style={style} className="list-item">
-            {
-                <ListItemButton
-                    onClick={() => {
-                        onJobSelected({
-                            ...jobs[index],
-                            jobId: jobs[index].id,
-                        });
-                    }}
-                    disableGutters
-                >
-                    <JobListItem
-                        job={jobs[index]}
-                        selected={
-                            selectedJob && selectedJob.id === jobs[index].id
-                        }
-                    />
-                    {index !== jobs.length - 1 && <Divider />}
-                </ListItemButton>
-            }
-        </div>
-    );
+    const handlePageIndexChange = (event, value) => {
+        setCurrPageIndex(value);
+    };
+
+    const paging = () => {
+        let fromIndex = (currPageIndex - 1) * pageSize;
+        let toIndex = currPageIndex * pageSize;
+        setDisplayedJobs(jobs.slice(fromIndex, toIndex));
+    };
+
+    useEffect(() => {
+        if (jobs.length / pageSize > 1) {
+            setPages(Math.ceil(jobs.length / pageSize));
+        }
+        paging();
+    }, [jobs]);
+
+    useEffect(() => {
+        paging();
+    }, [currPageIndex]);
 
     return (
         <div className="job-list-container">
             <AutoSizer>
                 {({ height, width }) => (
-                    <FixedSizeList
-                        height={height}
-                        width={width}
-                        itemSize={140}
-                        itemCount={jobs.length}
-                        overscanCount={4}
+                    <Stack
+                        sx={{ height: height, width: width }}
+                        justifyContent="space-between"
                     >
-                        {Row}
-                    </FixedSizeList>
+                        {displayedJobs.map((job, index) => (
+                            <div key={job.id}>
+                                <ListItemButton
+                                    onClick={() => {
+                                        onJobSelected({
+                                            ...job,
+                                            jobId: job.id,
+                                        });
+                                    }}
+                                    disableGutters
+                                    divider
+                                >
+                                    <JobListItem
+                                        job={job}
+                                        selected={
+                                            selectedJob &&
+                                            selectedJob.id === job.id
+                                        }
+                                    />
+                                </ListItemButton>
+                            </div>
+                        ))}
+                        <Stack
+                            alignItems="center"
+                            sx={{ paddingTop: "16px", paddingBottom: "16px" }}
+                        >
+                            <Pagination
+                                count={pages}
+                                color="primary"
+                                onChange={handlePageIndexChange}
+                            />
+                        </Stack>
+                    </Stack>
                 )}
             </AutoSizer>
         </div>
     );
 }
-
 export default JobListView;

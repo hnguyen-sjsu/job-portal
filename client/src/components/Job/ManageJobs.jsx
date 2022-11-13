@@ -35,7 +35,7 @@ function ManageJobs(props) {
         setJobViewDialog(true);
     };
 
-    useEffect(() => {}, [selectedJob]);
+    // useEffect(() => {}, [selectedJob]);
 
     useEffect(() => {
         JobServices.getPostedJobs().then((response) => {
@@ -58,23 +58,22 @@ function ManageJobs(props) {
                         selectedJob={selectedJob}
                     />
                 </Grid>
-
-                <Grid item xs={12} sm={6} style={{ paddingLeft: "16px" }}>
-                    <div className="job-preview-container">
-                        {selectedJob && <JobView job={selectedJob} />}
-                    </div>
-                </Grid>
-
-                <Grid item xs={12} sm={3} style={{ paddingLeft: "16px" }}>
-                    <div className="list-container">
-                        <Typography variant="h6" style={{ padding: "16px" }}>
-                            Applications
-                        </Typography>
-                        {selectedJob && (
-                            <AppliedCandidateListView job={selectedJob} />
-                        )}
-                    </div>
-                </Grid>
+                {!fullScreen && (
+                    <Grid item xs={12} sm={6} style={{ paddingLeft: "16px" }}>
+                        <div className="job-preview-container">
+                            {selectedJob && <JobView job={selectedJob} />}
+                        </div>
+                    </Grid>
+                )}
+                {!fullScreen && selectedJob && (
+                    <Grid item xs={12} sm={3} style={{ paddingLeft: "16px" }}>
+                        <div className="list-container">
+                            {selectedJob && (
+                                <AppliedCandidateListView job={selectedJob} />
+                            )}
+                        </div>
+                    </Grid>
+                )}
             </Grid>
             <Dialog
                 open={selectedJob !== null && jobViewDialog && fullScreen}

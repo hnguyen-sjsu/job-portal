@@ -20,9 +20,11 @@ import SkillsExperienceForm from "./SkillsExperienceForm";
 import ProfileView from "./ProfileView";
 import ResumeForm from "./ResumeForm";
 
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 function ProfileForm(props) {
+    const navigate = useNavigate();
+
     const { step } = useParams();
 
     const { user } = useContext(UserContext);
@@ -62,6 +64,7 @@ function ProfileForm(props) {
             location: "",
         },
     ]);
+
     const [activeStep, setActiveStep] = useState(0);
 
     const totalSteps = () => {
@@ -104,9 +107,11 @@ function ProfileForm(props) {
                 );
                 break;
             case 3:
-            case 4:
-            default:
                 moveNext();
+                break;
+            case 4:
+                navigate("/candidate/profile");
+                break;
         }
     };
 

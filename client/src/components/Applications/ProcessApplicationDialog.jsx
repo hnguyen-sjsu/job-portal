@@ -22,7 +22,12 @@ function ProcessApplicationDialog(props) {
     return (
         <>
             {candidateProfile && (
-                <Dialog open={showDialog} fullWidth maxWidth="lg">
+                <Dialog
+                    open={showDialog}
+                    fullWidth
+                    maxWidth="lg"
+                    sx={{ backdropFilter: "blur(5px)" }}
+                >
                     <AppBar
                         color="inherit"
                         sx={{ position: "relative" }}

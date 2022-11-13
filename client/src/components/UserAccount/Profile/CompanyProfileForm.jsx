@@ -9,14 +9,15 @@ import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import Paper from "@mui/material/Paper";
 
 import AddPhotoAlternateRoundedIcon from "@mui/icons-material/AddPhotoAlternateRounded";
 import FileHandlingServices from "../../../services/FileHandlingServices";
 import RecruiterServices from "../../../services/RecruiterServices";
 import AuthenticationServices from "../../../services/AuthenticationServices";
+import ConfirmDialog from "../../Utils/ConfirmDialog";
 
 function CompanyProfileForm(props) {
+    const [showDialog, setShowDialog] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [profileImageUrl, setProfileImageUrl] = useState("");
     const [loading, setLoading] = useState(false);
@@ -66,12 +67,18 @@ function CompanyProfileForm(props) {
         };
 
         try {
-            const response = await RecruiterServices.updateCompanyProfile(
-                companyProfile
+            // const response = await RecruiterServices.updateCompanyProfile(
+            //     companyProfile
+            // );
+            // setTimeout(() => {
+            //     setLoading(false);
+            // }, 2000);
+            RecruiterServices.updateCompanyProfile(companyProfile).then(
+                (response) => {
+                    setLoading(false);
+                    setShowDialog(true);
+                }
             );
-            setTimeout(() => {
-                setLoading(false);
-            }, 2000);
         } catch (e) {
             console.error(e);
         }
@@ -229,6 +236,21 @@ function CompanyProfileForm(props) {
                         <div></div>
                     </div>
                 </Stack>
+                <ConfirmDialog
+                    title="Message"
+                    message="Company information updated successfully!"
+                    showDialog={showDialog}
+                    actions={[
+                        {
+                            title: "Close",
+                            action: () => {
+                                setShowDialog(false);
+                            },
+                            color: "primary",
+                            primary: true,
+                        },
+                    ]}
+                />
             </div>
         </Container>
     );

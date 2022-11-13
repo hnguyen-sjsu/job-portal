@@ -80,7 +80,6 @@ function ManageJobs(props) {
                 open={selectedJob !== null && jobViewDialog && fullScreen}
                 fullScreen={fullScreen}
                 onClose={closeJobViewDialog}
-                style={{ backgroundColor: "#fff" }}
             >
                 <AppBar
                     color="inherit"

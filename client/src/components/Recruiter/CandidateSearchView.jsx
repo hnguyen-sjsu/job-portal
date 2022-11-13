@@ -28,40 +28,25 @@ import CandidateListView from "./CandidateListView";
 import ProfileView from "../UserAccount/Profile/ProfileView";
 
 function CandidateSearchView(props) {
+    const [loading, setLoading] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
     const [candidates, setCandiddates] = useState([]);
     const [skills, setSkills] = useState("");
     const [selectedCandidate, setSelectedCandidate] = useState(null);
 
     const handleSearch = (skills) => {
+        setLoading(true);
         SearchServices.searchCandidates(skills).then((response) => {
-            setCandiddates(response);
+            setTimeout(() => {
+                setCandiddates(response);
+                setLoading(false);
+            }, 1000);
         });
     };
 
     const handleCandidateSelected = (candidate) => {
-        console.log(candidate);
         setSelectedCandidate(candidate);
         setOpenDialog(true);
-    };
-
-    const NoSearchResults = () => {
-        return (
-            <Stack
-                className="list-container"
-                sx={{ p: 2, minHeight: "50vh" }}
-                alignItems="center"
-                justifyContent="center"
-            >
-                <Avatar variant="rounded">
-                    <SearchOutlinedIcon />
-                </Avatar>
-                <Typography variant="h6">
-                    Sorry, we couldn't find any matches your queries.
-                </Typography>
-                <Typography>Please try again with other queries.</Typography>
-            </Stack>
-        );
     };
 
     return (
@@ -71,28 +56,24 @@ function CandidateSearchView(props) {
                 setSkills={setSkills}
                 setOpenDialog={setOpenDialog}
                 handleSearch={handleSearch}
+                loading={loading}
             />
             <CandidateListView
                 candidates={candidates}
                 onCandidateSelected={handleCandidateSelected}
+                loading={loading}
             />
             <CandidateProfilePreviewDialog
                 open={openDialog}
                 setOpen={setOpenDialog}
                 candidateProfile={selectedCandidate}
             />
-            {/* {candidates.length === 0 && skills.length > 0 && (
-                <NoSearchResults />
-            )}
-            {candidates.length === 0 && skills.length === 0 && (
-                <>Search Candidates</>
-            )} */}
         </Stack>
     );
 }
 
 function SearchBar(props) {
-    const { skills, setSkills, setOpenDialog, handleSearch } = props;
+    const { skills, setSkills, setOpenDialog, handleSearch, loading } = props;
 
     const handleOpenFilters = () => {
         setOpenDialog(true);
@@ -110,9 +91,9 @@ function SearchBar(props) {
     };
 
     const handleChange = (e) => {
-        // const { name, value } = e.target;
         setSkills(e.target.value);
     };
+
     return (
         <Grid
             container
@@ -136,6 +117,7 @@ function SearchBar(props) {
                             sx={{ mr: "10px" }}
                         />
                     }
+                    disabled={loading}
                 />
             </Grid>
             <Grid item xs={4}>
@@ -144,6 +126,7 @@ function SearchBar(props) {
                         variant="contained"
                         disableElevation
                         onClick={handleSearchBtnClick}
+                        disabled={loading}
                     >
                         Search
                     </Button>
@@ -171,6 +154,7 @@ function CandidateProfilePreviewDialog(props) {
                     fullWidth
                     fullScreen={fullScreen}
                     maxWidth="lg"
+                    sx={{ backdropFilter: "blur(5px)" }}
                 >
                     <AppBar
                         color="inherit"

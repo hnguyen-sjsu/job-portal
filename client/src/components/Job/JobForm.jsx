@@ -96,6 +96,7 @@ function JobForm(props) {
         setLoading(true);
         setShowDialog(false);
         try {
+            console.log(job);
             const response = await JobServices.saveJob({
                 ...job,
                 description: description,
@@ -113,7 +114,6 @@ function JobForm(props) {
         setLoading(true);
         try {
             const job = await JobServices.getJob(jobId);
-            console.log(job);
             setJob({ ...job });
             setDescription(job.description);
         } catch (e) {
@@ -124,15 +124,11 @@ function JobForm(props) {
     };
 
     useEffect(() => {
-        console.log(jobId);
         document.title = "Post Job";
         if (jobId) {
             loadJob(jobId.split(":")[1]);
             document.title = "Edit Job";
         }
-        setTimeout(() => {
-            console.log(job);
-        }, 5000);
     }, []);
 
     return (
@@ -330,7 +326,7 @@ function JobForm(props) {
                             </Grid>
                             <Grid item xs={6}>
                                 <InputLabel htmlFor="startDate">
-                                    Available for Apply From
+                                    Available for Applying From
                                 </InputLabel>
                                 <DatePicker
                                     value={job.startDate}

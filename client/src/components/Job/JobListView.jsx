@@ -43,28 +43,30 @@ function JobListView(props) {
                         sx={{ height: height, width: width }}
                         justifyContent="space-between"
                     >
-                        {displayedJobs.map((job, index) => (
-                            <div key={job.id}>
-                                <ListItemButton
-                                    onClick={() => {
-                                        onJobSelected({
-                                            ...job,
-                                            jobId: job.id,
-                                        });
-                                    }}
-                                    disableGutters
-                                    divider
-                                >
-                                    <JobListItem
-                                        job={job}
-                                        selected={
-                                            selectedJob &&
-                                            selectedJob.id === job.id
-                                        }
-                                    />
-                                </ListItemButton>
-                            </div>
-                        ))}
+                        <Stack justifyContent="flex-start">
+                            {displayedJobs.map((job, index) => (
+                                <div key={job.id}>
+                                    <ListItemButton
+                                        onClick={() => {
+                                            onJobSelected({
+                                                ...job,
+                                                jobId: job.id,
+                                            });
+                                        }}
+                                        disableGutters
+                                        divider
+                                    >
+                                        <JobListItem
+                                            job={job}
+                                            selected={
+                                                selectedJob &&
+                                                selectedJob.id === job.id
+                                            }
+                                        />
+                                    </ListItemButton>
+                                </div>
+                            ))}
+                        </Stack>
                         <Stack
                             alignItems="center"
                             sx={{ paddingTop: "16px", paddingBottom: "16px" }}

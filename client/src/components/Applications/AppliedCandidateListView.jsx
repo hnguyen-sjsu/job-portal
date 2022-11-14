@@ -107,6 +107,15 @@ function AppliedCandidateListView(props) {
                                 </>
                             ) : (
                                 <>
+                                    {applications.length === 0 && (
+                                        <div
+                                            style={{
+                                                paddingLeft: "16px",
+                                            }}
+                                        >
+                                            No Applications
+                                        </div>
+                                    )}
                                     {displayedApplications.map(
                                         (application, index) => (
                                             <div
@@ -141,7 +150,7 @@ function AppliedCandidateListView(props) {
                                 paddingBottom: "16px",
                             }}
                         >
-                            {!loading && (
+                            {!loading && applications.length > 0 && (
                                 <Pagination
                                     count={pages}
                                     color="primary"

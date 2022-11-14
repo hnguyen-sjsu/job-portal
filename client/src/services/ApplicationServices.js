@@ -72,10 +72,32 @@ const getApplicationsByJobId = async (jobId) => {
     }
 };
 
+const updateApplicationStatus = async (jobId, newStatus) => {
+    const url = baseUrl + "update";
+    const headers = getHeaders();
+    const params = {
+        withCredentials: true,
+    };
+
+    const data = {
+        id: jobId,
+        status: newStatus,
+    };
+
+    try {
+        const response = await axios.put(url, data, params, headers);
+        return response.status === 201;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+};
+
 const ApplicationServices = {
     apply,
     getApplications,
     getApplicationsByJobId,
+    updateApplicationStatus,
 };
 
 export default ApplicationServices;

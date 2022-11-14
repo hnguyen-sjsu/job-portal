@@ -9,14 +9,15 @@ import Stack from "@mui/material/Stack";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
-import Paper from "@mui/material/Paper";
 
 import AddPhotoAlternateRoundedIcon from "@mui/icons-material/AddPhotoAlternateRounded";
 import FileHandlingServices from "../../../services/FileHandlingServices";
 import RecruiterServices from "../../../services/RecruiterServices";
 import AuthenticationServices from "../../../services/AuthenticationServices";
+import ConfirmDialog from "../../Utils/ConfirmDialog";
 
 function CompanyProfileForm(props) {
+    const [showDialog, setShowDialog] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [profileImageUrl, setProfileImageUrl] = useState("");
     const [loading, setLoading] = useState(false);
@@ -66,12 +67,18 @@ function CompanyProfileForm(props) {
         };
 
         try {
-            const response = await RecruiterServices.updateCompanyProfile(
-                companyProfile
+            // const response = await RecruiterServices.updateCompanyProfile(
+            //     companyProfile
+            // );
+            // setTimeout(() => {
+            //     setLoading(false);
+            // }, 2000);
+            RecruiterServices.updateCompanyProfile(companyProfile).then(
+                (response) => {
+                    setLoading(false);
+                    setShowDialog(true);
+                }
             );
-            setTimeout(() => {
-                setLoading(false);
-            }, 2000);
         } catch (e) {
             console.error(e);
         }
@@ -101,121 +108,149 @@ function CompanyProfileForm(props) {
                     <Typography variant="h5" fontWeight="bold">
                         Edit Company Profile
                     </Typography>
-                    <Grid
-                        container
-                        alignItems="center"
-                        spacing={2}
-                        component="form"
-                        onSubmit={handleSubmit}
+                    <div
+                        className="list-container profile-form-container"
+                        style={{ marginTop: "16px" }}
                     >
-                        <Grid item xs={12} sm={3}>
-                            <InputLabel htmlFor="name">Company Icon</InputLabel>
-                        </Grid>
-                        <Grid item xs={12} sm={9}>
-                            <IconButton
-                                size="large"
-                                color="primary"
-                                onClick={() => fileInput.current.click()}
-                                disabled={loading}
-                            >
-                                <input
-                                    ref={fileInput}
-                                    type="file"
-                                    style={{ display: "none" }}
-                                    onChange={handleFileInput}
-                                    accept="image/*"
-                                />
-                                {selectedFile || profileImageUrl ? (
-                                    <Avatar
-                                        src={profileImageUrl}
-                                        sx={{ width: 50, height: 50 }}
+                        <Grid
+                            container
+                            alignItems="center"
+                            spacing={2}
+                            component="form"
+                            onSubmit={handleSubmit}
+                            sx={{ p: 2 }}
+                        >
+                            <Grid item xs={12} sm={3}>
+                                <InputLabel htmlFor="name">
+                                    Company Icon
+                                </InputLabel>
+                            </Grid>
+                            <Grid item xs={12} sm={9}>
+                                <IconButton
+                                    size="large"
+                                    color="primary"
+                                    onClick={() => fileInput.current.click()}
+                                    disabled={loading}
+                                >
+                                    <input
+                                        ref={fileInput}
+                                        type="file"
+                                        style={{ display: "none" }}
+                                        onChange={handleFileInput}
+                                        accept="image/*"
                                     />
-                                ) : (
-                                    <AddPhotoAlternateRoundedIcon fontSize="large" />
-                                )}
-                            </IconButton>
-                            <div>
-                                <Typography variant="caption">
-                                    Click on the icon above to change profile
-                                    picture
-                                </Typography>
-                            </div>
-                        </Grid>
-                        <Grid item xs={12} sm={3}>
-                            <InputLabel htmlFor="name">Company Name</InputLabel>
-                        </Grid>
-                        <Grid item xs={12} sm={9}>
-                            <TextField
-                                id="name"
-                                name="name"
-                                placeholder="The name of your company"
-                                size="small"
-                                value={profile.name}
-                                onChange={handleChange}
-                                fullWidth
-                                disabled={loading}
-                                required
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={3}>
-                            <InputLabel htmlFor="size">Company Size</InputLabel>
-                        </Grid>
-                        <Grid item xs={12} sm={9}>
-                            <TextField
-                                id="size"
-                                name="size"
-                                placeholder="The number of employees in your company"
-                                size="small"
-                                type="number"
-                                value={profile.size}
-                                onChange={handleChange}
-                                fullWidth
-                                disabled={loading}
-                                required
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={3}>
-                            <InputLabel htmlFor="industry">
-                                Industry Field
-                            </InputLabel>
-                        </Grid>
-                        <Grid item xs={12} sm={9}>
-                            <TextField
-                                id="industry"
-                                name="industry"
-                                placeholder="The field of industry which best describes your company."
-                                size="small"
-                                value={profile.industry}
-                                onChange={handleChange}
-                                fullWidth
-                                disabled={loading}
-                                required
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={3}></Grid>
-                        <Grid item xs={12} sm={9}>
-                            <Stack direction="row" spacing={2}>
-                                <Button
-                                    variant="contained"
-                                    disableElevation
-                                    fullWidth
-                                    type="submit"
-                                    disabled={loading}
-                                >
-                                    Save
-                                </Button>
-                                <Button
-                                    variant="outlined"
-                                    disableElevation
+                                    {selectedFile || profileImageUrl ? (
+                                        <Avatar
+                                            src={profileImageUrl}
+                                            sx={{ width: 50, height: 50 }}
+                                        />
+                                    ) : (
+                                        <AddPhotoAlternateRoundedIcon fontSize="large" />
+                                    )}
+                                </IconButton>
+                                <div>
+                                    <Typography variant="caption">
+                                        Click on the icon above to change
+                                        profile picture
+                                    </Typography>
+                                </div>
+                            </Grid>
+                            <Grid item xs={12} sm={3}>
+                                <InputLabel htmlFor="name">
+                                    Company Name
+                                </InputLabel>
+                            </Grid>
+                            <Grid item xs={12} sm={9}>
+                                <TextField
+                                    id="name"
+                                    name="name"
+                                    placeholder="The name of your company"
+                                    size="small"
+                                    value={profile.name}
+                                    onChange={handleChange}
                                     fullWidth
                                     disabled={loading}
-                                >
-                                    Cancel
-                                </Button>
-                            </Stack>
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={3}>
+                                <InputLabel htmlFor="size">
+                                    Company Size
+                                </InputLabel>
+                            </Grid>
+                            <Grid item xs={12} sm={9}>
+                                <TextField
+                                    id="size"
+                                    name="size"
+                                    placeholder="The number of employees in your company"
+                                    size="small"
+                                    type="number"
+                                    value={profile.size}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    disabled={loading}
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={3}>
+                                <InputLabel htmlFor="industry">
+                                    Industry Field
+                                </InputLabel>
+                            </Grid>
+                            <Grid item xs={12} sm={9}>
+                                <TextField
+                                    id="industry"
+                                    name="industry"
+                                    placeholder="The field of industry which best describes your company."
+                                    size="small"
+                                    value={profile.industry}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    disabled={loading}
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={3}></Grid>
+                            <Grid item xs={12} sm={9}>
+                                <Stack direction="row" spacing={2}>
+                                    <Button
+                                        variant="contained"
+                                        disableElevation
+                                        fullWidth
+                                        type="submit"
+                                        disabled={loading}
+                                    >
+                                        Save
+                                    </Button>
+                                    <Button
+                                        variant="outlined"
+                                        disableElevation
+                                        fullWidth
+                                        disabled={loading}
+                                    >
+                                        Cancel
+                                    </Button>
+                                </Stack>
+                            </Grid>
                         </Grid>
-                    </Grid>
+                        <div></div>
+                    </div>
                 </Stack>
+                <ConfirmDialog
+                    title="Message"
+                    message="Company information updated successfully!"
+                    showDialog={showDialog}
+                    actions={[
+                        {
+                            title: "Close",
+                            action: () => {
+                                setShowDialog(false);
+                            },
+                            color: "primary",
+                            primary: true,
+                        },
+                    ]}
+                />
             </div>
         </Container>
     );

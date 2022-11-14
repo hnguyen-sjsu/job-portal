@@ -1,4 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
+
+import Avatar from "@mui/material/Avatar";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -15,13 +17,9 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Typography from "@mui/material/Typography";
 
-import MenuIcon from "@mui/icons-material/Menu";
-
 import appLogo from "../../assets/app-logo.svg";
 import AuthProvider, { UserContext } from "../../providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
-
-import { Avatar } from "@mui/material";
 
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
@@ -33,6 +31,7 @@ import BallotOutlinedIcon from "@mui/icons-material/BallotOutlined";
 import ManageSearchOutlinedIcon from "@mui/icons-material/ManageSearchOutlined";
 import SaveAltOutlinedIcon from "@mui/icons-material/SaveAltOutlined";
 import BookmarksOutlinedIcon from "@mui/icons-material/BookmarksOutlined";
+import ProfileAvatar from "../Utils/ProfileAvatar";
 
 function MenuBar(props) {
     const { user, signOut } = useContext(UserContext);
@@ -119,9 +118,7 @@ function MenuBar(props) {
           ]
         : [];
 
-    useEffect(() => {
-        console.log(user);
-    }, []);
+    useEffect(() => {}, []);
 
     useEffect(() => {}, [user]);
 
@@ -221,16 +218,26 @@ function MenuBar(props) {
                                         size="small"
                                         sx={{ ml: 2 }}
                                     >
-                                        {user.role === "candidate" &&
+                                        {/* {user.role === "candidate" &&
+                                            user.fullName &&
                                             (user.fullName.length > 0 ? (
-                                                <Avatar
-                                                    {...stringAvatar(
-                                                        user.fullName
-                                                    )}
+                                                <ProfileAvatar
+                                                    fullName={user.fullName}
                                                 />
                                             ) : (
                                                 <AccountCircleRoundedIcon />
-                                            ))}
+                                            ))} */}
+                                        {user.role === "candidate" &&
+                                            user.fullName &&
+                                            user.fullName.length > 0 && (
+                                                <ProfileAvatar
+                                                    fullName={user.fullName}
+                                                />
+                                            )}
+                                        {user.role === "candidate" &&
+                                            !user.fullName && (
+                                                <AccountCircleRoundedIcon />
+                                            )}
                                         {user.role === "recruiter" &&
                                             (user.companyLogoUrl.length > 0 ? (
                                                 <Avatar
@@ -337,41 +344,3 @@ function MenuBar(props) {
 }
 
 export default MenuBar;
-
-function stringToColor(string) {
-    let hash = 0;
-    let i;
-
-    if (string === undefined) {
-        string = "Unnamed User";
-    }
-
-    /* eslint-disable no-bitwise */
-    for (i = 0; i < string.length; i += 1) {
-        hash = string.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    let color = "#";
-
-    for (i = 0; i < 3; i += 1) {
-        const value = (hash >> (i * 8)) & 0xff;
-        color += `00${value.toString(16)}`.slice(-2);
-    }
-    /* eslint-enable no-bitwise */
-
-    return color;
-}
-
-function stringAvatar(name) {
-    if (name === undefined) {
-        name = "Unnamed User";
-    }
-    return {
-        sx: {
-            bgcolor: stringToColor(name),
-            width: 32,
-            height: 32,
-        },
-        children: `${name.split(" ")[0][0]}`,
-    };
-}

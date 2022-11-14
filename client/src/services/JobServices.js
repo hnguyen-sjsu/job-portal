@@ -77,7 +77,6 @@ const getPostedJobs = async () => {
 
     try {
         const response = await axios.get(url, params, headers);
-        console.log(response);
         return response.data.jobs;
     } catch (e) {
         console.error(e);
@@ -137,7 +136,6 @@ const getJobs = async () => {
 
     try {
         const response = await axios.get(url, params, headers);
-        console.log(response);
         return response.data.jobs;
     } catch (e) {
         console.error(e);

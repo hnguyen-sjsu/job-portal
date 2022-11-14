@@ -44,6 +44,7 @@ function SkillsExperienceForm(props) {
     };
 
     const [showDialog, setShowDialog] = useState(false);
+    const [skillValue, setSkillValue] = useState("");
     const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
 
     const handleAddSkill = (e) => {
@@ -56,6 +57,16 @@ function SkillsExperienceForm(props) {
                 e.target.value = "";
             });
         }
+    };
+
+    const handleAddSkillButtonClick = (e) => {
+        e.preventDefault();
+        setLoading(true);
+        CandidateServices.addSkill(skillValue).then((response) => {
+            setSkills([...skills, response]);
+            setLoading(false);
+            e.target.value = "";
+        });
     };
 
     const handleChange = (e, index) => {
@@ -163,13 +174,20 @@ function SkillsExperienceForm(props) {
                     <Grid container spacing={1}>
                         <Grid item xs={12}>
                             <TextField
-                                placeholder="Enter a skill"
+                                placeholder="What are your skills? Press enter after each skill."
                                 size="small"
                                 fullWidth
                                 onKeyDown={handleAddSkill}
+                                value={skillValue}
+                                onChange={(e) => {
+                                    const { value } = e.target;
+                                    setSkillValue(value);
+                                }}
                                 InputProps={{
                                     endAdornment: (
-                                        <Button onClick={handleAddSkill}>
+                                        <Button
+                                            onClick={handleAddSkillButtonClick}
+                                        >
                                             Add
                                         </Button>
                                     ),

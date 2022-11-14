@@ -27,8 +27,9 @@ import Settings from "./components/UserAccount/Settings/Settings";
 import ManageJobs from "./components/Job/ManageJobs";
 import AuthProvider, { UserContext } from "./providers/AuthProvider";
 import JobSearchForm from "./components/Job/JobSearchForm";
-import Pricing from "./components/UserAccount/Membership/Pricing";
+import MembershipPricingView from "./components/Recruiter/MembershipPricingView";
 import ApplicationList from "./components/Applications/ApplicationList";
+import CandidateSearchView from "./components/Recruiter/CandidateSearchView";
 
 let theme = createTheme({
     palette: {
@@ -115,7 +116,6 @@ function App() {
                     <Routes>
                         <Route path="/" element={<LandingPageLayout />}>
                             <Route index element={<LandingPage />} />
-                            <Route path="pricing" element={<Pricing />} />
                         </Route>
                         <Route
                             path="/candidate"
@@ -146,6 +146,14 @@ function App() {
                                 element={<ManageJobs />}
                             />
                             <Route path="settings" element={<Settings />} />
+                            <Route
+                                path="pricing"
+                                element={<MembershipPricingView />}
+                            />
+                            <Route
+                                path="candidates"
+                                element={<CandidateSearchView />}
+                            />
                         </Route>
                         <Route path="/job" element={<RecruiterLayout />}>
                             <Route path=":jobId" element={<JobView />} />

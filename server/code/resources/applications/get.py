@@ -69,7 +69,8 @@ class GetAllApplicationsByJobID(Resource):
         applications = ApplicationModel.find_by_job_id(job_id)
         # Check if there are no applications
         if not applications:
-            return {'candidateInfo ': [], 'applicationInfo': []}, 200
+            return [], 200
+            
 
         results = []
         for application in applications:

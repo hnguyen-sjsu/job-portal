@@ -57,6 +57,7 @@ function JobForm(props) {
     const [message, setMessage] = useState("");
     const [showDialog, setShowDialog] = useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [description, setDescription] = useState("");
 
     let undefinedJob = {
         job_id: undefined,
@@ -75,6 +76,7 @@ function JobForm(props) {
         },
         startDate: null,
         endDate: null,
+        applications: [],
     };
 
     const [job, setJob] = useState({
@@ -94,7 +96,10 @@ function JobForm(props) {
         setLoading(true);
         setShowDialog(false);
         try {
-            const response = await JobServices.saveJob(job);
+            const response = await JobServices.saveJob({
+                ...job,
+                description: description,
+            });
             setMessage(response);
             setShowDialog(true);
         } catch (e) {
@@ -108,7 +113,9 @@ function JobForm(props) {
         setLoading(true);
         try {
             const job = await JobServices.getJob(jobId);
+            console.log(job);
             setJob({ ...job });
+            setDescription(job.description);
         } catch (e) {
             console.error(e);
         } finally {
@@ -123,296 +130,311 @@ function JobForm(props) {
             loadJob(jobId.split(":")[1]);
             document.title = "Edit Job";
         }
+        setTimeout(() => {
+            console.log(job);
+        }, 5000);
     }, []);
 
     return (
         <>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <Stack
-                    component="form"
-                    onSubmit={handleSubmit}
-                    className="container"
-                >
+                <Stack>
                     <Typography variant="h4">
                         {job.id ? "Edit Job" : "Post Job"}
                     </Typography>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <InputLabel htmlFor="title">Title</InputLabel>
-                            <TextField
-                                id="title"
-                                name="title"
-                                size="small"
-                                placeholder="Job title"
-                                value={job.title}
-                                onChange={handleChange}
-                                fullWidth
-                                required
-                                disabled={loading}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <InputLabel id="type" htmlFor="type">
-                                Job Type
-                            </InputLabel>
-                            <Select
-                                id="type"
-                                labelId="type"
-                                name="type"
-                                size="small"
-                                value={job.type}
-                                fullWidth
-                                onChange={handleChange}
-                                required
-                                disabled={loading}
-                            >
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
-                                {jobTypes.map((type) => (
-                                    <MenuItem
-                                        key={type.title}
-                                        value={type.title}
-                                    >
-                                        {type.title}
+                    <div
+                        className="list-container profile-form-container"
+                        style={{ marginTop: "16px" }}
+                    >
+                        <Grid
+                            container
+                            spacing={2}
+                            component="form"
+                            onSubmit={handleSubmit}
+                            sx={{ p: 2 }}
+                        >
+                            <Grid item xs={12}></Grid>
+                            <Grid item xs={12}>
+                                <InputLabel htmlFor="title">Title</InputLabel>
+                                <TextField
+                                    id="title"
+                                    name="title"
+                                    size="small"
+                                    placeholder="Job title"
+                                    value={job.title}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    required
+                                    disabled={loading}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <InputLabel id="type" htmlFor="type">
+                                    Job Type
+                                </InputLabel>
+                                <Select
+                                    id="type"
+                                    labelId="type"
+                                    name="type"
+                                    size="small"
+                                    value={job.type}
+                                    fullWidth
+                                    onChange={handleChange}
+                                    required
+                                    disabled={loading}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
                                     </MenuItem>
-                                ))}
-                            </Select>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <InputLabel id="experienceLevel">
-                                Experience Level
-                            </InputLabel>
-                            <Select
-                                labelId="experienceLevel"
-                                id="experienceLevel"
-                                name="experienceLevel"
-                                size="small"
-                                fullWidth
-                                value={job.experienceLevel}
-                                onChange={handleChange}
-                                required
-                                disabled={loading}
-                            >
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
-                                {expLevels.map((level) => (
-                                    <MenuItem
-                                        key={level.title}
-                                        value={level.title}
-                                    >
-                                        {level.title}
+                                    {jobTypes.map((type) => (
+                                        <MenuItem
+                                            key={type.title}
+                                            value={type.title}
+                                        >
+                                            {type.title}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <InputLabel id="experienceLevel">
+                                    Experience Level
+                                </InputLabel>
+                                <Select
+                                    labelId="experienceLevel"
+                                    id="experienceLevel"
+                                    name="experienceLevel"
+                                    size="small"
+                                    fullWidth
+                                    value={job.experienceLevel}
+                                    onChange={handleChange}
+                                    required
+                                    disabled={loading}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
                                     </MenuItem>
-                                ))}
-                            </Select>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <InputLabel htmlFor="location">Location</InputLabel>
-                            <Autocomplete
-                                id="location"
-                                name="location"
-                                freeSolo
-                                options={["Remote"]}
-                                inputValue={job.location}
-                                onInputChange={(e, newValue) => {
-                                    setJob({
-                                        ...job,
-                                        location: newValue,
-                                    });
-                                }}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        name="location"
-                                        size="small"
-                                        placeholder="Job location"
-                                        required
-                                    />
-                                )}
-                                disabled={loading}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <InputLabel htmlFor="category">
-                                Job Category
-                            </InputLabel>
-                            <Autocomplete
-                                id="category"
-                                name="category"
-                                freeSolo
-                                options={categories.map(
-                                    (category) => category.title
-                                )}
-                                inputValue={job.category}
-                                onInputChange={(e, newValue) => {
-                                    setJob({
-                                        ...job,
-                                        category: newValue,
-                                    });
-                                }}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        size="small"
-                                        name="category"
-                                        placeholder="Job category"
-                                        required
-                                    />
-                                )}
-                                disabled={loading}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <InputLabel htmlFor="salaryMin">
-                                Min Salary
-                            </InputLabel>
-                            <TextField
-                                id="salaryMin"
-                                name="salaryMin"
-                                size="small"
-                                type="number"
-                                placeholder="Min salary"
-                                value={job.salaryMin}
-                                onChange={handleChange}
-                                fullWidth
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            $
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                disabled={loading}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <InputLabel htmlFor="maxSalary">
-                                Max Salary
-                            </InputLabel>
-                            <TextField
-                                id="salaryMax"
-                                name="salaryMax"
-                                size="small"
-                                placeholder="Max salary"
-                                type="number"
-                                value={job.salaryMax}
-                                onChange={handleChange}
-                                fullWidth
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            $
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                disabled={loading}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <InputLabel htmlFor="startDate">
-                                Start Date
-                            </InputLabel>
-                            <DatePicker
-                                value={job.startDate}
-                                onChange={(newValue) => {
-                                    setJob({
-                                        ...job,
-                                        startDate: newValue,
-                                    });
-                                }}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        id="startDate"
-                                        name="startDate"
-                                        size="small"
-                                        fullWidth
-                                        required
-                                    />
-                                )}
-                                disabled={loading}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <InputLabel htmlFor="endDate">End Date</InputLabel>
-                            <DatePicker
-                                value={job.endDate}
-                                onChange={(newValue) => {
-                                    setJob({
-                                        ...job,
-                                        endDate: newValue,
-                                    });
-                                }}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        id="endDate"
-                                        name="endDate"
-                                        size="small"
-                                        fullWidth
-                                        required
-                                    />
-                                )}
-                                disabled={loading}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <InputLabel htmlFor="description">
-                                Description
-                            </InputLabel>
-                            <ReactQuill
-                                theme="snow"
-                                value={job.description}
-                                onChange={(content) => {
-                                    setJob({
-                                        ...job,
-                                        description: content,
-                                    });
-                                }}
-                                readOnly={loading}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Stack
-                                direction="row"
-                                spacing={2}
-                                justifyContent="space-between"
-                            >
-                                {job && jobId && (
-                                    <Button
-                                        variant="outlined"
-                                        color="error"
-                                        onClick={() => {
-                                            setShowDeleteDialog(true);
-                                        }}
-                                    >
-                                        Delete
-                                    </Button>
-                                )}
-                                <Stack direction="row" spacing={2}>
-                                    <Button
-                                        variant="contained"
-                                        disableElevation
-                                        type="submit"
-                                        disabled={loading}
-                                    >
-                                        Save
-                                    </Button>
-                                    <Button
-                                        variant="outlined"
-                                        disableElevation
-                                        disabled={loading}
-                                        onClick={() => {
-                                            navigate(-1);
-                                        }}
-                                    >
-                                        Cancel
-                                    </Button>
+                                    {expLevels.map((level) => (
+                                        <MenuItem
+                                            key={level.title}
+                                            value={level.title}
+                                        >
+                                            {level.title}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <InputLabel htmlFor="location">
+                                    Location
+                                </InputLabel>
+                                <Autocomplete
+                                    id="location"
+                                    name="location"
+                                    freeSolo
+                                    options={["Remote"]}
+                                    inputValue={job.location}
+                                    onInputChange={(e, newValue) => {
+                                        setJob({
+                                            ...job,
+                                            location: newValue,
+                                        });
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            name="location"
+                                            size="small"
+                                            placeholder="Job location"
+                                            required
+                                        />
+                                    )}
+                                    disabled={loading}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <InputLabel htmlFor="category">
+                                    Job Category
+                                </InputLabel>
+                                <Autocomplete
+                                    id="category"
+                                    name="category"
+                                    freeSolo
+                                    options={categories.map(
+                                        (category) => category.title
+                                    )}
+                                    inputValue={job.category}
+                                    onInputChange={(e, newValue) => {
+                                        setJob({
+                                            ...job,
+                                            category: newValue,
+                                        });
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            size="small"
+                                            name="category"
+                                            placeholder="Job category"
+                                            required
+                                        />
+                                    )}
+                                    disabled={loading}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <InputLabel htmlFor="salaryMin">
+                                    Min Salary
+                                </InputLabel>
+                                <TextField
+                                    id="salaryMin"
+                                    name="salaryMin"
+                                    size="small"
+                                    type="number"
+                                    placeholder="Min salary"
+                                    value={job.salaryMin}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                $
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                    disabled={loading}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <InputLabel htmlFor="maxSalary">
+                                    Max Salary
+                                </InputLabel>
+                                <TextField
+                                    id="salaryMax"
+                                    name="salaryMax"
+                                    size="small"
+                                    placeholder="Max salary"
+                                    type="number"
+                                    value={job.salaryMax}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                $
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                    disabled={loading}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <InputLabel htmlFor="startDate">
+                                    Available for Apply From
+                                </InputLabel>
+                                <DatePicker
+                                    value={job.startDate}
+                                    onChange={(newValue) => {
+                                        setJob({
+                                            ...job,
+                                            startDate: newValue,
+                                        });
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            id="startDate"
+                                            name="startDate"
+                                            size="small"
+                                            fullWidth
+                                            required
+                                        />
+                                    )}
+                                    disabled={loading}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <InputLabel htmlFor="endDate">To</InputLabel>
+                                <DatePicker
+                                    value={job.endDate}
+                                    onChange={(newValue) => {
+                                        setJob({
+                                            ...job,
+                                            endDate: newValue,
+                                        });
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            id="endDate"
+                                            name="endDate"
+                                            size="small"
+                                            fullWidth
+                                            required
+                                        />
+                                    )}
+                                    disabled={loading}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <InputLabel htmlFor="description">
+                                    Description
+                                </InputLabel>
+                                <ReactQuill
+                                    theme="snow"
+                                    value={description}
+                                    onChange={(content) => {
+                                        // setJob({
+                                        //     ...job,
+                                        //     description: content,
+                                        // });
+                                        setDescription(content);
+                                    }}
+                                    readOnly={loading}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Stack
+                                    direction="row"
+                                    spacing={2}
+                                    justifyContent="space-between"
+                                >
+                                    {job && jobId && (
+                                        <Button
+                                            variant="outlined"
+                                            color="error"
+                                            onClick={() => {
+                                                setShowDeleteDialog(true);
+                                            }}
+                                        >
+                                            Delete
+                                        </Button>
+                                    )}
+                                    <Stack direction="row" spacing={2}>
+                                        <Button
+                                            variant="contained"
+                                            disableElevation
+                                            type="submit"
+                                            disabled={loading}
+                                        >
+                                            Save
+                                        </Button>
+                                        <Button
+                                            variant="outlined"
+                                            disableElevation
+                                            disabled={loading}
+                                            onClick={() => {
+                                                navigate(-1);
+                                            }}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </Stack>
                                 </Stack>
-                            </Stack>
+                            </Grid>
+                            <Grid item></Grid>
                         </Grid>
-                    </Grid>
+                    </div>
                 </Stack>
             </LocalizationProvider>
             <ConfirmDialog

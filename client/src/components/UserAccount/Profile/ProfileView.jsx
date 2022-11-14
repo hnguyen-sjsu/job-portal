@@ -13,6 +13,11 @@ import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutl
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
 import AutoFixHighOutlinedIcon from "@mui/icons-material/AutoFixHighOutlined";
+import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
+import ContactPhoneRoundedIcon from "@mui/icons-material/ContactPhoneRounded";
+import WorkRoundedIcon from "@mui/icons-material/WorkRounded";
+import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
+import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 
 import { UserContext } from "../../../providers/AuthProvider";
 
@@ -22,7 +27,7 @@ import moment from "moment";
 function ProfileView(props) {
     const { user } = useContext(UserContext);
 
-    const { editable } = props;
+    const { editable, candidateProfile } = props;
 
     const [profile, setProfile] = useState({
         userProfile: {},
@@ -32,23 +37,27 @@ function ProfileView(props) {
     });
 
     const loadProfile = async () => {
-        const [profileRes, educationRes, skillsRes, expRes] = await Promise.all(
-            [
-                CandidateServices.getCandidateProfile(),
-                CandidateServices.getEducationItems(),
-                CandidateServices.getSkills(),
-                CandidateServices.getWorkHistoryItems(),
-            ]
-        );
-
-        if (profileRes && educationRes && skillsRes && expRes) {
+        if (candidateProfile != null) {
             setProfile({
                 ...profile,
-                userProfile: { ...profileRes },
-                skills: [...skillsRes],
-                educations: [...educationRes],
-                experiences: [...expRes],
+                userProfile: { ...candidateProfile.profile },
+                educations: [...candidateProfile.educations],
+                skills: [...candidateProfile.skills],
+                experiences: [...candidateProfile.workExperiences],
             });
+        } else {
+            const profileRes = await CandidateServices.getCandidateProfile();
+
+            if (profileRes) {
+                console.log(profileRes);
+                setProfile({
+                    ...profile,
+                    userProfile: { ...profileRes.profile },
+                    skills: [...profileRes.skills],
+                    educations: [...profileRes.educations],
+                    experiences: [...profileRes.workExperiences],
+                });
+            }
         }
     };
 
@@ -74,24 +83,40 @@ function ProfileView(props) {
                     )}
                 </Stack>
                 <Typography>{profile.userProfile.bio}</Typography>
-                <ContactInfoSection profile={profile.userProfile} />
-                <ResumeSection resumeUrl={profile.userProfile.resumeUrl} />
-                <SkillsSection skills={profile.skills} />
-                <EducationSection educations={profile.educations} />
-                <ExperienceSection experiences={profile.experiences} />
+                <ContactInfoSection
+                    profile={profile.userProfile}
+                    editable={editable}
+                />
+                <ResumeSection
+                    resumeUrl={profile.userProfile.resumeUrl}
+                    editable={editable}
+                />
+                <SkillsSection skills={profile.skills} editable={editable} />
+                <EducationSection
+                    educations={profile.educations}
+                    editable={editable}
+                />
+                <ExperienceSection
+                    experiences={profile.experiences}
+                    editable={editable}
+                />
             </Stack>
         </>
     );
 }
 
 const ContactInfoSection = (props) => {
-    const { profile } = props;
+    const { profile, editable } = props;
 
     return (
         <>
-            <Typography variant="h5" fontWeight="bold">
-                Contact Information
-            </Typography>
+            <Stack direction="row" alignItems="center" spacing={2}>
+                <ContactPhoneRoundedIcon />
+                <Typography variant="h5" fontWeight="bold">
+                    Contact Information
+                </Typography>
+            </Stack>
+
             <Card variant="outlined" sx={{ p: 2 }}>
                 <Grid container>
                     <Grid item xs={12} sm={4}>
@@ -134,21 +159,27 @@ const ContactInfoSection = (props) => {
 };
 
 const SkillsSection = (props) => {
-    const { skills } = props;
+    const { skills, editable } = props;
 
     return (
         <>
             <Stack direction="row" justifyContent="space-between">
-                <Typography variant="h5" fontWeight="bold">
-                    Skills
-                </Typography>
-                <Button
-                    variant="text"
-                    startIcon={<AutoFixHighOutlinedIcon />}
-                    href="/candidate/build-profile/3"
-                >
-                    Update
-                </Button>
+                <Stack direction="row" alignItems="center" spacing={2}>
+                    <AutoAwesomeRoundedIcon />
+                    <Typography variant="h5" fontWeight="bold">
+                        Skills
+                    </Typography>
+                </Stack>
+
+                {editable && (
+                    <Button
+                        variant="text"
+                        startIcon={<AutoFixHighOutlinedIcon />}
+                        href="/candidate/build-profile/3"
+                    >
+                        Update
+                    </Button>
+                )}
             </Stack>
 
             <Card variant="outlined" sx={{ p: 2 }}>
@@ -166,21 +197,27 @@ const SkillsSection = (props) => {
 };
 
 const EducationSection = (props) => {
-    const { educations } = props;
+    const { educations, editable } = props;
 
     return (
         <>
             <Stack direction="row" justifyContent="space-between">
-                <Typography variant="h5" fontWeight="bold">
-                    Education History
-                </Typography>
-                <Button
-                    variant="text"
-                    startIcon={<AutoFixHighOutlinedIcon />}
-                    href="/candidate/build-profile/2"
-                >
-                    Update
-                </Button>
+                <Stack direction="row" alignItems="center" spacing={2}>
+                    <SchoolRoundedIcon />
+                    <Typography variant="h5" fontWeight="bold">
+                        Education History
+                    </Typography>
+                </Stack>
+
+                {editable && (
+                    <Button
+                        variant="text"
+                        startIcon={<AutoFixHighOutlinedIcon />}
+                        href="/candidate/build-profile/2"
+                    >
+                        Update
+                    </Button>
+                )}
             </Stack>
             <Card variant="outlined" sx={{ p: 2 }}>
                 {educations.map((item, index) => (
@@ -219,27 +256,35 @@ const EducationSection = (props) => {
                         </Grid>
                     </div>
                 ))}
+                {educations.length === 0 && (
+                    <Typography>No Education History Available</Typography>
+                )}
             </Card>
         </>
     );
 };
 
 const ExperienceSection = (props) => {
-    const { experiences } = props;
+    const { experiences, editable } = props;
 
     return (
         <>
             <Stack direction="row" justifyContent="space-between">
-                <Typography variant="h5" fontWeight="bold">
-                    Work & Experience
-                </Typography>
-                <Button
-                    variant="text"
-                    startIcon={<AutoFixHighOutlinedIcon />}
-                    href="/candidate/build-profile/3"
-                >
-                    Update
-                </Button>
+                <Stack direction="row" alignItems="center" spacing={2}>
+                    <WorkRoundedIcon />
+                    <Typography variant="h5" fontWeight="bold">
+                        Work & Experience
+                    </Typography>
+                </Stack>
+                {editable && (
+                    <Button
+                        variant="text"
+                        startIcon={<AutoFixHighOutlinedIcon />}
+                        href="/candidate/build-profile/3"
+                    >
+                        Update
+                    </Button>
+                )}
             </Stack>
 
             <Card variant="outlined" sx={{ p: 2 }}>
@@ -281,35 +326,39 @@ const ExperienceSection = (props) => {
                         </Grid>
                     </div>
                 ))}
+                {experiences.length === 0 && (
+                    <Typography>No Work Experience Available</Typography>
+                )}
             </Card>
         </>
     );
 };
 
 const ResumeSection = (props) => {
-    const { resumeUrl } = props;
-    setTimeout(() => {
-        if (resumeUrl) {
-            console.log(resumeUrl.length);
-        }
-    }, 1000);
+    const { resumeUrl, editable } = props;
 
     return (
         <>
             <Stack direction="row" justifyContent="space-between">
-                <Typography variant="h5" fontWeight="bold">
-                    Resume
-                </Typography>
-                <Button
-                    variant="text"
-                    startIcon={<AutoFixHighOutlinedIcon />}
-                    href="/candidate/build-profile/4"
-                >
-                    Update
-                </Button>
+                <Stack direction="row" alignItems="center" spacing={2}>
+                    <DescriptionRoundedIcon />
+                    <Typography variant="h5" fontWeight="bold">
+                        Resume
+                    </Typography>
+                </Stack>
+
+                {editable && (
+                    <Button
+                        variant="text"
+                        startIcon={<AutoFixHighOutlinedIcon />}
+                        href="/candidate/build-profile/4"
+                    >
+                        Update
+                    </Button>
+                )}
             </Stack>
             <Card variant="outlined" sx={{ p: 2 }}>
-                {resumeUrl && (
+                {resumeUrl ? (
                     <Stack
                         direction="row"
                         alignItems="center"
@@ -331,6 +380,8 @@ const ResumeSection = (props) => {
                             Download
                         </Button>
                     </Stack>
+                ) : (
+                    <>No Resume Available</>
                 )}
             </Card>
         </>

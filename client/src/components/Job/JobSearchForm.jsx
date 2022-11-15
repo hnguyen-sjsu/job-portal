@@ -40,7 +40,24 @@ function JobSearchForm(props) {
     const [openDialog, setOpenDialog] = useState(false);
     const [jobViewDialog, setJobViewDialog] = useState(false);
     const [jobs, setJobs] = useState([]);
+    const [filteredJobs, setFilteredJobs] = useState([]);
     const [selectedJob, setSelectedJob] = useState(null);
+    const [filterOptions, setFilterOptions] = useState({
+        types: [
+            { title: "Full Time", checked: true },
+            { title: "Part Time", checked: true },
+            { title: "Intern", checked: true },
+            { title: "Contract", checked: true },
+        ],
+        experienceLevels: [
+            { title: "Entry Level", checked: true },
+            { title: "Junior Level", checked: true },
+            { title: "Intermediate Level", checked: true },
+            { title: "Senior Level", checked: true },
+            { title: "Intern Level", checked: true },
+        ],
+        salaryRange: [0, 500000],
+    });
 
     const closeJobViewDialog = () => {
         setJobViewDialog(false);
@@ -54,13 +71,45 @@ function JobSearchForm(props) {
     const handleSearch = (title, location) => {
         SearchServices.searchJobs(title, location).then((response) => {
             setJobs(response);
+            filterJobs(response);
         });
+    };
+
+    const applyFilter = () => {
+        filterJobs(jobs);
+    };
+
+    const filterJobs = (items) => {
+        const selectedTypes = filterOptions.types
+            .filter((option) => option.checked)
+            .map((option) => {
+                return option.title;
+            });
+
+        const selectedLevels = filterOptions.experienceLevels
+            .filter((option) => option.checked)
+            .map((option) => {
+                return option.title;
+            });
+
+        const filteredItems = items
+            .filter((job) => selectedTypes.includes(job.type))
+            .filter((job) => selectedLevels.includes(job.experienceLevel))
+            .filter(
+                (job) =>
+                    parseInt(job.salaryMin) >= filterOptions.salaryRange[0] &&
+                    parseInt(job.salaryMax) <= filterOptions.salaryRange[1]
+            );
+
+        setFilteredJobs(filteredItems);
+        setOpenDialog(false);
     };
 
     useEffect(() => {
         JobServices.getJobs().then((response) => {
             if (response) {
                 setJobs(response);
+                filterJobs(response);
             }
         });
     }, []);
@@ -90,13 +139,19 @@ function JobSearchForm(props) {
                 setOpenDialog={setOpenDialog}
                 handleSearch={handleSearch}
             />
-            <FilterDialog open={openDialog} setOpen={setOpenDialog} />
+            <FilterDialog
+                open={openDialog}
+                setOpen={setOpenDialog}
+                filterOptions={filterOptions}
+                setFilterOptions={setFilterOptions}
+                onApplyFilterClick={applyFilter}
+            />
             {jobs.length == 0 && <NoSearchResults />}
             {jobs.length > 0 && (
                 <Grid container>
                     <Grid item className="list-container" xs={12} md={4}>
                         <JobListView
-                            jobs={jobs}
+                            jobs={filteredJobs}
                             onJobSelected={handleJobSelected}
                             selectedJob={selectedJob}
                         />
@@ -243,7 +298,13 @@ function SearchBar(props) {
 function FilterDialog(props) {
     let numeral = require("numeral");
 
-    const { open, setOpen } = props;
+    const {
+        open,
+        setOpen,
+        filterOptions,
+        setFilterOptions,
+        onApplyFilterClick,
+    } = props;
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -268,8 +329,11 @@ function FilterDialog(props) {
         setOpen(false);
     };
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
+    const handleSalaryRangeChange = (event, newValue) => {
+        setFilterOptions({
+            ...filterOptions,
+            salaryRange: newValue,
+        });
     };
 
     return (
@@ -284,12 +348,21 @@ function FilterDialog(props) {
             <DialogContent>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <FilterGroup title="Employment Types" options={types} />
+                        <FilterGroup
+                            title="Employment Types"
+                            options={filterOptions.types}
+                            filterOptions={filterOptions}
+                            setFilterOptions={setFilterOptions}
+                            groupName="employmentTypes"
+                        />
                     </Grid>
                     <Grid item xs={12}>
                         <FilterGroup
                             title="Experience Levels"
-                            options={experienceLevels}
+                            options={filterOptions.experienceLevels}
+                            filterOptions={filterOptions}
+                            setFilterOptions={setFilterOptions}
+                            groupName="experienceLevels"
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -297,11 +370,13 @@ function FilterDialog(props) {
 
                         <Stack direction="row" spacing={2} alignItems="center">
                             <Typography>
-                                {numeral(value[0]).format("($0.00a)")}
+                                {numeral(filterOptions.salaryRange[0]).format(
+                                    "($0.00a)"
+                                )}
                             </Typography>
                             <Slider
-                                value={value}
-                                onChange={handleChange}
+                                value={filterOptions.salaryRange}
+                                onChange={handleSalaryRangeChange}
                                 valueLabelDisplay="auto"
                                 max={500000}
                                 min={0}
@@ -311,7 +386,9 @@ function FilterDialog(props) {
                                 }
                             />
                             <Typography>
-                                {numeral(value[1]).format("($0.00a)")}
+                                {numeral(filterOptions.salaryRange[1]).format(
+                                    "($0.00a)"
+                                )}
                             </Typography>
                         </Stack>
                     </Grid>
@@ -320,14 +397,46 @@ function FilterDialog(props) {
             <DialogActions>
                 <Button onClick={handleClose}>Close</Button>
                 <Button onClick={handleClose}>Clear</Button>
-                <Button onClick={handleClose}>Apply</Button>
+                <Button onClick={onApplyFilterClick}>Apply</Button>
             </DialogActions>
         </Dialog>
     );
 }
 
 function FilterGroup(props) {
-    const { title, options } = props;
+    const { title, options, filterOptions, setFilterOptions, groupName } =
+        props;
+
+    const handleChange = (e, newValue) => {
+        const { name } = e.target;
+
+        if (groupName === "employmentTypes") {
+            const updatedEmploymentTypes = filterOptions.types.map((option) => {
+                return option.title === name
+                    ? { ...option, checked: newValue }
+                    : option;
+            });
+            setFilterOptions({
+                ...filterOptions,
+                types: updatedEmploymentTypes,
+            });
+        }
+
+        if (groupName === "experienceLevels") {
+            const updatedExperienceLevels = filterOptions.experienceLevels.map(
+                (option) => {
+                    return option.title === name
+                        ? { ...option, checked: newValue }
+                        : option;
+                }
+            );
+            setFilterOptions({
+                ...filterOptions,
+                experienceLevels: updatedExperienceLevels,
+            });
+        }
+    };
+
     return (
         <Stack>
             <Typography>{title}</Typography>
@@ -335,8 +444,10 @@ function FilterGroup(props) {
                 {options.map((option, index) => (
                     <Grid item key={index} xs={4} sm={3}>
                         <FormControlLabel
-                            control={<Checkbox />}
+                            name={option.title}
+                            control={<Checkbox checked={option.checked} />}
                             label={option.title}
+                            onChange={handleChange}
                         />
                     </Grid>
                 ))}

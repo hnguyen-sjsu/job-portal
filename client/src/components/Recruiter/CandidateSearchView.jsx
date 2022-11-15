@@ -2,27 +2,23 @@ import React, { useEffect, useState } from "react";
 
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Input from "@mui/material/Input";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import Slider from "@mui/material/Slider";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import Avatar from "@mui/material/Avatar";
+import Pagination from "@mui/material/Pagination";
 
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
+import AutoSizer from "react-virtualized-auto-sizer";
+
 import SearchServices from "../../services/SearchServices";
 import CandidateListView from "./CandidateListView";
 import ProfileView from "../UserAccount/Profile/ProfileView";
@@ -31,8 +27,13 @@ function CandidateSearchView(props) {
     const [loading, setLoading] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
     const [candidates, setCandiddates] = useState([]);
+    const [displayedCandidates, setDisplayedCandidates] = useState([]);
     const [skills, setSkills] = useState("");
     const [selectedCandidate, setSelectedCandidate] = useState(null);
+
+    const pageSize = 5;
+    const [pages, setPages] = useState(1);
+    const [currPageIndex, setCurrPageIndex] = useState(1);
 
     const handleSearch = (skills) => {
         setLoading(true);
@@ -40,6 +41,7 @@ function CandidateSearchView(props) {
             setTimeout(() => {
                 setCandiddates(response);
                 setLoading(false);
+                paging(response);
             }, 1000);
         });
     };
@@ -48,6 +50,21 @@ function CandidateSearchView(props) {
         setSelectedCandidate(candidate);
         setOpenDialog(true);
     };
+
+    const handlePageIndexChange = (event, value) => {
+        setCurrPageIndex(value);
+    };
+
+    const paging = (items) => {
+        let fromIndex = (currPageIndex - 1) * pageSize;
+        let toIndex = currPageIndex * pageSize;
+        setPages(Math.ceil(items.length / pageSize));
+        setDisplayedCandidates(items.slice(fromIndex, toIndex));
+    };
+
+    useEffect(() => {
+        paging(candidates);
+    }, [currPageIndex]);
 
     return (
         <Stack spacing={2}>
@@ -58,11 +75,38 @@ function CandidateSearchView(props) {
                 handleSearch={handleSearch}
                 loading={loading}
             />
-            <CandidateListView
-                candidates={candidates}
-                onCandidateSelected={handleCandidateSelected}
-                loading={loading}
-            />
+            <div className="job-list-container">
+                <AutoSizer>
+                    {({ height, width }) => (
+                        <Stack
+                            sx={{ height: height, width: width }}
+                            justifyContent="space-between"
+                        >
+                            <CandidateListView
+                                candidates={displayedCandidates}
+                                onCandidateSelected={handleCandidateSelected}
+                                loading={loading}
+                            />
+                            <Stack
+                                alignItems="center"
+                                sx={{
+                                    paddingTop: "16px",
+                                    paddingBottom: "16px",
+                                }}
+                            >
+                                {!loading && candidates.length > 0 && (
+                                    <Pagination
+                                        count={pages}
+                                        color="primary"
+                                        page={currPageIndex}
+                                        onChange={handlePageIndexChange}
+                                    />
+                                )}
+                            </Stack>
+                        </Stack>
+                    )}
+                </AutoSizer>
+            </div>
             <CandidateProfilePreviewDialog
                 open={openDialog}
                 setOpen={setOpenDialog}

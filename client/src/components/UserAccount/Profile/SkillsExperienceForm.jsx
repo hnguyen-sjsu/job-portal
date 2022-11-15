@@ -54,7 +54,7 @@ function SkillsExperienceForm(props) {
             CandidateServices.addSkill(value).then((response) => {
                 setSkills([...skills, response]);
                 setLoading(false);
-                e.target.value = "";
+                setSkillValue("");
             });
         }
     };
@@ -65,7 +65,7 @@ function SkillsExperienceForm(props) {
         CandidateServices.addSkill(skillValue).then((response) => {
             setSkills([...skills, response]);
             setLoading(false);
-            e.target.value = "";
+            setSkillValue("");
         });
     };
 

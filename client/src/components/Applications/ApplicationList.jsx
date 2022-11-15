@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
-import Chip from "@mui/material/Chip";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Pagination from "@mui/material/Pagination";
 import Avatar from "@mui/material/Avatar";
 
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -11,6 +13,7 @@ import ApplicationServices from "../../services/ApplicationServices";
 import ApplicationListItem from "./ApplicationListItem";
 
 function ApplicationList(props) {
+    const pageSize = 5;
     const [jobs, setJobs] = useState([]);
     const [statuses, setStatuses] = useState([
         { title: "Processing", selected: true },
@@ -19,23 +22,20 @@ function ApplicationList(props) {
         { title: "Rejected", selected: false },
     ]);
     const [displayedJobs, setDisplayedJobs] = useState([]);
+    const [pages, setPages] = useState(1);
+    const [currPageIndex, setCurrPageIndex] = useState(1);
 
     useEffect(() => {
         ApplicationServices.getApplications().then((res) => {
             setJobs(res);
             setDisplayedJobs(res);
+            renderList(res);
         });
     }, []);
 
     useEffect(() => {
-        const selectedStatuses = statuses
-            .filter((status) => status.selected)
-            .map((status) => status.title);
-        const filteredItems = jobs.filter((item) =>
-            selectedStatuses.includes(item.status)
-        );
-        setDisplayedJobs(filteredItems);
-    }, [statuses]);
+        renderList(jobs);
+    }, [statuses, currPageIndex]);
 
     const handleStatusFilterClick = (status) => {
         const updatedItems = statuses.map((item) => {
@@ -46,29 +46,41 @@ function ApplicationList(props) {
         setStatuses(updatedItems);
     };
 
+    const handlePageIndexChange = (event, value) => {
+        setCurrPageIndex(value);
+    };
+
+    const renderList = (items) => {
+        const selectedStatuses = statuses
+            .filter((status) => status.selected)
+            .map((status) => status.title);
+        const filteredItems = items.filter((item) =>
+            selectedStatuses.includes(item.status)
+        );
+
+        setPages(Math.ceil(filteredItems.length / pageSize));
+
+        let fromIndex = (currPageIndex - 1) * pageSize;
+        let toIndex = currPageIndex * pageSize;
+        setDisplayedJobs(filteredItems.slice(fromIndex, toIndex));
+        console.log(filteredItems);
+    };
+
     return (
-        <Stack {...props} spacing={2}>
-            <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-            >
-                <Typography variant="h5" fontWeight="bold">
-                    Your Applied Jobs
-                </Typography>
-            </Stack>
+        <Stack {...props} spacing={1}>
+            <Typography variant="h4" fontWeight="bold">
+                Your Applied Jobs
+            </Typography>
+            <Typography variant="subtitle1">
+                Select the following chips to filter your list
+            </Typography>
             <Grid container spacing={1}>
-                <Grid item xs={12}>
-                    <Typography variant="caption">
-                        Select the following chips to filter your list
-                    </Typography>
-                </Grid>
                 {statuses.map((status) => (
                     <Grid item key={status.title}>
-                        <Chip
+                        <FormControlLabel
+                            control={<Checkbox checked={status.selected} />}
                             label={status.title}
-                            color={status.selected ? "primary" : "default"}
-                            onClick={() => {
+                            onChange={() => {
                                 handleStatusFilterClick(status);
                             }}
                         />
@@ -103,6 +115,22 @@ function ApplicationList(props) {
                     </Stack>
                 )}
             </Stack>
+            {displayedJobs.length !== 0 && (
+                <Stack
+                    alignItems="center"
+                    sx={{
+                        paddingTop: "16px",
+                        paddingBottom: "16px",
+                    }}
+                >
+                    <Pagination
+                        count={pages}
+                        color="primary"
+                        page={currPageIndex}
+                        onChange={handlePageIndexChange}
+                    />
+                </Stack>
+            )}
         </Stack>
     );
 }

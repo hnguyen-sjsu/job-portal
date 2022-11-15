@@ -18,22 +18,24 @@ function JobListView(props) {
         setCurrPageIndex(value);
     };
 
-    const paging = () => {
+    const paging = (items) => {
         let fromIndex = (currPageIndex - 1) * pageSize;
         let toIndex = currPageIndex * pageSize;
-        setDisplayedJobs(jobs.slice(fromIndex, toIndex));
+        setDisplayedJobs(items.slice(fromIndex, toIndex));
     };
 
     useEffect(() => {
+        setCurrPageIndex(1);
+        setPages(1);
         if (jobs.length / pageSize > 1) {
             setPages(Math.ceil(jobs.length / pageSize));
         }
-        paging();
+        paging(jobs);
     }, [jobs]);
 
     useEffect(() => {
-        paging();
-    }, [currPageIndex]);
+        paging(jobs);
+    }, [currPageIndex, pages]);
 
     return (
         <div className="job-list-container">

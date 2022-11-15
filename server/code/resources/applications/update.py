@@ -13,7 +13,7 @@ class UpdateApplicationSchema(Schema):
     id = fields.Int(
         required=True)
     status = fields.Str(
-        required=True, validate=validate.OneOf(['Accepted', 'Rejected']))
+        required=True, validate=validate.OneOf(['Accepted', 'Rejected', 'Pending']))
 
 
 class UpdateApplication(Resource):

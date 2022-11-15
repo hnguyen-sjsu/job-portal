@@ -74,13 +74,40 @@ function AppliedCandidateListView(props) {
         }
     };
 
+    const updateApplicationStatus = (candidateProfile, newStatus) => {
+        setLoading(true);
+        ApplicationServices.updateApplicationStatus(
+            candidateProfile.applicationInfo.id,
+            newStatus
+        ).then((response) => {
+            if (response) {
+                const updatedApplications = applications.map((application) =>
+                    application.applicationInfo.id ===
+                    candidateProfile.applicationInfo.id
+                        ? {
+                              ...application,
+                              applicationInfo: {
+                                  ...application.applicationInfo,
+                                  status: newStatus,
+                              },
+                          }
+                        : application
+                );
+                setApplications(updatedApplications);
+                paging();
+            }
+            setShowDialog(false);
+            setLoading(false);
+        });
+    };
+
     useEffect(() => {
         loadApplications();
     }, [job]);
 
     useEffect(() => {
         paging();
-    }, [currPageIndex, pages]);
+    }, [currPageIndex, pages, applications]);
 
     return (
         <div className="job-list-container">
@@ -107,6 +134,15 @@ function AppliedCandidateListView(props) {
                                 </>
                             ) : (
                                 <>
+                                    {applications.length === 0 && (
+                                        <div
+                                            style={{
+                                                paddingLeft: "16px",
+                                            }}
+                                        >
+                                            No Applications
+                                        </div>
+                                    )}
                                     {displayedApplications.map(
                                         (application, index) => (
                                             <div
@@ -141,7 +177,7 @@ function AppliedCandidateListView(props) {
                                 paddingBottom: "16px",
                             }}
                         >
-                            {!loading && (
+                            {!loading && applications.length > 0 && (
                                 <Pagination
                                     count={pages}
                                     color="primary"
@@ -157,87 +193,11 @@ function AppliedCandidateListView(props) {
                 showDialog={showDialog}
                 candidateProfile={selectedProfile}
                 closeDialog={closeDialog}
+                updateApplicationStatus={updateApplicationStatus}
             />
         </div>
     );
 }
-
-// function AppliedCandidateListView(props) {
-//     const { job } = props;
-//     const [applications, setApplications] = useState([]);
-//     const [loading, setLoading] = useState(false);
-//     const [showDialog, setShowDialog] = useState(false);
-//     const [selectedProfile, setSelectedProfile] = useState(null);
-
-//     const onListItemSelected = (selectedItem) => {
-//         setShowDialog(true);
-//         setSelectedProfile(selectedItem);
-//     };
-
-//     const closeDialog = () => {
-//         setShowDialog(false);
-//         setSelectedProfile(null);
-//     };
-
-//     useEffect(() => {
-//         setLoading(true);
-//         if (job) {
-//             const jobId = job.id;
-//             ApplicationServices.getApplicationsByJobId(jobId).then(
-//                 (response) => {
-//                     setTimeout(() => {
-//                         setApplications(response);
-//                         setLoading(false);
-//                     }, 1000);
-//                 }
-//             );
-//         }
-//     }, [job]);
-
-//     const Row = ({ index, style }) => (
-//         <div style={style}>
-//             {
-// <ListItemButton disableGutters>
-//     <AppliedCandidateListItem
-//         candidateProfile={applications[index]}
-//         onListItemSelected={onListItemSelected}
-//     />
-// </ListItemButton>
-//             }
-//         </div>
-//     );
-
-//     return (
-//         <div className="job-list-container">
-//             {loading ? (
-//                 <>
-//                     {[...Array(3).keys()].map((n) => (
-//                         <SkeletonCandidateListItem key={"skeleton-" + n} />
-//                     ))}
-//                 </>
-//             ) : (
-//                 <AutoSizer>
-//                     {({ height, width }) => (
-//                         <FixedSizeList
-//                             height={height}
-//                             width={width}
-//                             itemSize={80}
-//                             itemCount={applications.length}
-//                             overscanCount={4}
-//                         >
-//                             {Row}
-//                         </FixedSizeList>
-//                     )}
-//                 </AutoSizer>
-//             )}
-//             <ProcessApplicationDialog
-//                 showDialog={showDialog}
-//                 candidateProfile={selectedProfile}
-//                 closeDialog={closeDialog}
-//             />
-//         </div>
-//     );
-// }
 
 const SkeletonCandidateListItem = () => {
     return (

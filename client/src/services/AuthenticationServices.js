@@ -2,6 +2,19 @@ import axios from "axios";
 
 const API_URL = "http://localhost:5000/";
 
+const getHeaders = () => {
+    const token = document.cookie.split("=")[1];
+    const headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": token,
+    };
+    axios.defaults.xsrfCookieName = "csrf_access_token";
+    axios.defaults.xsrfHeaderName = "X-CSRF-TOKEN";
+
+    return headers;
+};
+
 const signIn = async (loginInfo) => {
     const user = { ...loginInfo };
     const params = {
@@ -55,12 +68,32 @@ const getProfile = async (role) => {
     }
 };
 
+const updateEmail = async (newEmail) => {
+    const url = API_URL + "user/update";
+    const params = {
+        withCredentials: true,
+    };
+    const headers = getHeaders();
+    const data = {
+        email: newEmail,
+        new_password: "",
+    };
+
+    try {
+        const response = await axios.put(url, data, params, headers);
+        console.log(response);
+    } catch (e) {
+        console.error(e);
+    }
+};
+
 const AuthenticationServices = {
     signIn,
     signUp,
     signOut,
     getCurrentUser,
     getProfile,
+    updateEmail,
 };
 
 export default AuthenticationServices;

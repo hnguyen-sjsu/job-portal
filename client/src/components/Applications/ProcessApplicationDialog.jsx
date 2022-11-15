@@ -17,7 +17,24 @@ import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import ProfileView from "../UserAccount/Profile/ProfileView";
 
 function ProcessApplicationDialog(props) {
-    const { candidateProfile, showDialog, closeDialog } = props;
+    const {
+        candidateProfile,
+        showDialog,
+        closeDialog,
+        updateApplicationStatus,
+    } = props;
+
+    const onAcceptButtonClick = () => {
+        updateApplicationStatus(candidateProfile, "Accepted");
+    };
+
+    const onRejectButtonClick = () => {
+        updateApplicationStatus(candidateProfile, "Rejected");
+    };
+
+    const onPendingButtonClick = () => {
+        updateApplicationStatus(candidateProfile, "Pending");
+    };
 
     return (
         <>
@@ -81,6 +98,7 @@ function ProcessApplicationDialog(props) {
                             color="error"
                             disableElevation
                             endIcon={<CloseRoundedIcon />}
+                            onClick={onRejectButtonClick}
                         >
                             Reject
                         </Button>
@@ -89,6 +107,7 @@ function ProcessApplicationDialog(props) {
                             color="warning"
                             disableElevation
                             endIcon={<AccessTimeRoundedIcon />}
+                            onClick={onPendingButtonClick}
                         >
                             Pending
                         </Button>
@@ -97,6 +116,7 @@ function ProcessApplicationDialog(props) {
                             color="success"
                             disableElevation
                             endIcon={<CheckRoundedIcon />}
+                            onClick={onAcceptButtonClick}
                         >
                             Accept
                         </Button>

@@ -35,8 +35,6 @@ function ManageJobs(props) {
         setJobViewDialog(true);
     };
 
-    // useEffect(() => {}, [selectedJob]);
-
     useEffect(() => {
         JobServices.getPostedJobs().then((response) => {
             if (response) {

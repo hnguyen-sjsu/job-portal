@@ -6,9 +6,11 @@ from flask_smorest import abort
 from flask import request
 from marshmallow import Schema, fields
 from email_validator import validate_email, EmailNotValidError
+from security import hash_password
 
 
 class UpdateProfileSchema(Schema):
+    current_password = fields.Str(required=True)
     email = fields.Str(required=True)
     new_password = fields.Str(required=True)
 
@@ -50,6 +52,14 @@ class UpdateProfile(Resource):
 
         # Check if the user wants to change the password
         if data['new_password'] != '':
+            # Check if the current password is correct
+            if user.password != hash_password(data['current_password']):
+                abort(400, message='Current password is incorrect')
+
+            if user.password == hash_password(data['new_password']):
+                abort(
+                    400, message='New password cannot be the same as the current password')
+
             # Update user password
             user.password = hash_password(data['new_password'])
             user.save_to_db()

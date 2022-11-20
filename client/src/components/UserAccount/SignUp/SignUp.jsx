@@ -153,7 +153,7 @@ function SignUp({ isRecruiter }) {
                                     id="password"
                                     name="password"
                                     type={passwordVisible ? "text" : "password"}
-                                    placeholder="8-16 characters"
+                                    placeholder="8-12 characters"
                                     onChange={handleChange}
                                     required
                                     disabled={loading}
@@ -174,7 +174,7 @@ function SignUp({ isRecruiter }) {
                                             </IconButton>
                                         ),
                                     }}
-                                    inputProps={{ maxLength: 16 }}
+                                    inputProps={{ maxLength: 12 }}
                                 />
                             </Stack>
                             <Button

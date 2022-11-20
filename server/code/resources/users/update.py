@@ -41,6 +41,10 @@ class UpdateProfile(Resource):
             except EmailNotValidError as e:
                 print(e)
                 abort(400, message='Invalid email')
+            
+            # Check if the current password is correct
+            if user.password != hash_password(data['current_password']):
+                abort(400, message='Current password is incorrect')
 
             # Check if email is already taken
             email = UserModel.find_by_email(data['email'])

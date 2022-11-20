@@ -68,22 +68,42 @@ const getProfile = async (role) => {
     }
 };
 
-const updateEmail = async (newEmail) => {
+const updateEmail = async (loginInfo) => {
     const url = API_URL + "user/update";
     const params = {
         withCredentials: true,
     };
     const headers = getHeaders();
     const data = {
-        email: newEmail,
+        email: loginInfo.email,
+        current_password: loginInfo.password,
         new_password: "",
     };
 
     try {
         const response = await axios.put(url, data, params, headers);
-        console.log(response);
+        return response;
     } catch (e) {
-        console.error(e);
+        return e.response;
+    }
+};
+const updatePassword = async (currentPassword, newPassword) => {
+    const url = API_URL + "user/update";
+    const params = {
+        withCredentials: true,
+    };
+    const headers = getHeaders();
+    const data = {
+        email: "",
+        current_password: currentPassword,
+        new_password: newPassword,
+    };
+
+    try {
+        const response = await axios.put(url, data, params, headers);
+        return response;
+    } catch (e) {
+        return e.response;
     }
 };
 
@@ -94,6 +114,7 @@ const AuthenticationServices = {
     getCurrentUser,
     getProfile,
     updateEmail,
+    updatePassword,
 };
 
 export default AuthenticationServices;

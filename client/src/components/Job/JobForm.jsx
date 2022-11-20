@@ -9,6 +9,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
+import Alert from "@mui/material/Alert";
 
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -16,6 +17,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import moment from "moment";
 
 import JobServices from "../../services/JobServices";
 import ConfirmDialog from "../Utils/ConfirmDialog";
@@ -55,6 +57,7 @@ function JobForm(props) {
 
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const [showDialog, setShowDialog] = useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [description, setDescription] = useState("");
@@ -95,26 +98,54 @@ function JobForm(props) {
         e.preventDefault();
         setLoading(true);
         setShowDialog(false);
-        try {
-            console.log(job);
-            const response = await JobServices.saveJob({
-                ...job,
-                description: description,
-            });
-            setMessage(response);
-            setShowDialog(true);
-        } catch (e) {
-            console.error(e);
-        } finally {
+        if (validate()) {
+            try {
+                console.log(job);
+                const response = await JobServices.saveJob({
+                    ...job,
+                    description: description,
+                });
+                setMessage(response);
+                setShowDialog(true);
+            } catch (e) {
+                console.error(e);
+            } finally {
+                setLoading(false);
+            }
+        } else {
             setLoading(false);
         }
+    };
+
+    const validate = () => {
+        if (job.salaryMin !== "" && job.salaryMax !== "") {
+            if (job.salaryMin >= job.salaryMax) {
+                setErrorMessage("Min. salary must be greater than Max. Salary");
+                return false;
+            }
+        }
+
+        if (job.startDate > job.endDate) {
+            console.log(job.startDate > job.endDate);
+            setErrorMessage(
+                "The available start date must be smaller the end date."
+            );
+            return false;
+        }
+
+        setErrorMessage("");
+        return true;
     };
 
     const loadJob = async (jobId) => {
         setLoading(true);
         try {
             const job = await JobServices.getJob(jobId);
-            setJob({ ...job });
+            setJob({
+                ...job,
+                startDate: moment(job.startDate, "YYYY-MM-DD"),
+                endDate: moment(job.endDate, "YYYY-MM-DD"),
+            });
             setDescription(job.description);
         } catch (e) {
             console.error(e);
@@ -141,6 +172,7 @@ function JobForm(props) {
                     <div
                         className="list-container profile-form-container"
                         style={{ marginTop: "16px" }}
+                        component="form"
                     >
                         <Grid
                             container
@@ -151,7 +183,9 @@ function JobForm(props) {
                         >
                             <Grid item xs={12}></Grid>
                             <Grid item xs={12}>
-                                <InputLabel htmlFor="title">Title</InputLabel>
+                                <InputLabel htmlFor="title" required>
+                                    Title
+                                </InputLabel>
                                 <TextField
                                     id="title"
                                     name="title"
@@ -165,7 +199,7 @@ function JobForm(props) {
                                 />
                             </Grid>
                             <Grid item xs={6}>
-                                <InputLabel id="type" htmlFor="type">
+                                <InputLabel id="type" htmlFor="type" required>
                                     Job Type
                                 </InputLabel>
                                 <Select
@@ -193,7 +227,7 @@ function JobForm(props) {
                                 </Select>
                             </Grid>
                             <Grid item xs={6}>
-                                <InputLabel id="experienceLevel">
+                                <InputLabel id="experienceLevel" required>
                                     Experience Level
                                 </InputLabel>
                                 <Select
@@ -221,7 +255,7 @@ function JobForm(props) {
                                 </Select>
                             </Grid>
                             <Grid item xs={6}>
-                                <InputLabel htmlFor="location">
+                                <InputLabel htmlFor="location" required>
                                     Location
                                 </InputLabel>
                                 <Autocomplete
@@ -272,7 +306,6 @@ function JobForm(props) {
                                             size="small"
                                             name="category"
                                             placeholder="Job category"
-                                            required
                                         />
                                     )}
                                     disabled={loading}
@@ -290,6 +323,12 @@ function JobForm(props) {
                                     placeholder="Min salary"
                                     value={job.salaryMin}
                                     onChange={handleChange}
+                                    error={
+                                        job.salaryMin !== "" &&
+                                        job.salaryMax !== ""
+                                            ? job.salaryMin >= job.salaryMax
+                                            : false
+                                    }
                                     fullWidth
                                     InputProps={{
                                         startAdornment: (
@@ -322,10 +361,16 @@ function JobForm(props) {
                                         ),
                                     }}
                                     disabled={loading}
+                                    error={
+                                        job.salaryMin !== "" &&
+                                        job.salaryMax !== ""
+                                            ? job.salaryMin >= job.salaryMax
+                                            : false
+                                    }
                                 />
                             </Grid>
                             <Grid item xs={6}>
-                                <InputLabel htmlFor="startDate">
+                                <InputLabel htmlFor="startDate" required>
                                     Available for Applying From
                                 </InputLabel>
                                 <DatePicker
@@ -344,13 +389,23 @@ function JobForm(props) {
                                             size="small"
                                             fullWidth
                                             required
+                                            error={
+                                                job.startDate && job.endDate
+                                                    ? job.startDate >=
+                                                      job.endDate
+                                                    : false
+                                            }
                                         />
                                     )}
                                     disabled={loading}
+                                    disablePast
+                                    required
                                 />
                             </Grid>
                             <Grid item xs={6}>
-                                <InputLabel htmlFor="endDate">To</InputLabel>
+                                <InputLabel htmlFor="endDate" required>
+                                    To
+                                </InputLabel>
                                 <DatePicker
                                     value={job.endDate}
                                     onChange={(newValue) => {
@@ -367,9 +422,17 @@ function JobForm(props) {
                                             size="small"
                                             fullWidth
                                             required
+                                            error={
+                                                job.startDate && job.endDate
+                                                    ? job.startDate >=
+                                                      job.endDate
+                                                    : false
+                                            }
                                         />
                                     )}
                                     disabled={loading}
+                                    disablePast
+                                    required
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -380,14 +443,23 @@ function JobForm(props) {
                                     theme="snow"
                                     value={description}
                                     onChange={(content) => {
-                                        // setJob({
-                                        //     ...job,
-                                        //     description: content,
-                                        // });
                                         setDescription(content);
                                     }}
                                     readOnly={loading}
                                 />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Alert
+                                    severity="error"
+                                    sx={{
+                                        display:
+                                            errorMessage.length > 0
+                                                ? "flex"
+                                                : "none",
+                                    }}
+                                >
+                                    {errorMessage}
+                                </Alert>
                             </Grid>
                             <Grid item xs={12}>
                                 <Stack

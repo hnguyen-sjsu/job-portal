@@ -43,27 +43,39 @@ function SignUp({ isRecruiter }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
-
-        const userInfo = {
-            ...loginInfo,
-            role: isRecruiter ? "recruiter" : "candidate",
-        };
-
-        AuthenticationServices.signUp(userInfo).then((response) => {
+        if (validate()) {
+            const userInfo = {
+                ...loginInfo,
+                role: isRecruiter ? "recruiter" : "candidate",
+            };
+            AuthenticationServices.signUp(userInfo).then((response) => {
+                setLoading(false);
+                if (response.status === 400) {
+                    setErrorMessage(response.data.message);
+                }
+                if (response.status === 201) {
+                    setErrorMessage("");
+                    setSuccessMessage(
+                        "Account created successfully. Redirecting to login page."
+                    );
+                    setTimeout(() => {
+                        navigate("/account/login");
+                    }, 1000);
+                }
+            });
+        } else {
             setLoading(false);
-            if (response.status === 400) {
-                setErrorMessage(response.data.message);
-            }
-            if (response.status === 201) {
-                setErrorMessage("");
-                setSuccessMessage(
-                    "Account created successfully. Redirecting to login page."
-                );
-                setTimeout(() => {
-                    navigate("/account/login");
-                }, 1000);
-            }
-        });
+        }
+    };
+
+    const validate = () => {
+        if (loginInfo.password.length < 8 || loginInfo.password.length > 16) {
+            setErrorMessage("Password must be 8-16 characters.");
+            return false;
+        } else {
+            setErrorMessage("");
+            return true;
+        }
     };
 
     return (
@@ -141,7 +153,7 @@ function SignUp({ isRecruiter }) {
                                     id="password"
                                     name="password"
                                     type={passwordVisible ? "text" : "password"}
-                                    placeholder="minimum 8 characters"
+                                    placeholder="8-16 characters"
                                     onChange={handleChange}
                                     required
                                     disabled={loading}
@@ -155,13 +167,14 @@ function SignUp({ isRecruiter }) {
                                                 }}
                                             >
                                                 {passwordVisible ? (
-                                                    <VisibilityOffRoundedIcon />
-                                                ) : (
                                                     <VisibilityRoundedIcon />
+                                                ) : (
+                                                    <VisibilityOffRoundedIcon />
                                                 )}
                                             </IconButton>
                                         ),
                                     }}
+                                    inputProps={{ maxLength: 16 }}
                                 />
                             </Stack>
                             <Button

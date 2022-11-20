@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
 import TextField from "@mui/material/TextField";
@@ -11,8 +11,11 @@ import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import ConfirmDialog from "../../Utils/ConfirmDialog";
 import AuthenticationServices from "../../../services/AuthenticationServices";
+import { UserContext } from "../../../providers/AuthProvider";
 
 function DeleteAccountForm(props) {
+    const { signOut } = useContext(UserContext);
+
     const [loading, setLoading] = useState(false);
     const [showDialog, setShowDialog] = useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -25,6 +28,7 @@ function DeleteAccountForm(props) {
     const handleChange = (e) => {
         const { value } = e.target;
         setPassword({ ...password, value: value });
+        setErrorMessage("");
     };
 
     const handleShowPassword = () => {
@@ -42,11 +46,11 @@ function DeleteAccountForm(props) {
         setShowDialog(false);
         AuthenticationServices.deleteAccount(password.value).then(
             (response) => {
-                if (response.status === 400) {
-                    console.log(response.data.message);
+                console.log(response);
+                if (response.status === 401) {
                     setErrorMessage(response.data.message);
                 }
-                if (response.status === 201) {
+                if (response.status === 200) {
                     setErrorMessage("");
                     setShowDialog(true);
                 }
@@ -148,7 +152,7 @@ function DeleteAccountForm(props) {
             />
             <ConfirmDialog
                 title="Message"
-                message="Account deleted successfully!"
+                message="Your account and related data has been deleted successfully. You will be redirected to the home page."
                 showDialog={showDialog}
                 actions={[
                     {
@@ -157,6 +161,7 @@ function DeleteAccountForm(props) {
                         color: "primary",
                         action: () => {
                             setShowDialog(false);
+                            signOut();
                         },
                     },
                 ]}

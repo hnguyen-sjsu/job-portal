@@ -87,6 +87,7 @@ const updateEmail = async (loginInfo) => {
         return e.response;
     }
 };
+
 const updatePassword = async (currentPassword, newPassword) => {
     const url = API_URL + "user/update";
     const params = {
@@ -107,6 +108,24 @@ const updatePassword = async (currentPassword, newPassword) => {
     }
 };
 
+const deleteAccount = async (currentPassword) => {
+    const url = API_URL + "user/delete";
+    const params = {
+        withCredentials: true,
+    };
+    const headers = getHeaders();
+    const data = {
+        password: currentPassword,
+    };
+
+    try {
+        const response = await axios.post(url, data, params, headers);
+        return response;
+    } catch (e) {
+        return e.response;
+    }
+};
+
 const AuthenticationServices = {
     signIn,
     signUp,
@@ -115,6 +134,7 @@ const AuthenticationServices = {
     getProfile,
     updateEmail,
     updatePassword,
+    deleteAccount,
 };
 
 export default AuthenticationServices;

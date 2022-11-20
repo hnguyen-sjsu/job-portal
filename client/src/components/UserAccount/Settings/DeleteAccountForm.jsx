@@ -15,6 +15,7 @@ import AuthenticationServices from "../../../services/AuthenticationServices";
 function DeleteAccountForm(props) {
     const [loading, setLoading] = useState(false);
     const [showDialog, setShowDialog] = useState(false);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [password, setPassword] = useState({
         value: "",
@@ -23,7 +24,7 @@ function DeleteAccountForm(props) {
 
     const handleChange = (e) => {
         const { value } = e.target;
-        setPassword({ ...password, password: value });
+        setPassword({ ...password, value: value });
     };
 
     const handleShowPassword = () => {
@@ -32,6 +33,26 @@ function DeleteAccountForm(props) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setShowDeleteDialog(true);
+    };
+
+    const deleteAccount = () => {
+        setLoading(true);
+        setShowDeleteDialog(false);
+        setShowDialog(false);
+        AuthenticationServices.deleteAccount(password.value).then(
+            (response) => {
+                if (response.status === 400) {
+                    console.log(response.data.message);
+                    setErrorMessage(response.data.message);
+                }
+                if (response.status === 201) {
+                    setErrorMessage("");
+                    setShowDialog(true);
+                }
+                setLoading(false);
+            }
+        );
     };
 
     return (
@@ -48,7 +69,7 @@ function DeleteAccountForm(props) {
                 onSubmit={handleSubmit}
             >
                 <Grid item xs={12} sm={4}>
-                    <InputLabel htmlFor="deletePassword">
+                    <InputLabel htmlFor="deletePassword" required>
                         Current Password
                     </InputLabel>
                 </Grid>
@@ -62,15 +83,16 @@ function DeleteAccountForm(props) {
                         fullWidth
                         value={password.value}
                         onChange={handleChange}
-                        type={password.value ? "text" : "password"}
+                        type={password.showPassword ? "text" : "password"}
                         required
+                        disabled={loading}
                         InputProps={{
                             endAdornment: (
                                 <IconButton onClick={handleShowPassword}>
-                                    {password ? (
-                                        <VisibilityOffRoundedIcon />
-                                    ) : (
+                                    {password.showPassword ? (
                                         <VisibilityRoundedIcon />
+                                    ) : (
+                                        <VisibilityOffRoundedIcon />
                                     )}
                                 </IconButton>
                             ),
@@ -95,11 +117,50 @@ function DeleteAccountForm(props) {
                         color="error"
                         disableElevation
                         type="submit"
+                        disabled={loading}
                     >
                         Delete Account
                     </Button>
                 </Grid>
             </Grid>
+            <ConfirmDialog
+                title="Confirm"
+                message="Are you sure you want to delete your account?"
+                showDialog={showDeleteDialog}
+                actions={[
+                    {
+                        title: "Close",
+                        primary: false,
+                        color: "primary",
+                        action: () => {
+                            setShowDialog(false);
+                        },
+                    },
+                    {
+                        title: "Delete",
+                        primary: true,
+                        color: "error",
+                        action: () => {
+                            deleteAccount();
+                        },
+                    },
+                ]}
+            />
+            <ConfirmDialog
+                title="Message"
+                message="Account deleted successfully!"
+                showDialog={showDialog}
+                actions={[
+                    {
+                        title: "Close",
+                        primary: true,
+                        color: "primary",
+                        action: () => {
+                            setShowDialog(false);
+                        },
+                    },
+                ]}
+            />
         </Stack>
     );
 }

@@ -33,7 +33,7 @@ class RecoverPasswordURL(Resource):
         msg = Message('You have requested a password reset',
                       recipients=[data, 'lhkhoi95@gmail.com'])
 
-        link = f'http://localhost:3000/reset-password?token={reset_token}'
+        link = f'http://localhost:3000/account/reset-password?token={reset_token}'
 
         msg.html = "Please click on this link to reset your password: <br>" + \
             f"<a href='{link}'>{link}</a>" + \
@@ -79,7 +79,7 @@ class ResetPassword(Resource):
         reset_token = PasswordRecovery.find_by_token(data['reset_token'])
 
         if reset_token is None:
-            return {'message': 'Invalid reset_token'}, 400
+            return {'message': 'Invalid token'}, 400
 
         # check if token is expired
         if reset_token.time_expire < datetime.datetime.utcnow():

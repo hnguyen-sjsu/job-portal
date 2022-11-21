@@ -31,6 +31,7 @@ import BallotOutlinedIcon from "@mui/icons-material/BallotOutlined";
 import ManageSearchOutlinedIcon from "@mui/icons-material/ManageSearchOutlined";
 import SaveAltOutlinedIcon from "@mui/icons-material/SaveAltOutlined";
 import BookmarksOutlinedIcon from "@mui/icons-material/BookmarksOutlined";
+import LocalPlayOutlinedIcon from "@mui/icons-material/LocalPlayOutlined";
 import ProfileAvatar from "../Utils/ProfileAvatar";
 
 function MenuBar(props) {
@@ -75,6 +76,11 @@ function MenuBar(props) {
                       title: "Manage Jobs",
                       url: "/recruiter/manage-jobs",
                       icon: <BallotOutlinedIcon />,
+                  },
+                  {
+                      title: "Manage Memberships",
+                      url: "/recruiter/membership",
+                      icon: <LocalPlayOutlinedIcon />,
                   },
               ]
             : [

@@ -3,23 +3,33 @@ import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import Alert from "@mui/material/Alert";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
 
 import logoImg from "../../../assets/app-logo.svg";
 import AuthenticationServices from "../../../services/AuthenticationServices";
+import ConfirmDialog from "../../Utils/ConfirmDialog";
 
 function ForgetPasswordForm(props) {
     document.title = "AKKA - Forgot Password";
     const theme = useTheme();
+    const navigate = useNavigate();
     const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
     const [email, setEmail] = useState("");
+    const [showDialog, setShowDialog] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleSubmit = (e) => {
         e.preventDefault();
         AuthenticationServices.requestRecoverPassword(email).then(
             (response) => {
-                console.log(response);
+                if (response.status === 404) {
+                    setErrorMessage(response.data.message);
+                } else {
+                    setShowDialog(true);
+                }
             }
         );
     };
@@ -57,12 +67,36 @@ function ForgetPasswordForm(props) {
                     placeholder="Email address"
                     onChange={handleChange}
                     required
+                    error={errorMessage.length > 0}
                 />
+                <Alert
+                    severity="error"
+                    sx={{
+                        display: errorMessage.length > 0 ? "flex" : "none",
+                    }}
+                >
+                    {errorMessage}
+                </Alert>
                 <Button type="submit" variant="contained" disableElevation>
                     Reset Password
                 </Button>
                 <Button>Cancel</Button>
             </Stack>
+            <ConfirmDialog
+                title="Message"
+                message="Please check your registered email for a link to reset your password."
+                showDialog={showDialog}
+                actions={[
+                    {
+                        title: "Close",
+                        primary: true,
+                        color: "primary",
+                        action: () => {
+                            setShowDialog(false);
+                        },
+                    },
+                ]}
+            />
         </Stack>
     );
 }

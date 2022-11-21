@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -12,21 +13,26 @@ import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
 
 import logoImg from "../../../assets/app-logo.svg";
 import AuthenticationServices from "../../../services/AuthenticationServices";
+import ConfirmDialog from "../../Utils/ConfirmDialog";
 
 function ResetPasswordForm(props) {
     document.title = "AKKA - Reset Password";
+    const navigate = useNavigate();
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
     const [loading, setLoading] = useState(false);
+    const [showDialog, setShowDialog] = useState(false);
     const [passwords, setPasswords] = useState({
         newPassword: "",
         confirmPassword: "",
         showNewPassword: false,
         showConfirmPassword: false,
     });
+
     const [errorMessage, setErrorMessage] = useState("");
 
     const handleShowPassword = (currentPassword) => {
@@ -46,7 +52,29 @@ function ResetPasswordForm(props) {
     const handleSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
+        setShowDialog(false);
+        setErrorMessage("");
         if (validate()) {
+            let token = new URLSearchParams(window.location.search).get(
+                "token"
+            );
+
+            if (token) {
+                AuthenticationServices.resetPassword(
+                    passwords.newPassword,
+                    token
+                ).then((response) => {
+                    if (response.status === 200) {
+                        setShowDialog(true);
+                    }
+                    if (response.status === 400) {
+                        setErrorMessage(response.data.message);
+                    }
+                });
+            } else {
+                setErrorMessage("Invalid token. Please try again.");
+            }
+
             setLoading(false);
         }
     };
@@ -74,101 +102,124 @@ function ResetPasswordForm(props) {
         <Stack
             sx={{ minHeight: "100vh" }}
             alignItems="center"
-            justifyContent={fullScreen ? "flex-start" : "center"}
-            className={fullScreen ? "" : "signin-container"}
+            justifyContent="center"
+            className="signin-container"
         >
             <img src={logoImg} style={{ width: fullScreen ? "30%" : "25%" }} />
-            <Stack
-                spacing={2}
-                className="forgot-password-form"
-                component="form"
-                onSubmit={handleSubmit}
-                sx={{ minWidth: fullScreen ? "100vw" : "40vw" }}
-            >
-                <Typography variant="h5" fontWeight={600}>
-                    Set New Password
-                </Typography>
-                <InputLabel htmlFor="newPassword">New Password</InputLabel>
-                <TextField
-                    id="newPassword"
-                    name="newPassword"
-                    variant="outlined"
-                    size="small"
-                    placeholder="New password, 8-12 characters"
-                    fullWidth
-                    value={passwords.newPassword}
-                    onChange={handleChange}
-                    type={passwords.showNewPassword ? "text" : "password"}
-                    required
-                    InputProps={{
-                        endAdornment: (
-                            <IconButton
-                                onClick={() => {
-                                    handleShowPassword(true);
-                                }}
-                            >
-                                {passwords.showNewPassword ? (
-                                    <VisibilityOffRoundedIcon />
-                                ) : (
-                                    <VisibilityRoundedIcon />
-                                )}
-                            </IconButton>
-                        ),
-                    }}
-                    inputProps={{ maxLength: 12 }}
-                    disabled={loading}
-                />
-                <InputLabel htmlFor="confirmPassword">
-                    Confirm Password
-                </InputLabel>
-                <TextField
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    variant="outlined"
-                    size="small"
-                    placeholder="Confirm password"
-                    fullWidth
-                    value={passwords.confirmPassword}
-                    onChange={handleChange}
-                    type={passwords.showConfirmPassword ? "text" : "password"}
-                    required
-                    InputProps={{
-                        endAdornment: (
-                            <IconButton
-                                onClick={() => {
-                                    handleShowPassword(false);
-                                }}
-                            >
-                                {passwords.showConfirmPassword ? (
-                                    <VisibilityOffRoundedIcon />
-                                ) : (
-                                    <VisibilityRoundedIcon />
-                                )}
-                            </IconButton>
-                        ),
-                    }}
-                    inputProps={{ maxLength: 12 }}
-                    error={passwords.newPassword !== passwords.confirmPassword}
-                    disabled={loading}
-                />
-                <Alert
-                    severity="error"
-                    sx={{
-                        display: errorMessage.length > 0 ? "flex" : "none",
-                    }}
+            <Container maxWidth="md">
+                <Stack
+                    spacing={2}
+                    className="forgot-password-form"
+                    component="form"
+                    onSubmit={handleSubmit}
                 >
-                    {errorMessage}
-                </Alert>
-                <Button
-                    type="submit"
-                    variant="contained"
-                    disableElevation
-                    disabled={loading}
-                >
-                    Update Password
-                </Button>
-                <Button disabled={loading}>Cancel</Button>
-            </Stack>
+                    <Typography variant="h5" fontWeight={600}>
+                        Set New Password
+                    </Typography>
+                    <InputLabel htmlFor="newPassword">New Password</InputLabel>
+                    <TextField
+                        id="newPassword"
+                        name="newPassword"
+                        variant="outlined"
+                        size="small"
+                        placeholder="New password, 8-12 characters"
+                        fullWidth
+                        value={passwords.newPassword}
+                        onChange={handleChange}
+                        type={passwords.showNewPassword ? "text" : "password"}
+                        required
+                        InputProps={{
+                            endAdornment: (
+                                <IconButton
+                                    onClick={() => {
+                                        handleShowPassword(true);
+                                    }}
+                                >
+                                    {passwords.showNewPassword ? (
+                                        <VisibilityOffRoundedIcon />
+                                    ) : (
+                                        <VisibilityRoundedIcon />
+                                    )}
+                                </IconButton>
+                            ),
+                        }}
+                        inputProps={{ maxLength: 12 }}
+                        disabled={loading}
+                    />
+                    <InputLabel htmlFor="confirmPassword">
+                        Confirm Password
+                    </InputLabel>
+                    <TextField
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        variant="outlined"
+                        size="small"
+                        placeholder="Confirm password"
+                        fullWidth
+                        value={passwords.confirmPassword}
+                        onChange={handleChange}
+                        type={
+                            passwords.showConfirmPassword ? "text" : "password"
+                        }
+                        required
+                        InputProps={{
+                            endAdornment: (
+                                <IconButton
+                                    onClick={() => {
+                                        handleShowPassword(false);
+                                    }}
+                                >
+                                    {passwords.showConfirmPassword ? (
+                                        <VisibilityOffRoundedIcon />
+                                    ) : (
+                                        <VisibilityRoundedIcon />
+                                    )}
+                                </IconButton>
+                            ),
+                        }}
+                        inputProps={{ maxLength: 12 }}
+                        error={
+                            passwords.newPassword.length > 0 &&
+                            passwords.confirmPassword.length > 0 &&
+                            passwords.newPassword !== passwords.confirmPassword
+                        }
+                        disabled={loading}
+                    />
+                    <Alert
+                        severity="error"
+                        sx={{
+                            display: errorMessage.length > 0 ? "flex" : "none",
+                        }}
+                    >
+                        {errorMessage}
+                    </Alert>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        disableElevation
+                        disabled={loading}
+                    >
+                        Update Password
+                    </Button>
+                    <Button disabled={loading}>Cancel</Button>
+                </Stack>
+            </Container>
+            <ConfirmDialog
+                title="Message"
+                message="Password updated successfully."
+                showDialog={showDialog}
+                actions={[
+                    {
+                        title: "Close",
+                        primary: true,
+                        color: "primary",
+                        action: () => {
+                            setShowDialog(false);
+                            navigate("/account/login");
+                        },
+                    },
+                ]}
+            />
         </Stack>
     );
 }

@@ -15,37 +15,32 @@ from marshmallow import Schema, fields
 load_dotenv()
 
 
-class RecoverPasswordURLSchema(Schema):
-    email = fields.Email(required=True)
-
-
 class RecoverPasswordURL(Resource):
 
     @classmethod
     def get(cls):
-        errors = RecoverPasswordURLSchema().validate(request.get_json())
-        if errors:
-            abort(400, message=errors)
-
-        data = request.get_json()
+        data = request.args.get('email')
 
         # check if email exists
-        email = UserModel.find_by_email(data["email"])
+        email = UserModel.find_by_email(data)
         if email is None:
             abort(404, message='Email not found')
 
         # generate reset token and send email
         reset_token = URLSafeSerializer(
-            os.getenv('URLSafeSerializer_SECRET_KEY')).dumps(data['email'])
+            os.getenv('URLSafeSerializer_SECRET_KEY')).dumps(data)
 
         msg = Message('You have requested a password reset',
-                      recipients=[data["email"], 'lhkhoi95@gmail.com'])
+                      recipients=[data, 'lhkhoi95@gmail.com'])
 
         link = f'http://localhost:3000/reset-password?token={reset_token}'
 
         msg.html = "Please click on this link to reset your password: <br>" + \
             f"<a href='{link}'>{link}</a>" + \
-            "<br> This link will be expired in 30 minutes."
+            "<br> This link will be expired in 30 minutes." + \
+            "<br> If you did not request a password reset, please ignore this email." + \
+            "<br> Thank you."
+
         try:
             mail.send(msg)
         except:
@@ -62,7 +57,7 @@ class RecoverPasswordURL(Resource):
             new_token.save_to_db()
 
         # return the message to client
-        return {'message': 'Password reset URL sent', 'resetUrl': link}, 200
+        return {'message': 'Successfully sent reset url to the requested email.', 'resetUrl': link}, 200
 
 
 class ResetPasswordSchema(Schema):

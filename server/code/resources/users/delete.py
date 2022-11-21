@@ -31,7 +31,6 @@ class Delete(Resource):
             abort(401, message='Incorrect password')
 
         try:
-
             UserModel.delete_by_id(user_id)
             response = response_message_code(
                 'Account deleted and logged out successfully', 200)

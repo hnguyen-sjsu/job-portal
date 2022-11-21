@@ -127,17 +127,15 @@ const deleteAccount = async (currentPassword) => {
 };
 
 const requestRecoverPassword = async (email) => {
-    const url = API_URL + "user/send-recovery-url";
+    const url = API_URL + "user/send-recovery-url?email=" + email;
+    console.log(url);
     const params = {
         withCredentials: true,
     };
     const headers = getHeaders();
-    const data = {
-        email: email,
-    };
 
     try {
-        const response = await axios.get(url, data, params, headers);
+        const response = await axios.get(url, params, headers);
         return response;
     } catch (e) {
         return e.response;

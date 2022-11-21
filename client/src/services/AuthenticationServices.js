@@ -126,6 +126,24 @@ const deleteAccount = async (currentPassword) => {
     }
 };
 
+const requestRecoverPassword = async (email) => {
+    const url = API_URL + "user/send-recovery-url";
+    const params = {
+        withCredentials: true,
+    };
+    const headers = getHeaders();
+    const data = {
+        email: email,
+    };
+
+    try {
+        const response = await axios.get(url, data, params, headers);
+        return response;
+    } catch (e) {
+        return e.response;
+    }
+};
+
 const AuthenticationServices = {
     signIn,
     signUp,
@@ -135,6 +153,7 @@ const AuthenticationServices = {
     updateEmail,
     updatePassword,
     deleteAccount,
+    requestRecoverPassword,
 };
 
 export default AuthenticationServices;

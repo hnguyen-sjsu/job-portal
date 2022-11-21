@@ -30,6 +30,8 @@ import JobSearchForm from "./components/Job/JobSearchForm";
 import MembershipPricingView from "./components/Recruiter/MembershipPricingView";
 import ApplicationList from "./components/Applications/ApplicationList";
 import CandidateSearchView from "./components/Recruiter/CandidateSearchView";
+import ForgetPasswordForm from "./components/UserAccount/PasswordRecovery/ForgetPasswordForm";
+import ResetPasswordForm from "./components/UserAccount/PasswordRecovery/ResetPasswordForm";
 
 let theme = createTheme({
     palette: {
@@ -187,6 +189,14 @@ function App() {
                             <Route
                                 path="recruiter-login"
                                 element={<SignIn isRecruiter={true} />}
+                            />
+                            <Route
+                                path="forgot-password"
+                                element={<ForgetPasswordForm />}
+                            />
+                            <Route
+                                path="reset-password"
+                                element={<ResetPasswordForm />}
                             />
                         </Route>
                     </Routes>

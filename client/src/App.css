@@ -204,3 +204,9 @@ body {
 .footer a {
     color: #fff;
 }
+
+.forgot-password-form {
+    background-color: #fff;
+    padding: 32px;
+    border-radius: 16px;
+}

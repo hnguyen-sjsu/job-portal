@@ -27,7 +27,7 @@ const apply = async (jobId) => {
 
     try {
         const response = await axios.post(url, data, params, headers);
-        return response.status === 201;
+        return response;
     } catch (e) {
         console.error(e);
     }
@@ -93,11 +93,18 @@ const updateApplicationStatus = async (jobId, newStatus) => {
     }
 };
 
+const isJobApplied = async (jobId) => {
+    const applications = await getApplications();
+    const jobIds = applications.map((app) => app.jobId);
+    return jobIds.includes(jobId);
+};
+
 const ApplicationServices = {
     apply,
     getApplications,
     getApplicationsByJobId,
     updateApplicationStatus,
+    isJobApplied,
 };
 
 export default ApplicationServices;

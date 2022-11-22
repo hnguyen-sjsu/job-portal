@@ -1,16 +1,27 @@
 import React, { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Pagination from "@mui/material/Pagination";
 import Avatar from "@mui/material/Avatar";
 
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
 import ApplicationServices from "../../services/ApplicationServices";
 import ApplicationListItem from "./ApplicationListItem";
+
+import JobView from "../Job/JobView";
 
 function ApplicationList(props) {
     const pageSize = 5;
@@ -24,6 +35,8 @@ function ApplicationList(props) {
     const [displayedJobs, setDisplayedJobs] = useState([]);
     const [pages, setPages] = useState(1);
     const [currPageIndex, setCurrPageIndex] = useState(1);
+    const [showDialog, setShowDialog] = useState(false);
+    const [selectedJob, setSelectedJob] = useState(null);
 
     useEffect(() => {
         ApplicationServices.getApplications().then((res) => {
@@ -63,7 +76,11 @@ function ApplicationList(props) {
         let fromIndex = (currPageIndex - 1) * pageSize;
         let toIndex = currPageIndex * pageSize;
         setDisplayedJobs(filteredItems.slice(fromIndex, toIndex));
-        console.log(filteredItems);
+    };
+
+    const handleCloseDialog = () => {
+        setShowDialog(false);
+        setSelectedJob(null);
     };
 
     return (
@@ -89,7 +106,18 @@ function ApplicationList(props) {
             </Grid>
             <Stack spacing={2}>
                 {displayedJobs.map((job) => (
-                    <ApplicationListItem key={job.id} item={job} />
+                    <Box
+                        key={job.id}
+                        onClick={() => {
+                            setSelectedJob({
+                                ...job.jobInfo,
+                                company: job.companyInfo,
+                            });
+                            setShowDialog(true);
+                        }}
+                    >
+                        <ApplicationListItem item={job} />
+                    </Box>
                 ))}
                 {jobs.length !== 0 && displayedJobs.length === 0 && (
                     <Stack alignItems="center">
@@ -131,6 +159,35 @@ function ApplicationList(props) {
                     />
                 </Stack>
             )}
+            <Dialog
+                open={showDialog}
+                fullWidth
+                maxWidth="lg"
+                sx={{ backdropFilter: "blur(5px)" }}
+            >
+                <AppBar
+                    color="inherit"
+                    sx={{ position: "relative" }}
+                    className="menu-bar"
+                    elevation={0}
+                >
+                    <Toolbar>
+                        <Typography
+                            sx={{ flex: 1 }}
+                            variant="h6"
+                            component="div"
+                        >
+                            Job View
+                        </Typography>
+                        <IconButton onClick={handleCloseDialog}>
+                            <CloseRoundedIcon />
+                        </IconButton>
+                    </Toolbar>
+                </AppBar>
+                <DialogContent>
+                    <JobView job={selectedJob} />
+                </DialogContent>
+            </Dialog>
         </Stack>
     );
 }

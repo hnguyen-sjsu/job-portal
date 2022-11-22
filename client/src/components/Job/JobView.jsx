@@ -36,12 +36,16 @@ function JobView(props) {
     const [dialogMessage, setDialogMessage] = useState("");
     const [dialogTitle, setDialogTitle] = useState("");
     const [dialogActions, setDialogActions] = useState([]);
+    const [isJobApplied, setIsJobApplied] = useState(false);
 
     useEffect(() => {
         setLoading(true);
         if (job) {
             setJobInfo({ ...job });
             setLoading(false);
+            ApplicationServices.isJobApplied(job.id).then((flag) => {
+                setIsJobApplied(flag);
+            });
         }
         if (jobId) {
             const id = jobId.split(":")[1];
@@ -49,6 +53,9 @@ function JobView(props) {
                 if (response) {
                     setJobInfo({ ...response });
                     setLoading(false);
+                    ApplicationServices.isJobApplied(id).then((flag) => {
+                        setIsJobApplied(flag);
+                    });
                 } else {
                     setJobInfo({ company: {} });
                 }
@@ -91,10 +98,27 @@ function JobView(props) {
         setLoading(true);
         setShowDialog(false);
         ApplicationServices.apply(jobInfo.id).then((response) => {
-            if (response) {
+            if (response.status === 201) {
                 setDialogTitle("Message");
                 setDialogMessage(
                     "Congratulations, your application has been sending to the recruiter."
+                );
+                setDialogActions([
+                    {
+                        title: "Close",
+                        primary: true,
+                        color: "primary",
+                        action: () => {
+                            setShowDialog(false);
+                        },
+                    },
+                ]);
+                setShowDialog(true);
+            }
+            if (response.status === 200) {
+                setDialogTitle("Message");
+                setDialogMessage(
+                    "You've already applied for this job. Please go to Applied Jobs to track your application status."
                 );
                 setDialogActions([
                     {
@@ -144,16 +168,6 @@ function JobView(props) {
                             {jobInfo.company.name}
                             <SkeletonLabel text={jobInfo.location} />
                             <SkeletonLabel text={jobInfo.category} />
-                            {/* {job.noApplicants && (
-                                <SkeletonLabel
-                                    text={
-                                        jobInfo.noApplicants +
-                                        " applicant" +
-                                        (jobInfo.noApplicants > 1 && "s")
-                                    }
-                                    animation={false}
-                                />
-                            )} */}
                         </Stack>
                         <List disablePadding dense>
                             <ListItem disableGutters>
@@ -245,8 +259,9 @@ function JobView(props) {
                                     disableElevation
                                     endIcon={<SendRoundedIcon />}
                                     onClick={handleApply}
+                                    disabled={isJobApplied}
                                 >
-                                    Apply
+                                    {isJobApplied ? "Applied" : "Apply"}
                                 </Button>
                                 <Button
                                     variant="outlined"

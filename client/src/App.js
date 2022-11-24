@@ -27,11 +27,11 @@ import Settings from "./components/UserAccount/Settings/Settings";
 import ManageJobs from "./components/Job/ManageJobs";
 import AuthProvider, { UserContext } from "./providers/AuthProvider";
 import JobSearchForm from "./components/Job/JobSearchForm";
-import MembershipPricingView from "./components/Recruiter/MembershipPricingView";
 import ApplicationList from "./components/Applications/ApplicationList";
 import CandidateSearchView from "./components/Recruiter/CandidateSearchView";
 import ForgetPasswordForm from "./components/UserAccount/PasswordRecovery/ForgetPasswordForm";
 import ResetPasswordForm from "./components/UserAccount/PasswordRecovery/ResetPasswordForm";
+import ManageMembership from "./components/Recruiter/ManageMembership";
 
 let theme = createTheme({
     palette: {
@@ -149,12 +149,12 @@ function App() {
                             />
                             <Route path="settings" element={<Settings />} />
                             <Route
-                                path="pricing"
-                                element={<MembershipPricingView />}
-                            />
-                            <Route
                                 path="candidates"
                                 element={<CandidateSearchView />}
+                            />
+                            <Route
+                                path="membership"
+                                element={<ManageMembership />}
                             />
                         </Route>
                         <Route path="/job" element={<RecruiterLayout />}>

@@ -169,17 +169,6 @@ function MenuBar(props) {
                 className="menu-bar"
             >
                 <Toolbar>
-                    {/* {showOptions && (
-						<IconButton
-							color="inherit"
-							aria-label="open drawer"
-							edge="start"
-							onClick={handleDrawerToggle}
-							sx={{ mr: 2, display: { sm: "none" } }}
-						>
-							<MenuIcon />
-						</IconButton>
-					)} */}
                     <a href="/">
                         <img src={appLogo} height={40} />
                     </a>
@@ -198,7 +187,11 @@ function MenuBar(props) {
                         <>
                             <Box
                                 sx={{
-                                    display: { xs: "none", sm: "block" },
+                                    display: {
+                                        xs: "none",
+                                        sm: "none",
+                                        md: "block",
+                                    },
                                 }}
                             >
                                 {linkItems.map((item, idx) => (

@@ -43,9 +43,13 @@ function JobView(props) {
         if (job) {
             setJobInfo({ ...job });
             setLoading(false);
-            ApplicationServices.isJobApplied(job.id).then((flag) => {
-                setIsJobApplied(flag);
-            });
+            if (user) {
+                if (user.role === "Candidate") {
+                    ApplicationServices.isJobApplied(job.id).then((flag) => {
+                        setIsJobApplied(flag);
+                    });
+                }
+            }
         }
         if (jobId) {
             const id = jobId.split(":")[1];

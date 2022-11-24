@@ -23,6 +23,8 @@ import JobServices from "../../services/JobServices";
 import ConfirmDialog from "../Utils/ConfirmDialog";
 
 import { useNavigate, useParams } from "react-router-dom";
+import MembershipServices from "../../services/MembershipServices";
+import MembershipExpiredDialog from "../Utils/MembershipExpiredDialog";
 
 function JobForm(props) {
     let navigate = useNavigate();
@@ -61,6 +63,7 @@ function JobForm(props) {
     const [showDialog, setShowDialog] = useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [description, setDescription] = useState("");
+    const [membershipExpired, setMembershipExpired] = useState(true);
 
     let undefinedJob = {
         job_id: undefined,
@@ -119,7 +122,7 @@ function JobForm(props) {
 
     const validate = () => {
         if (job.salaryMin !== "" && job.salaryMax !== "") {
-            if (job.salaryMin >= job.salaryMax) {
+            if (parseInt(job.salaryMin) >= parseInt(job.salaryMax)) {
                 setErrorMessage("Min. salary must be greater than Max. Salary");
                 return false;
             }
@@ -154,12 +157,19 @@ function JobForm(props) {
         }
     };
 
+    const loadMembership = () => {
+        MembershipServices.isMembershipExpired().then((response) => {
+            setMembershipExpired(response);
+        });
+    };
+
     useEffect(() => {
         document.title = "Post Job";
         if (jobId) {
             loadJob(jobId.split(":")[1]);
             document.title = "Edit Job";
         }
+        loadMembership();
     }, []);
 
     return (
@@ -195,7 +205,7 @@ function JobForm(props) {
                                     onChange={handleChange}
                                     fullWidth
                                     required
-                                    disabled={loading}
+                                    disabled={loading || membershipExpired}
                                 />
                             </Grid>
                             <Grid item xs={6}>
@@ -211,7 +221,7 @@ function JobForm(props) {
                                     fullWidth
                                     onChange={handleChange}
                                     required
-                                    disabled={loading}
+                                    disabled={loading || membershipExpired}
                                 >
                                     <MenuItem value="">
                                         <em>None</em>
@@ -239,7 +249,7 @@ function JobForm(props) {
                                     value={job.experienceLevel}
                                     onChange={handleChange}
                                     required
-                                    disabled={loading}
+                                    disabled={loading || membershipExpired}
                                 >
                                     <MenuItem value="">
                                         <em>None</em>
@@ -279,7 +289,7 @@ function JobForm(props) {
                                             required
                                         />
                                     )}
-                                    disabled={loading}
+                                    disabled={loading || membershipExpired}
                                 />
                             </Grid>
                             <Grid item xs={6}>
@@ -308,7 +318,7 @@ function JobForm(props) {
                                             placeholder="Job category"
                                         />
                                     )}
-                                    disabled={loading}
+                                    disabled={loading || membershipExpired}
                                 />
                             </Grid>
                             <Grid item xs={6}>
@@ -337,7 +347,7 @@ function JobForm(props) {
                                             </InputAdornment>
                                         ),
                                     }}
-                                    disabled={loading}
+                                    disabled={loading || membershipExpired}
                                 />
                             </Grid>
                             <Grid item xs={6}>
@@ -360,7 +370,7 @@ function JobForm(props) {
                                             </InputAdornment>
                                         ),
                                     }}
-                                    disabled={loading}
+                                    disabled={loading || membershipExpired}
                                     error={
                                         job.salaryMin !== "" &&
                                         job.salaryMax !== ""
@@ -397,7 +407,7 @@ function JobForm(props) {
                                             }
                                         />
                                     )}
-                                    disabled={loading}
+                                    disabled={loading || membershipExpired}
                                     disablePast
                                     required
                                 />
@@ -430,7 +440,7 @@ function JobForm(props) {
                                             }
                                         />
                                     )}
-                                    disabled={loading}
+                                    disabled={loading || membershipExpired}
                                     disablePast
                                     required
                                 />
@@ -445,7 +455,7 @@ function JobForm(props) {
                                     onChange={(content) => {
                                         setDescription(content);
                                     }}
-                                    readOnly={loading}
+                                    readOnly={loading || membershipExpired}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -483,14 +493,18 @@ function JobForm(props) {
                                             variant="contained"
                                             disableElevation
                                             type="submit"
-                                            disabled={loading}
+                                            disabled={
+                                                loading || membershipExpired
+                                            }
                                         >
                                             Save
                                         </Button>
                                         <Button
                                             variant="outlined"
                                             disableElevation
-                                            disabled={loading}
+                                            disabled={
+                                                loading || membershipExpired
+                                            }
                                             onClick={() => {
                                                 navigate(-1);
                                             }}
@@ -552,6 +566,7 @@ function JobForm(props) {
                     },
                 ]}
             />
+            {membershipExpired && <MembershipExpiredDialog />}
         </>
     );
 }

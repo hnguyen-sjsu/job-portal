@@ -62,6 +62,9 @@ const getMembership = async () => {
             return {
                 ...membershipInfo,
                 status: getMembershipStatus(membershipInfo.expirationDate),
+                isExpired:
+                    getMembershipStatus(membershipInfo.expirationDate) ===
+                    "Expired",
             };
         } else {
             return null;
@@ -69,6 +72,15 @@ const getMembership = async () => {
     } catch (e) {
         console.error(e.response);
         return null;
+    }
+};
+
+const isMembershipExpired = async () => {
+    const membershipInfo = await getMembership();
+    if (membershipInfo) {
+        return membershipInfo.isExpired;
+    } else {
+        return true;
     }
 };
 
@@ -83,6 +95,7 @@ const getMembershipStatus = (expireDate) => {
 const MembershipServices = {
     getMembership,
     addMembership,
+    isMembershipExpired,
 };
 
 export default MembershipServices;

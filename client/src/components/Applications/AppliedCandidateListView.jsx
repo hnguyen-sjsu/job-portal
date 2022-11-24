@@ -15,6 +15,9 @@ import ApplicationServices from "../../services/ApplicationServices";
 import AppliedCandidateListItem from "./AppliedCandidateListItem";
 import ProcessApplicationDialog from "./ProcessApplicationDialog";
 
+import MembershipServices from "../../services/MembershipServices";
+import MembershipExpiredDialog from "../Utils/MembershipExpiredDialog";
+
 function AppliedCandidateListView(props) {
     const { job } = props;
     const pageSize = 5;
@@ -25,6 +28,7 @@ function AppliedCandidateListView(props) {
     const [pages, setPages] = useState(1);
     const [currPageIndex, setCurrPageIndex] = useState(1);
     const [displayedApplications, setDisplayedApplications] = useState([]);
+    const [membershipExpired, setMembershipExpired] = useState(true);
 
     const onListItemSelected = (selectedItem) => {
         setShowDialog(true);
@@ -101,6 +105,12 @@ function AppliedCandidateListView(props) {
         });
     };
 
+    const loadMembership = () => {
+        MembershipServices.isMembershipExpired().then((response) => {
+            setMembershipExpired(response);
+        });
+    };
+
     useEffect(() => {
         loadApplications();
     }, [job]);
@@ -108,6 +118,10 @@ function AppliedCandidateListView(props) {
     useEffect(() => {
         paging();
     }, [currPageIndex, pages, applications]);
+
+    useEffect(() => {
+        loadMembership();
+    }, []);
 
     return (
         <div className="job-list-container">
@@ -154,6 +168,7 @@ function AppliedCandidateListView(props) {
                                                 <ListItemButton
                                                     disableGutters
                                                     divider
+                                                    disabled={membershipExpired}
                                                 >
                                                     <AppliedCandidateListItem
                                                         candidateProfile={

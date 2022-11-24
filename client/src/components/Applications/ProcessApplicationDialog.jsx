@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -15,8 +15,12 @@ import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 
 import ProfileView from "../UserAccount/Profile/ProfileView";
+import MembershipServices from "../../services/MembershipServices";
+import MembershipExpiredDialog from "../Utils/MembershipExpiredDialog";
 
 function ProcessApplicationDialog(props) {
+    const [membershipExpired, setMembershipExpired] = useState(true);
+
     const {
         candidateProfile,
         showDialog,
@@ -35,6 +39,16 @@ function ProcessApplicationDialog(props) {
     const onPendingButtonClick = () => {
         updateApplicationStatus(candidateProfile, "Pending");
     };
+
+    const loadMembership = () => {
+        MembershipServices.isMembershipExpired().then((response) => {
+            setMembershipExpired(response);
+        });
+    };
+
+    useEffect(() => {
+        loadMembership();
+    }, []);
 
     return (
         <>
@@ -99,6 +113,7 @@ function ProcessApplicationDialog(props) {
                             disableElevation
                             endIcon={<CloseRoundedIcon />}
                             onClick={onRejectButtonClick}
+                            disabled={membershipExpired}
                         >
                             Reject
                         </Button>
@@ -108,6 +123,7 @@ function ProcessApplicationDialog(props) {
                             disableElevation
                             endIcon={<AccessTimeRoundedIcon />}
                             onClick={onPendingButtonClick}
+                            disabled={membershipExpired}
                         >
                             Pending
                         </Button>
@@ -117,6 +133,7 @@ function ProcessApplicationDialog(props) {
                             disableElevation
                             endIcon={<CheckRoundedIcon />}
                             onClick={onAcceptButtonClick}
+                            disabled={membershipExpired}
                         >
                             Accept
                         </Button>

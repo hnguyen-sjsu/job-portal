@@ -22,6 +22,8 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import SearchServices from "../../services/SearchServices";
 import CandidateListView from "./CandidateListView";
 import ProfileView from "../UserAccount/Profile/ProfileView";
+import MembershipExpiredDialog from "../Utils/MembershipExpiredDialog";
+import MembershipServices from "../../services/MembershipServices";
 
 function CandidateSearchView(props) {
     const [loading, setLoading] = useState(false);
@@ -30,6 +32,7 @@ function CandidateSearchView(props) {
     const [displayedCandidates, setDisplayedCandidates] = useState([]);
     const [skills, setSkills] = useState("");
     const [selectedCandidate, setSelectedCandidate] = useState(null);
+    const [membershipExpired, setMembershipExpired] = useState(true);
 
     const pageSize = 5;
     const [pages, setPages] = useState(1);
@@ -62,9 +65,19 @@ function CandidateSearchView(props) {
         setDisplayedCandidates(items.slice(fromIndex, toIndex));
     };
 
+    const loadMembership = () => {
+        MembershipServices.isMembershipExpired().then((response) => {
+            setMembershipExpired(response);
+        });
+    };
+
     useEffect(() => {
         paging(candidates);
     }, [currPageIndex]);
+
+    useEffect(() => {
+        loadMembership();
+    }, []);
 
     return (
         <Stack spacing={2}>
@@ -74,6 +87,7 @@ function CandidateSearchView(props) {
                 setOpenDialog={setOpenDialog}
                 handleSearch={handleSearch}
                 loading={loading}
+                membershipExpired={membershipExpired}
             />
             <div className="job-list-container">
                 <AutoSizer>
@@ -112,16 +126,20 @@ function CandidateSearchView(props) {
                 setOpen={setOpenDialog}
                 candidateProfile={selectedCandidate}
             />
+            {membershipExpired && <MembershipExpiredDialog />}
         </Stack>
     );
 }
 
 function SearchBar(props) {
-    const { skills, setSkills, setOpenDialog, handleSearch, loading } = props;
-
-    const handleOpenFilters = () => {
-        setOpenDialog(true);
-    };
+    const {
+        skills,
+        setSkills,
+        setOpenDialog,
+        handleSearch,
+        loading,
+        membershipExpired,
+    } = props;
 
     const handleSearchBtnClick = (e) => {
         e.preventDefault();
@@ -161,7 +179,7 @@ function SearchBar(props) {
                             sx={{ mr: "10px" }}
                         />
                     }
-                    disabled={loading}
+                    disabled={loading || membershipExpired}
                 />
             </Grid>
             <Grid item xs={4}>
@@ -170,7 +188,7 @@ function SearchBar(props) {
                         variant="contained"
                         disableElevation
                         onClick={handleSearchBtnClick}
-                        disabled={loading}
+                        disabled={loading || membershipExpired}
                     >
                         Search
                     </Button>

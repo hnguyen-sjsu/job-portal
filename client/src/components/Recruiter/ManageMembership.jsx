@@ -8,9 +8,17 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+
 import MembershipServices from "../../services/MembershipServices";
 import moment from "moment";
 import ConfirmDialog from "../Utils/ConfirmDialog";
+
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 function ManageMembership(props) {
     const [loading, setLoading] = useState(false);
@@ -23,6 +31,14 @@ function ManageMembership(props) {
         { type: "Semi-Annual", price: 100.0, unit: "/6 months" },
         { type: "Annual", price: 180.0, unit: "/year" },
     ];
+
+    const benefits = [
+        "Post/Update job listings",
+        "Process applications",
+        "Search talents",
+        "View candidate profiles",
+    ];
+
     const [membershipInfo, setMembershipInfo] = useState(null);
     const [error, setError] = useState(false);
 
@@ -53,7 +69,6 @@ function ManageMembership(props) {
         setShowConfirmDialog(false);
         const plan = plans.filter((i) => i.type === selectedPlan)[0];
         MembershipServices.addMembership(plan).then((response) => {
-            console.log(response);
             if (response.status === 201 || response.status === 200) {
                 loadMembership();
             }
@@ -89,19 +104,23 @@ function ManageMembership(props) {
                             <Typography>Current Membership Plan</Typography>
                         </Grid>
                         <Grid item xs={12} sm={8}>
-                            <Typography>{membershipInfo.type}</Typography>
+                            <Typography fontWeight={600}>
+                                {membershipInfo.type}
+                            </Typography>
                         </Grid>
                         <Grid item xs={12} sm={4}>
                             <Typography>Membership Status</Typography>
                         </Grid>
                         <Grid item xs={12} sm={8}>
-                            <Typography>{membershipInfo.status}</Typography>
+                            <Typography fontWeight={600}>
+                                {membershipInfo.status}
+                            </Typography>
                         </Grid>
                         <Grid item xs={12} sm={4}>
-                            <Typography>Expired Date</Typography>
+                            <Typography>Expiration Date</Typography>
                         </Grid>
                         <Grid item xs={12} sm={8}>
-                            <Typography>
+                            <Typography fontWeight={600}>
                                 {moment(membershipInfo.expirationDate).format(
                                     "MMM DD, YYYY"
                                 )}
@@ -119,6 +138,27 @@ function ManageMembership(props) {
                         </Typography>
                     </Stack>
                 )}
+            </div>
+            <Typography variant="h5" fontWeight={500}>
+                Membership Services
+            </Typography>
+            <div className="profile-form-container">
+                <div style={{ padding: "16px" }}>
+                    <Typography>
+                        The following services are only available to active
+                        membership plans.
+                    </Typography>
+                    <List>
+                        {benefits.map((benefit, index) => (
+                            <ListItem key={index}>
+                                <ListItemIcon>
+                                    <CheckCircleIcon color="primary" />
+                                </ListItemIcon>
+                                <ListItemText>{benefit}</ListItemText>
+                            </ListItem>
+                        ))}
+                    </List>
+                </div>
             </div>
             {membershipInfo === null && (
                 <>

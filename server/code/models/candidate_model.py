@@ -1,10 +1,11 @@
 from db import db
-from sqlalchemy.orm import defer
 from helpers import dict_to_camel_case
 from models.user_model import UserModel
 from models.education_model import EducationModel
 from models.skill_model import SkillModel
 from models.work_experience_model import WorkExperienceModel
+
+# Database model for the Candidate table
 
 
 class CandidateModel(db.Model):
@@ -20,10 +21,11 @@ class CandidateModel(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'),
                         nullable=False)
 
+    # return a string representation of the object
     def __repr__(self):
         return str({column.name: getattr(self, column.name) for column in self.__table__.columns})
 
-    # Constructor
+    # Constructor that initializes the object
     def __init__(self, user_id, full_name="", location="", phone_number="", bio="", resume_url=""):
         self.full_name = full_name
         self.location = location
@@ -32,25 +34,31 @@ class CandidateModel(db.Model):
         self.resume_url = resume_url
         self.user_id = user_id
 
+    # return a dictionary representation of the object
     def to_dict(self):
         return {column.name: str(getattr(self, column.name)) for column in self.__table__.columns}
 
+    # save the object to the database
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
 
+    # find all candidates in the database
     @classmethod
     def find_all(cls):
         return cls.query.all()
 
+    # find a candidate in the database with the given uid
     @classmethod
     def find_by_user_id(cls, user_id):
         return cls.query.filter_by(user_id=user_id).first()
 
+    # find a candidate in the database with the given uid
     @classmethod
     def find_by_user_id_for_recruiter(cls, user_id):
         return cls.query.filter_by(user_id=user_id).first()
 
+    # update a candidate in the database with the given uid and new information
     @ classmethod
     def update(cls, _id, **kwargs):
         # find candidate
@@ -62,6 +70,7 @@ class CandidateModel(db.Model):
             candidate.save_to_db()
             return candidate
 
+    # find a candidate in the database with the given uid
     @classmethod
     def find_candidate_profile(cls, user_id):
         # get user's email

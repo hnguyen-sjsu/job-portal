@@ -1,10 +1,10 @@
 from models.recruiter_model import RecruiterModel
-from models.candidate_model import CandidateModel
 from models.application_model import ApplicationModel
-from models.user_model import UserModel
 from db import db
 from sqlalchemy.types import Date
 import datetime
+
+# Database model for the SavedJob table
 
 
 class SavedJobModel(db.Model):
@@ -16,22 +16,27 @@ class SavedJobModel(db.Model):
     # Create a relationship between the SavedJobModel and UserModel
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
+    # constructor that initializes the object
     def __init__(self, job_id, user_id):
         self.job_id = job_id
         self.user_id = user_id
 
+    # a dictionary representation of the object
     def to_dict(self):
         return {column.name: str(getattr(self, column.name)) for column in self.__table__.columns}
 
+    # save the object to the database
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
 
+    # delete a user from the database with the given id
     @classmethod
     def delete_by_id(cls, _id):
         cls.query.filter_by(id=_id).delete()
         db.session.commit()
 
+    # check if a job is saved by a user
     @classmethod
     def job_was_saved(cls, job_id, user_id):
         job = cls.query.filter_by(job_id=job_id, user_id=user_id).first()
@@ -41,6 +46,7 @@ class SavedJobModel(db.Model):
 
         return False
 
+    # find all saved jobs in the database
     @classmethod
     def find_all_job_company_by_title(cls, job_title):
         job_company = JobModel.query.\
@@ -52,13 +58,17 @@ class SavedJobModel(db.Model):
 
         return job_company
 
+    # find all saved jobs in the database
     @classmethod
     def find_all_by_uid(cls, user_id):
         return cls.query.filter_by(user_id=user_id).all()
 
+    # find all saved jobs in the database
     @classmethod
     def find_one_by_saved_job_id(cls, saved_job_id):
         return cls.query.filter_by(id=saved_job_id).first()
+
+# Database model for the Job table
 
 
 class JobModel(db.Model):
@@ -85,9 +95,11 @@ class JobModel(db.Model):
     saved_jobs = db.relationship(
         'SavedJobModel', backref='jobs', lazy=True, cascade='all, delete-orphan')
 
+    # return a string representation of the object
     def __repr__(self):
         return str({column.name: getattr(self, column.name) for column in self.__table__.columns})
 
+    # constructor that initializes the object
     def __init__(self, title, description, location, category, type, experience_level, salary_min, salary_max, start_date, end_date, user_id):
         self.title = title
         self.description = description
@@ -101,18 +113,22 @@ class JobModel(db.Model):
         self.end_date = end_date
         self.user_id = user_id
 
+    # a dictionary representation of the object
     def to_dict(self):
         return {column.name: str(getattr(self, column.name)) for column in self.__table__.columns}
 
+    # save the object to the database
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
 
+    # delete a user from the database with the given id
     @classmethod
     def delete_from_db(cls, _id):
         db.session.delete(cls.query.filter_by(id=_id).first())
         db.session.commit()
 
+    # remove all expired jobs from the database
     @classmethod
     def remove_expired_jobs(cls):
         expired_jobs = cls.query.filter(
@@ -120,6 +136,7 @@ class JobModel(db.Model):
         for job in expired_jobs:
             job.delete_from_db()
 
+    # find all jobs in the database
     @classmethod
     def find_all_job_company(cls):
         jobs_company = JobModel.query.\
@@ -130,6 +147,7 @@ class JobModel(db.Model):
 
         return jobs_company
 
+    # find all jobs in the database by the given job title
     @classmethod
     def find_all_job_company_by_job_title(cls, job_title):
         jobs_company = JobModel.query.\
@@ -141,6 +159,7 @@ class JobModel(db.Model):
 
         return jobs_company
 
+    # find all jobs in the database by the given location
     @classmethod
     def find_all_job_company_by_location(cls, location):
         jobs_company = JobModel.query.\
@@ -152,6 +171,7 @@ class JobModel(db.Model):
 
         return jobs_company
 
+    # find all jobs in the database by the given job title and location
     @classmethod
     def find_all_job_company_by_title_location(cls, job_title, location):
         if job_title and not location:
@@ -170,6 +190,7 @@ class JobModel(db.Model):
 
         return jobs_company
 
+    # find all jobs in the database by the given job id
     @classmethod
     def find_ten_job_company(cls, offset):
         """
@@ -184,6 +205,7 @@ class JobModel(db.Model):
 
         return jobs_company
 
+    # find all jobs in the database by the given user id
     @classmethod
     def find_all_job_company_by_uid(cls, user_id):
         applications = ApplicationModel.find_by_user_id(user_id)
@@ -209,18 +231,21 @@ class JobModel(db.Model):
 
         return jobs_company_application
 
+    # find all jobs in the database by the given user id
     @classmethod
     def find_all_jobs_by_uid(cls, user_id):
         return cls.query.filter_by(user_id=user_id).\
             filter(JobModel.end_date > datetime.datetime.now()).\
             all()
 
+    # find a job with the given job id
     @classmethod
     def find_by_job_id(cls, job_id):
         return cls.query.filter_by(id=job_id).\
             filter(JobModel.end_date > datetime.datetime.now()).\
             first()
 
+    # find a job with the given application id
     @classmethod
     def find_one_job_company_application(cls, id):
         applications = ApplicationModel.find_by_job_id(id)
@@ -244,6 +269,7 @@ class JobModel(db.Model):
 
         return job_company_applications
 
+    # find a job with the given job id
     @classmethod
     def find_one_job_company_by_job_id(cls, job_id):
         return cls.query.\
@@ -253,7 +279,7 @@ class JobModel(db.Model):
             filter(JobModel.id == job_id).\
             first()
 
-    # Where client store the job id?
+    # update a job.
     @classmethod
     def update(cls, **kwargs):
         job = cls.query.filter_by(id=kwargs['job_id']).first()
@@ -266,6 +292,7 @@ class JobModel(db.Model):
 
         return None
 
+    # check if the user owns the job.
     @ classmethod
     def is_owner(cls, user_id, job_id):
         job = cls.query.filter_by(id=job_id).first()

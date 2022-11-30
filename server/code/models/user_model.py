@@ -1,6 +1,8 @@
 from db import db
 import uuid
 
+# Database for the user table
+
 
 class UserModel(db.Model):
     __tablename__ = 'users'
@@ -46,36 +48,43 @@ class UserModel(db.Model):
     saved_jobs = db.relationship(
         'SavedJobModel', backref='users', lazy=True, cascade='all, delete-orphan')
 
+    # return a string representation of the object
     def __repr__(self):
         return str({column.name: getattr(self, column.name) for column in self.__table__.columns})
 
-    # Constructor
+    # constructor that initializes the object
     def __init__(self, email, password, role):
         self.email = email
         self.password = password
         self.role = role
 
+    # dictionary representation of the object
     def to_dict(self):
         return {column.name: str(getattr(self, column.name)) for column in self.__table__.columns}
 
+    # save the object to the database
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
 
+    # delete a user from the database with the given id
     @classmethod
     def delete_by_id(cls, _id):
         user = cls.query.filter_by(id=_id).first()
         db.session.delete(user)
         db.session.commit()
 
+    # find all users in the database
     @classmethod
     def find_all(cls):
         return cls.query.all()
 
+    # find a user by email
     @classmethod
     def find_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
 
+    # find a user by id
     @classmethod
     def find_by_id(cls, _id):
         return cls.query.filter_by(id=_id).first()

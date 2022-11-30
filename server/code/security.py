@@ -1,5 +1,7 @@
 import hashlib
 
+# return the hash password.
+
 
 def hash_password(pw):
     salt = "5gz"

@@ -16,6 +16,11 @@ const getHeaders = () => {
     return headers;
 };
 
+/**
+ * Post a membership purchase request to the server
+ * @param {*} selectedPlan
+ * @returns response from the server
+ */
 const addMembership = async (selectedPlan) => {
     const url = baseUrl + "post";
     const headers = getHeaders();
@@ -30,7 +35,6 @@ const addMembership = async (selectedPlan) => {
 
     try {
         const response = await axios.post(url, data, params, headers);
-        console.log(response);
         return response;
     } catch (e) {
         console.error(e.response);
@@ -38,6 +42,10 @@ const addMembership = async (selectedPlan) => {
     }
 };
 
+/**
+ * Get the user's current membership information
+ * @returns the user's current membership information if exists, else return null
+ */
 const getMembership = async () => {
     const url = baseUrl + "get";
     const headers = getHeaders();
@@ -75,6 +83,9 @@ const getMembership = async () => {
     }
 };
 
+/**
+ * Check if the membership is expired
+ */
 const isMembershipExpired = async () => {
     const membershipInfo = await getMembership();
     if (membershipInfo) {
@@ -84,6 +95,11 @@ const isMembershipExpired = async () => {
     }
 };
 
+/**
+ * Get the membership status based on expired date and current date
+ * @param {*} expireDate
+ * @returns membership status in text
+ */
 const getMembershipStatus = (expireDate) => {
     if (expireDate) {
         const today = moment();

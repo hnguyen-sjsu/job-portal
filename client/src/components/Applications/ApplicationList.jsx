@@ -23,6 +23,9 @@ import ApplicationListItem from "./ApplicationListItem";
 
 import JobView from "../Job/JobView";
 
+/**
+ * Define an ApplicationList component
+ */
 function ApplicationList(props) {
     const pageSize = 5;
     const [jobs, setJobs] = useState([]);

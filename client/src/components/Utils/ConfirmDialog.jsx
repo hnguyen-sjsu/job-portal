@@ -6,54 +6,57 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
+/**
+ * An util component that to display a confirm dialog with customizable actions.
+ */
 function ConfirmDialog(props) {
-	const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false);
 
-	const { title, message, showDialog, actions } = props;
+    const { title, message, showDialog, actions } = props;
 
-	const handleClose = () => {
-		setOpen(false);
-	};
+    const handleClose = () => {
+        setOpen(false);
+    };
 
-	useEffect(() => {
-		setOpen(showDialog);
-	}, [showDialog]);
+    useEffect(() => {
+        setOpen(showDialog);
+    }, [showDialog]);
 
-	return (
-		<>
-			<Dialog
-				open={open}
-				aria-labelledby="alert-dialog-title"
-				aria-describedby="alert-dialog-description"
-			>
-				<DialogTitle id="alert-dialog-title">
-					{title ? title : "Alert"}
-				</DialogTitle>
-				<DialogContent>
-					<DialogContentText id="alert-dialog-description">
-						{message ? message : "Dialog message"}
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					{actions.map((action) => (
-						<Button
-							key={action.title}
-							onClick={() => {
-								setOpen(false);
-								action.action();
-							}}
-							variant={action.primary ? "contained" : "outlined"}
-							color={action.color ? action.color : "primary"}
-							disableElevation
-							fullWidth={actions.length === 1}
-						>
-							{action.title}
-						</Button>
-					))}
-				</DialogActions>
-			</Dialog>
-		</>
-	);
+    return (
+        <>
+            <Dialog
+                open={open}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {title ? title : "Alert"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        {message ? message : "Dialog message"}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    {actions.map((action) => (
+                        <Button
+                            key={action.title}
+                            onClick={() => {
+                                setOpen(false);
+                                action.action();
+                            }}
+                            variant={action.primary ? "contained" : "outlined"}
+                            color={action.color ? action.color : "primary"}
+                            disableElevation
+                            fullWidth={actions.length === 1}
+                        >
+                            {action.title}
+                        </Button>
+                    ))}
+                </DialogActions>
+            </Dialog>
+        </>
+    );
 }
 
 export default ConfirmDialog;

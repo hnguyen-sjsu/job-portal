@@ -24,6 +24,9 @@ import { UserContext } from "../../providers/AuthProvider";
 import ConfirmDialog from "../Utils/ConfirmDialog";
 import ApplicationServices from "../../services/ApplicationServices";
 
+/**
+ * Define a JobView component.
+ */
 function JobView(props) {
     let numeral = require("numeral");
     let { job } = props;

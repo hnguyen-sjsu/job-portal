@@ -4,6 +4,9 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 
+/**
+ * A component to display a dialog which let the user know that their membership is expired
+ */
 function MembershipExpiredDialog() {
     const [open, setOpen] = useState(true);
     const closeDialog = () => {

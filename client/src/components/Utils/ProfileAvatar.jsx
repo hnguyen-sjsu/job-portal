@@ -1,6 +1,9 @@
 import React from "react";
 import Avatar from "@mui/material/Avatar";
 
+/**
+ * A component to render the Profile Avatar based on user's first name
+ */
 function ProfileAvatar(props) {
     const { fullName } = props;
     return <Avatar {...stringAvatar(fullName)} />;

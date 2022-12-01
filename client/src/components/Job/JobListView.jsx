@@ -7,6 +7,9 @@ import Stack from "@mui/material/Stack";
 import AutoSizer from "react-virtualized-auto-sizer";
 import JobListItem from "./JobListItem";
 
+/**
+ * A component to render a list of job items
+ */
 function JobListView(props) {
     const pageSize = 5;
     const { jobs, selectedJob, onJobSelected } = props;
@@ -24,6 +27,7 @@ function JobListView(props) {
         setDisplayedJobs(items.slice(fromIndex, toIndex));
     };
 
+    // Re-render the list when jobs changed
     useEffect(() => {
         setCurrPageIndex(1);
         setPages(1);
@@ -33,6 +37,7 @@ function JobListView(props) {
         paging(jobs);
     }, [jobs]);
 
+    // Re-render the list when page index changed
     useEffect(() => {
         paging(jobs);
     }, [currPageIndex, pages]);

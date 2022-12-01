@@ -13,6 +13,9 @@ import ConfirmDialog from "../../Utils/ConfirmDialog";
 import AuthenticationServices from "../../../services/AuthenticationServices";
 import { UserContext } from "../../../providers/AuthProvider";
 
+/**
+ * A component to display the Delete Account form
+ */
 function DeleteAccountForm(props) {
     const { signOut } = useContext(UserContext);
 
@@ -25,21 +28,25 @@ function DeleteAccountForm(props) {
         showPassword: false,
     });
 
+    // Handling event when a text field value changed
     const handleChange = (e) => {
         const { value } = e.target;
         setPassword({ ...password, value: value });
         setErrorMessage("");
     };
 
+    // Toggle show/hide password
     const handleShowPassword = () => {
         setPassword({ ...password, showPassword: !password.showPassword });
     };
 
+    // Handle event when the Delete button clicked
     const handleSubmit = (e) => {
         e.preventDefault();
         setShowDeleteDialog(true);
     };
 
+    // Deleting account
     const deleteAccount = () => {
         setLoading(true);
         setShowDeleteDialog(false);

@@ -41,6 +41,13 @@ function JobView(props) {
     const [dialogActions, setDialogActions] = useState([]);
     const [isJobApplied, setIsJobApplied] = useState(false);
 
+    /**
+     * on component mounted
+     * If the component is supplied a job object,
+     * render the component with the object
+     * If the component is supplied a query string jobId,
+     * load the job by the jobId then render the component
+     */
     useEffect(() => {
         setLoading(true);
         if (job) {
@@ -70,6 +77,7 @@ function JobView(props) {
         }
     }, []);
 
+    // Re-render the view when the job object changed
     useEffect(() => {
         if (job) {
             setJobInfo({ ...job });
@@ -77,6 +85,7 @@ function JobView(props) {
         }
     }, [job]);
 
+    // Handle event when the Apply button clicked
     const handleApply = () => {
         setDialogTitle("Apply Job");
         setDialogMessage("Do you want to apply this job?");
@@ -101,10 +110,12 @@ function JobView(props) {
         setShowDialog(true);
     };
 
+    // Apply a job
     const applyJob = () => {
         setLoading(true);
         setShowDialog(false);
         ApplicationServices.apply(jobInfo.id).then((response) => {
+            // Display successful message
             if (response.status === 201) {
                 setDialogTitle("Message");
                 setDialogMessage(
@@ -122,6 +133,7 @@ function JobView(props) {
                 ]);
                 setShowDialog(true);
             }
+            // Display error message for job already applied
             if (response.status === 200) {
                 setDialogTitle("Message");
                 setDialogMessage(

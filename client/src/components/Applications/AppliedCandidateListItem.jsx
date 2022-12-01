@@ -9,6 +9,9 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import ProfileAvatar from "../Utils/ProfileAvatar";
 
+/*
+ * A component that this display each Applied Candidate of a job
+ */
 function AppliedCandidateListItem(props) {
     const { candidateProfile, onListItemSelected } = props;
     const { profile, applicationInfo } = candidateProfile;

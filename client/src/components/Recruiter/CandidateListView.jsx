@@ -7,6 +7,9 @@ import Grid from "@mui/material/Grid";
 import Skeleton from "@mui/material/Skeleton";
 import CandidateListItem from "./CandidateListItem";
 
+/**
+ * A component to display a list of candidates
+ */
 function CandidateListView(props) {
     const { candidates, onCandidateSelected, loading } = props;
 

@@ -10,6 +10,9 @@ import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import ConfirmDialog from "../../Utils/ConfirmDialog";
 import AuthenticationServices from "../../../services/AuthenticationServices";
 
+/**
+ * A component to display the Update Password Form
+ */
 function UpdatePasswordForm(props) {
     const [passwords, setPasswords] = useState({
         currentPassword: "",
@@ -22,6 +25,7 @@ function UpdatePasswordForm(props) {
     const [showDialog, setShowDialog] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
+    // Handling event when a text field value changed
     const handleChange = (e) => {
         const { name, value } = e.target;
         setPasswords({
@@ -30,6 +34,7 @@ function UpdatePasswordForm(props) {
         });
     };
 
+    // Toggle show/hide password fields
     const handleShowPassword = (currentPassword) => {
         if (currentPassword) {
             setPasswords({
@@ -44,6 +49,7 @@ function UpdatePasswordForm(props) {
         }
     };
 
+    // Handle event when the form is submitted
     const handleSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
@@ -53,10 +59,11 @@ function UpdatePasswordForm(props) {
             passwords.newPassword
         ).then((response) => {
             if (response.status === 400) {
-                console.log(response.data.message);
+                // Display error
                 setErrorMessage(response.data.message);
             }
             if (response.status === 201) {
+                // Update password success
                 setErrorMessage("");
                 setShowDialog(true);
             }

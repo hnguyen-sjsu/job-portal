@@ -18,6 +18,9 @@ import ProcessApplicationDialog from "./ProcessApplicationDialog";
 import MembershipServices from "../../services/MembershipServices";
 import MembershipExpiredDialog from "../Utils/MembershipExpiredDialog";
 
+/*
+ * A component that display a list of Applied Candidates for a specific job
+ */
 function AppliedCandidateListView(props) {
     const { job } = props;
     const pageSize = 5;

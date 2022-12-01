@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
 import Autocomplete from "@mui/material/Autocomplete";
+import Alert from "@mui/material/Alert";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -137,7 +138,7 @@ function EducationHistoryForm(props) {
                         <Grid container key={index} spacing={2}>
                             <Grid item xs={12}>
                                 <Stack spacing={1}>
-                                    <InputLabel htmlFor="schoolName" required>
+                                    <InputLabel htmlFor="schoolName">
                                         School
                                     </InputLabel>
                                     <TextField
@@ -148,7 +149,6 @@ function EducationHistoryForm(props) {
                                         onChange={(e) => {
                                             handleChange(e, index);
                                         }}
-                                        required
                                     />
                                 </Stack>
                             </Grid>
@@ -225,6 +225,13 @@ function EducationHistoryForm(props) {
                                                 onChange={(e) => {
                                                     handleChange(e, index);
                                                 }}
+                                                error={
+                                                    item.startDate &&
+                                                    item.endDate
+                                                        ? item.startDate >
+                                                          item.endDate
+                                                        : false
+                                                }
                                             />
                                         )}
                                     />
@@ -256,10 +263,30 @@ function EducationHistoryForm(props) {
                                                 onChange={(e) => {
                                                     handleChange(e, index);
                                                 }}
+                                                error={
+                                                    item.startDate &&
+                                                    item.endDate
+                                                        ? item.startDate >
+                                                          item.endDate
+                                                        : false
+                                                }
                                             />
                                         )}
                                     />
                                 </Stack>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Alert
+                                    severity="error"
+                                    sx={{
+                                        display:
+                                            item.endDate < item.startDate
+                                                ? "flex"
+                                                : "none",
+                                    }}
+                                >
+                                    Start Date must be less than End Date
+                                </Alert>
                             </Grid>
                             <Grid item xs={12}>
                                 <Stack spacing={1}>

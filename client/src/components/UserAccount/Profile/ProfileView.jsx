@@ -24,6 +24,9 @@ import { UserContext } from "../../../providers/AuthProvider";
 import CandidateServices from "../../../services/CandidateServices";
 import moment from "moment";
 
+/**
+ * A component to render a Candidate Profile View
+ */
 function ProfileView(props) {
     const { user } = useContext(UserContext);
 
@@ -36,6 +39,12 @@ function ProfileView(props) {
         experiences: [],
     });
 
+    /**
+     * Function to load a candidate profile
+     * If the candidate profile is supplied by its parent component,
+     * render the profile using the supplied object.
+     * Otherwise, get the current user profile from the server
+     */
     const loadProfile = async () => {
         if (candidateProfile != null) {
             setProfile({
@@ -105,6 +114,9 @@ function ProfileView(props) {
     );
 }
 
+/**
+ * Basic User Information Section
+ */
 const ContactInfoSection = (props) => {
     const { profile, editable } = props;
 
@@ -158,6 +170,9 @@ const ContactInfoSection = (props) => {
     );
 };
 
+/**
+ * Skills Section
+ */
 const SkillsSection = (props) => {
     const { skills, editable } = props;
 
@@ -196,6 +211,9 @@ const SkillsSection = (props) => {
     );
 };
 
+/**
+ * Education History Section
+ */
 const EducationSection = (props) => {
     const { educations, editable } = props;
 
@@ -264,6 +282,9 @@ const EducationSection = (props) => {
     );
 };
 
+/**
+ * Work & Experience Section
+ */
 const ExperienceSection = (props) => {
     const { experiences, editable } = props;
 
@@ -334,6 +355,9 @@ const ExperienceSection = (props) => {
     );
 };
 
+/**
+ * Resume Section
+ */
 const ResumeSection = (props) => {
     const { resumeUrl, editable } = props;
 

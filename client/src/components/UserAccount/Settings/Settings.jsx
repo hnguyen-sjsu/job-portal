@@ -13,6 +13,9 @@ import UpdateEmailForm from "./UpdateEmailForm";
 import UpdatePasswordForm from "./UpdatePasswordForm";
 import DeleteAccountForm from "./DeleteAccountForm";
 
+/**
+ * A component to display the user Settings page
+ */
 function Settings(props) {
     const options = [
         {

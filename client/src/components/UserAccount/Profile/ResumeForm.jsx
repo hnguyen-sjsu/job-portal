@@ -10,6 +10,9 @@ import InsertDriveFileRoundedIcon from "@mui/icons-material/InsertDriveFileRound
 import FileHandlingServices from "../../../services/FileHandlingServices";
 import CandidateServices from "../../../services/CandidateServices";
 
+/**
+ * Component to render a Resume File Upload
+ */
 function ResumeForm(props) {
     const [dragActive, setDragActive] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -17,6 +20,7 @@ function ResumeForm(props) {
     const [resumeUrl, setResumeUrl] = useState("");
     const fileInput = useRef();
 
+    // Handle file selected
     const handleFileInput = (e) => {
         if (e.target.files.length > 0) {
             console.log(e.target.files[0]);
@@ -25,6 +29,7 @@ function ResumeForm(props) {
         }
     };
 
+    // Handle file dragged
     const handleDrag = function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -35,6 +40,7 @@ function ResumeForm(props) {
         }
     };
 
+    // Handle file dropped
     const handleDrop = function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -45,6 +51,7 @@ function ResumeForm(props) {
         }
     };
 
+    // Uploading file
     const handleFileUpload = async (resumeFile) => {
         setLoading(true);
         const response = await FileHandlingServices.uploadResume(resumeFile);

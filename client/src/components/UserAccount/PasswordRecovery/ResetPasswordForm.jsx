@@ -74,9 +74,8 @@ function ResetPasswordForm(props) {
             } else {
                 setErrorMessage("Invalid token. Please try again.");
             }
-
-            setLoading(false);
         }
+        setLoading(false);
     };
 
     const handleChange = (e) => {
@@ -201,7 +200,9 @@ function ResetPasswordForm(props) {
                     >
                         Update Password
                     </Button>
-                    <Button disabled={loading}>Cancel</Button>
+                    <Button disabled={loading} href="/">
+                        Cancel
+                    </Button>
                 </Stack>
             </Container>
             <ConfirmDialog

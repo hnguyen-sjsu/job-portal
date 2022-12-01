@@ -24,7 +24,7 @@ import ApplicationListItem from "./ApplicationListItem";
 import JobView from "../Job/JobView";
 
 /**
- * Define an ApplicationList component
+ * A component that display the View Applied Application list.
  */
 function ApplicationList(props) {
     const pageSize = 5;

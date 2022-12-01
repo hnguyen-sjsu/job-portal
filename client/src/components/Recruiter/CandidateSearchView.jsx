@@ -25,6 +25,9 @@ import ProfileView from "../UserAccount/Profile/ProfileView";
 import MembershipExpiredDialog from "../Utils/MembershipExpiredDialog";
 import MembershipServices from "../../services/MembershipServices";
 
+/**
+ * A component to display the Candidate Search page
+ */
 function CandidateSearchView(props) {
     const [loading, setLoading] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);

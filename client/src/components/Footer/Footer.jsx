@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Link from "@mui/material/Link";
-import appLogo from "../../assets/app-logo.svg";
+import { UserContext } from "../../providers/AuthProvider";
 
+/**
+ * A functional component that render the Copyright
+ */
 function Copyright() {
     return (
         <Typography variant="body2">
@@ -21,33 +24,91 @@ function Copyright() {
     );
 }
 
+/**
+ * A component that display the Footer of the website
+ */
 export default function Footer() {
-    const sections = [
-        {
-            title: "Company",
-            items: [
-                { title: "About Us", to: "#" },
-                { title: "Credits", to: "#" },
-            ],
-        },
-        {
-            title: "For Talents",
-            items: [
-                { title: "Create Account", to: "#" },
-                { title: "Login", to: "#" },
-                { title: "Find Jobs", to: "#" },
-            ],
-        },
-        {
-            title: "For Recruiters",
-            items: [
-                { title: "Create Account", to: "#" },
-                { title: "Login", to: "#" },
-                { title: "Find Talents", to: "#" },
-                { title: "Pricing", to: "/pricing" },
-            ],
-        },
-    ];
+    const { user } = useContext(UserContext);
+
+    const getFooterItems = () => {
+        if (user) {
+            if (user.role === "candidate") {
+                console.log("Candidate user");
+                return [
+                    {
+                        title: "About Us",
+                        items: [
+                            { title: "About Us", to: "/about-us" },
+                            { title: "Credits", to: "/credits" },
+                        ],
+                    },
+                    {
+                        title: "For Talents",
+                        items: [
+                            { title: "Find Jobs", to: "/job/search" },
+                            { title: "Saved Jobs", to: "/job/saved" },
+                            {
+                                title: "Applied Jobs",
+                                to: "/candidate/applied-jobs",
+                            },
+                            { title: "Settings", to: "/candidate/settings" },
+                        ],
+                    },
+                ];
+            } else if (user.role === "recruiter") {
+                return [
+                    {
+                        title: "About Us",
+                        items: [
+                            { title: "About Us", to: "/about-us" },
+                            { title: "Credits", to: "/credits" },
+                        ],
+                    },
+                    {
+                        title: "For Recruiters",
+                        items: [
+                            {
+                                title: "Find Candidates",
+                                to: "/recruiter/candidates",
+                            },
+                            {
+                                title: "Membership",
+                                to: "/recruiter/membership",
+                            },
+                            {
+                                title: "Manage Jobs",
+                                to: "/recruiter/manage-jobs",
+                            },
+                            { title: "Settings", to: "/candidate/settings" },
+                        ],
+                    },
+                ];
+            } else return [];
+        } else {
+            return [
+                {
+                    title: "About Us",
+                    items: [
+                        { title: "About Us", to: "/about-us" },
+                        { title: "Credits", to: "/credits" },
+                    ],
+                },
+                {
+                    title: "Accounts",
+                    items: [
+                        { title: "Create Account", to: "/account/signup" },
+                        { title: "Login", to: "/account/login" },
+                        {
+                            title: "Forgot Password",
+                            to: "/account/forgot-password",
+                        },
+                    ],
+                },
+            ];
+        }
+    };
+
+    const sections = getFooterItems();
 
     return (
         <Box
@@ -83,9 +144,15 @@ export default function Footer() {
                                             {section.title}
                                         </Typography>
                                         {section.items.map((item) => (
-                                            <Typography key={item.title}>
-                                                {item.title}
-                                            </Typography>
+                                            <Link
+                                                href={item.to}
+                                                key={item.title}
+                                                underline="none"
+                                            >
+                                                <Typography>
+                                                    {item.title}
+                                                </Typography>
+                                            </Link>
                                         ))}
                                     </Stack>
                                 </Grid>

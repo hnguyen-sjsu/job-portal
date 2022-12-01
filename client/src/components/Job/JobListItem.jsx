@@ -6,6 +6,9 @@ import Typography from "@mui/material/Typography";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 
+/**
+ * A component to render a Job list item
+ */
 function JobListItem(props) {
     const { job, selected } = props;
 

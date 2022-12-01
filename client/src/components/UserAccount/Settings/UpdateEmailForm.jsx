@@ -11,6 +11,9 @@ import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import ConfirmDialog from "../../Utils/ConfirmDialog";
 import AuthenticationServices from "../../../services/AuthenticationServices";
 
+/**
+ * A component to display the Update Email Address Form
+ */
 function UpdateEmailForm(props) {
     const [loginInfo, setLoginInfo] = useState({
         email: "",
@@ -22,6 +25,7 @@ function UpdateEmailForm(props) {
     const [showDialog, setShowDialog] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
+    // Handle event when a text field value changed
     const handleChange = (e) => {
         const { name, value } = e.target;
         setLoginInfo({
@@ -30,20 +34,23 @@ function UpdateEmailForm(props) {
         });
     };
 
+    // Toggle show/hide password field
     const handleShowPassword = () => {
         setLoginInfo({ ...loginInfo, showPassword: !loginInfo.showPassword });
     };
 
+    // Handle event when the form is submitted
     const handleSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
         setErrorMessage("");
         AuthenticationServices.updateEmail(loginInfo).then((response) => {
             if (response.status === 400) {
-                console.log(response.data.message);
+                // Display error
                 setErrorMessage(response.data.message);
             }
             if (response.status === 201) {
+                // Email update success
                 setErrorMessage("");
                 setShowDialog(true);
             }
@@ -109,6 +116,7 @@ function UpdateEmailForm(props) {
                             ),
                         }}
                         disabled={loading}
+                        inputProps={{ maxLength: 12 }}
                     />
                 </Grid>
                 <Grid item xs={12} sm={4}></Grid>

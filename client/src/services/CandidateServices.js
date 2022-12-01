@@ -154,8 +154,13 @@ const getEducationItems = async () => {
                 return {
                     ...item,
                     startDate:
-                        item.startDate === "None" ? null : item.startDate,
-                    endDate: item.endDate === "None" ? null : item.endDate,
+                        item.startDate === "None"
+                            ? null
+                            : moment(item.startDate, DATE_FORMAT).toDate(),
+                    endDate:
+                        item.endDate === "None"
+                            ? null
+                            : moment(item.endDate, DATE_FORMAT).toDate(),
                 };
             });
         } else {
@@ -300,8 +305,13 @@ const getWorkHistoryItems = async () => {
                     ...item,
                     currentJob: item.currentJob.toLowerCase() === "true",
                     startDate:
-                        item.startDate === "None" ? null : item.startDate,
-                    endDate: item.endDate === "None" ? null : item.endDate,
+                        item.startDate === "None" || item.startDate === null
+                            ? null
+                            : moment(item.startDate, DATE_FORMAT).toDate(),
+                    endDate:
+                        item.endDate === "None" || item.endDate === null
+                            ? null
+                            : moment(item.endDate, DATE_FORMAT).toDate(),
                 };
             });
         } else {
@@ -317,7 +327,6 @@ const getWorkHistoryItems = async () => {
  * @param {*} items
  */
 const saveWorkHistory = async (items) => {
-    console.log(items);
     try {
         // Filter items that have no ids (for add new)
         const newItems = items.filter(

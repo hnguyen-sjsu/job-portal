@@ -18,6 +18,10 @@ import ProfileView from "../UserAccount/Profile/ProfileView";
 import MembershipServices from "../../services/MembershipServices";
 import MembershipExpiredDialog from "../Utils/MembershipExpiredDialog";
 
+/**
+ * A component that display a dialog that contains the candidate profile preview
+ * and options to update the candidate application status
+ */
 function ProcessApplicationDialog(props) {
     const [membershipExpired, setMembershipExpired] = useState(true);
 

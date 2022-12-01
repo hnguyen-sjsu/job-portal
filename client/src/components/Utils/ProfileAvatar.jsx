@@ -9,6 +9,7 @@ function ProfileAvatar(props) {
     return <Avatar {...stringAvatar(fullName)} />;
 }
 
+// Get a hexademical color value from a string
 function stringToColor(string) {
     let hash = 0;
     let i;

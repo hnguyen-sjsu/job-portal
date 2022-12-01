@@ -11,6 +11,7 @@ import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import Alert from "@mui/material/Alert";
 
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -71,11 +72,24 @@ function SkillsExperienceForm(props) {
 
     const handleChange = (e, index) => {
         const { name, value } = e.target;
-        const updatedItems = experienceItems.map((item, i) => {
-            return index === i ? { ...item, [name]: value } : item;
-        });
 
-        setExperienceItems([...updatedItems]);
+        if (name === "currentJob") {
+            const updatedItems = experienceItems.map((item, i) => {
+                return index === i
+                    ? {
+                          ...item,
+                          currentJob: value,
+                          endDate: value ? null : item.endDate,
+                      }
+                    : item;
+            });
+            setExperienceItems([...updatedItems]);
+        } else {
+            const updatedItems = experienceItems.map((item, i) => {
+                return index === i ? { ...item, [name]: value } : item;
+            });
+            setExperienceItems([...updatedItems]);
+        }
     };
 
     const handleDeleteSkill = (skillId) => {
@@ -158,6 +172,8 @@ function SkillsExperienceForm(props) {
     useEffect(() => {
         loadData();
     }, []);
+
+    useEffect(() => {}, [experienceItems]);
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -343,11 +359,34 @@ function SkillsExperienceForm(props) {
                                                 onChange={(e) => {
                                                     handleChange(e, index);
                                                 }}
+                                                error={
+                                                    !item.currentJob &&
+                                                    item.startDate &&
+                                                    item.endDate &&
+                                                    item.startDate >
+                                                        item.endDate
+                                                }
                                             />
                                         )}
                                         disabled={item.currentJob}
                                     />
                                 </Stack>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Alert
+                                    severity="error"
+                                    sx={{
+                                        display:
+                                            !item.currentJob &&
+                                            item.startDate &&
+                                            item.endDate &&
+                                            item.startDate > item.endDate
+                                                ? "flex"
+                                                : "none",
+                                    }}
+                                >
+                                    Start Date must be less than End Date
+                                </Alert>
                             </Grid>
                             <Grid item xs={12}>
                                 <Stack spacing={1}>

@@ -16,6 +16,7 @@ import RecruiterServices from "../../../services/RecruiterServices";
 import AuthenticationServices from "../../../services/AuthenticationServices";
 import ConfirmDialog from "../../Utils/ConfirmDialog";
 
+// A component to display the Custom Company Profile Form
 function CompanyProfileForm(props) {
     const [showDialog, setShowDialog] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
@@ -30,6 +31,7 @@ function CompanyProfileForm(props) {
 
     const fileInput = useRef();
 
+    // Handle event when a text field value changed
     const handleChange = (e) => {
         const { name, value } = e.target;
         setProfile({
@@ -38,6 +40,7 @@ function CompanyProfileForm(props) {
         });
     };
 
+    // Handle event when a file selected
     const handleFileInput = (e) => {
         if (e.target.files.length > 0) {
             setSelectedFile(e.target.files[0]);
@@ -45,6 +48,7 @@ function CompanyProfileForm(props) {
         }
     };
 
+    // Upload image to server
     const uploadImage = async (imageFile) => {
         const response = await FileHandlingServices.uploadImage(imageFile);
         setLoading(true);
@@ -54,6 +58,7 @@ function CompanyProfileForm(props) {
         }
     };
 
+    // Handle event when the form submitted
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -67,12 +72,6 @@ function CompanyProfileForm(props) {
         };
 
         try {
-            // const response = await RecruiterServices.updateCompanyProfile(
-            //     companyProfile
-            // );
-            // setTimeout(() => {
-            //     setLoading(false);
-            // }, 2000);
             RecruiterServices.updateCompanyProfile(companyProfile).then(
                 (response) => {
                     setLoading(false);
@@ -84,6 +83,10 @@ function CompanyProfileForm(props) {
         }
     };
 
+    /**
+     * On component mounted
+     * Load company profile from the server
+     */
     useEffect(() => {
         document.title = "AKKA - Edit Company Profile";
         AuthenticationServices.getProfile("recruiter").then((response) => {

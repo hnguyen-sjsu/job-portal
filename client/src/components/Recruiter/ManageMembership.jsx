@@ -240,7 +240,7 @@ function ManageMembership(props) {
                         },
                     },
                     {
-                        title: "Update",
+                        title: "Yes",
                         primary: true,
                         color: "primary",
                         action: () => {

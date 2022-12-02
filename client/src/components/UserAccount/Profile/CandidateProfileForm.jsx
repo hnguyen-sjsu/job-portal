@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
@@ -9,7 +9,8 @@ import Stack from "@mui/material/Stack";
 import CandidateServices from "../../../services/CandidateServices";
 
 function CandidateProfileForm(props) {
-    const { userProfile, setUserProfile, loading, setLoading } = props;
+    const { userProfile, setUserProfile, loading, setLoading, validateStep } =
+        props;
 
     const handleChange = (e) => {
         const { name, value } = e.target;

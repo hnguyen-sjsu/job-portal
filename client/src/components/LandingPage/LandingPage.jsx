@@ -12,6 +12,7 @@ import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 
+// Hero Section
 const HeroSection = ({ data }) => {
     const { primaryText, secondaryText, subtitle, image, imageLeft, actions } =
         data;
@@ -49,6 +50,7 @@ const HeroSection = ({ data }) => {
     );
 };
 
+// Get Started Section
 const GetStartedSection = () => {
     const steps = [
         {
@@ -87,6 +89,7 @@ const GetStartedSection = () => {
     );
 };
 
+// Landing Page component
 export default function LandingPage() {
     const heroSections = [
         {

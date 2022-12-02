@@ -19,6 +19,9 @@ import logoImg from "../../../assets/app-logo.svg";
 
 import AuthenticationServices from "../../../services/AuthenticationServices";
 
+/**
+ * A component to display Sign Up page
+ */
 function SignUp({ isRecruiter }) {
     let navigate = useNavigate();
 
@@ -31,6 +34,7 @@ function SignUp({ isRecruiter }) {
         password: "",
     });
 
+    // Handle event when a text field value changed
     const handleChange = (e) => {
         setErrorMessage("");
         const { name, value } = e.target;
@@ -40,6 +44,7 @@ function SignUp({ isRecruiter }) {
         });
     };
 
+    // Handle event when Submit button clicked
     const handleSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
@@ -68,6 +73,7 @@ function SignUp({ isRecruiter }) {
         }
     };
 
+    // Method to validate the password
     const validate = () => {
         if (loginInfo.password.length < 8 || loginInfo.password.length > 16) {
             setErrorMessage("Password must be 8-16 characters.");

@@ -19,7 +19,11 @@ const getHeaders = () => {
     axios.defaults.xsrfHeaderName = "X-CSRF-TOKEN";
     return headers;
 };
-
+/**
+ * Method to save a job
+ * @param {*} jobInfo
+ * @returns
+ */
 const saveJob = async (jobInfo) => {
     const headers = getHeaders();
     const params = {
@@ -41,6 +45,7 @@ const saveJob = async (jobInfo) => {
     };
 
     try {
+        // If the job has an id, send an update request
         if (data.job_id) {
             const url = baseUrl + "update";
             const response = await axios.put(url, data, params, headers);
@@ -51,6 +56,7 @@ const saveJob = async (jobInfo) => {
                 return "Error updating job. Please try again.";
             }
         } else {
+            // If the job has not been assigned an id, send a post request
             const url = baseUrl + "post";
             const response = await axios.post(url, data, params, headers);
             if (response.status === 201) {
@@ -65,6 +71,10 @@ const saveJob = async (jobInfo) => {
     }
 };
 
+/**
+ * Method to get a list of jobs that have posted by the current user
+ * @returns an array of job items
+ */
 const getPostedJobs = async () => {
     const url = baseUrl + "get-posted-jobs";
     const headers = {
@@ -80,10 +90,15 @@ const getPostedJobs = async () => {
         return response.data.jobs;
     } catch (e) {
         console.error(e);
-        return e;
+        return [];
     }
 };
 
+/**
+ * Send a get job information request to the server
+ * @param {*} jobId
+ * @returns the job information
+ */
 const getJob = async (jobId) => {
     const url = baseUrl + `get-one?job_id=${jobId}`;
     const headers = getHeaders();
@@ -105,6 +120,11 @@ const getJob = async (jobId) => {
     }
 };
 
+/**
+ * Send a delete request to delete a job to the server
+ * @param {*} jobId
+ * @returns delete message
+ */
 const deleteJob = async (jobId) => {
     const url = baseUrl + `delete?job_id=${jobId}`;
     const headers = getHeaders();
@@ -127,6 +147,10 @@ const deleteJob = async (jobId) => {
     }
 };
 
+/**
+ * Method to get all jobs in the databse
+ * @returns an array of job items
+ */
 const getJobs = async () => {
     const url = baseUrl + "get-all";
     const headers = getHeaders();

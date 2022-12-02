@@ -88,23 +88,47 @@ function ProfileForm(props) {
             case 0:
                 CandidateServices.updateCandidateProfile(userProfile).then(
                     (response) => {
+                        console.log(response);
                         moveNext();
                     }
                 );
                 break;
             case 1:
-                CandidateServices.saveEducationHistory(educationItems).then(
-                    (response) => {
-                        moveNext();
-                    }
+                const invalidEducationItems = educationItems.filter(
+                    (item) =>
+                        item.startDate &&
+                        item.endDate &&
+                        item.startDate > item.endDate
                 );
+                if (invalidEducationItems.length === 0) {
+                    CandidateServices.saveEducationHistory(educationItems).then(
+                        (response) => {
+                            console.log(response);
+                            moveNext();
+                        }
+                    );
+                } else {
+                    setLoading(false);
+                }
                 break;
             case 2:
-                CandidateServices.saveWorkHistory(experienceItems).then(
-                    (response) => {
-                        moveNext();
-                    }
+                const invalidExperienceItems = experienceItems.filter(
+                    (item) =>
+                        item.currentJob === false &&
+                        item.startDate &&
+                        item.endDate &&
+                        item.startDate > item.endDate
                 );
+                if (invalidExperienceItems.length === 0) {
+                    CandidateServices.saveWorkHistory(experienceItems).then(
+                        (response) => {
+                            console.log(response);
+                            moveNext();
+                        }
+                    );
+                } else {
+                    setLoading(false);
+                }
                 break;
             case 3:
                 moveNext();

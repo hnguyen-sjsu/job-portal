@@ -4,8 +4,10 @@ import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import Chip from "@mui/material/Chip";
 import Card from "@mui/material/Card";
-import Link from "@mui/material/Link";
 
+/**
+ * A component that render each Applied Application item
+ */
 function ApplicationListItem(props) {
     const { item } = props;
     const getStatusColor = () => {

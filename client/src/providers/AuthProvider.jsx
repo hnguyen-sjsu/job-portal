@@ -4,6 +4,10 @@ import AuthenticationServices from "../services/AuthenticationServices";
 
 export const UserContext = createContext({ user: null });
 
+/**
+ * Authentication Provider
+ * Provide current user context for other components to access the current user state.
+ */
 export default (props) => {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
 

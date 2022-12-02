@@ -26,6 +26,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import MembershipServices from "../../services/MembershipServices";
 import MembershipExpiredDialog from "../Utils/MembershipExpiredDialog";
 
+/**
+ * A component to display the Job Form
+ */
 function JobForm(props) {
     let navigate = useNavigate();
     let { jobId } = useParams();
@@ -97,6 +100,10 @@ function JobForm(props) {
         });
     };
 
+    /**
+     * Handle event when the form is submitted
+     * @param {*} e
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -120,6 +127,10 @@ function JobForm(props) {
         }
     };
 
+    /**
+     * Validate the salary range and date range
+     * @returns true if the range pairs are valid
+     */
     const validate = () => {
         if (job.salaryMin !== "" && job.salaryMax !== "") {
             if (parseInt(job.salaryMin) >= parseInt(job.salaryMax)) {
@@ -140,6 +151,10 @@ function JobForm(props) {
         return true;
     };
 
+    /**
+     * Load a job information by a specified job id
+     * @param {*} jobId
+     */
     const loadJob = async (jobId) => {
         setLoading(true);
         try {
@@ -157,12 +172,16 @@ function JobForm(props) {
         }
     };
 
+    /**
+     * Load the membership status of the current user
+     */
     const loadMembership = () => {
         MembershipServices.isMembershipExpired().then((response) => {
             setMembershipExpired(response);
         });
     };
 
+    // on Component Mounted
     useEffect(() => {
         document.title = "Post Job";
         if (jobId) {

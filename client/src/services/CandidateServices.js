@@ -21,13 +21,17 @@ const getHeaders = () => {
     return headers;
 };
 
+/**
+ * Post candidate update profile request to the server
+ * @param {*} profile
+ */
 const updateCandidateProfile = async (profile) => {
     const url = baseUrl + "update";
     const headers = getHeaders();
     const params = {
         withCredentials: true,
     };
-    console.log(profile);
+
     const data = {
         full_name: profile.fullName,
         location: profile.location,
@@ -50,6 +54,10 @@ const updateCandidateProfile = async (profile) => {
     }
 };
 
+/**
+ * Send a get candidate profile to the server
+ * @returns the profile of current candidate user
+ */
 const getCandidateProfile = async () => {
     const url = baseUrl + "get-profile";
     const headers = getHeaders();
@@ -68,6 +76,11 @@ const getCandidateProfile = async () => {
     }
 };
 
+/**
+ * Send a post new skill request to the server
+ * @param {*} skill
+ * @returns the skill with auto-generated id
+ */
 const addSkill = async (skill) => {
     const url = skillBaseUrl + "post-one";
     const headers = getHeaders();
@@ -87,7 +100,11 @@ const addSkill = async (skill) => {
     }
 };
 
-const getSkills = async (skill) => {
+/**
+ * Send a get user skills list
+ * @returns current user skills list
+ */
+const getSkills = async () => {
     const url = skillBaseUrl + "get";
     const headers = getHeaders();
     const params = {
@@ -103,6 +120,11 @@ const getSkills = async (skill) => {
     }
 };
 
+/**
+ * Send a delete request do delete a skill
+ * @param {*} skillId
+ * @returns true if skill deleted successfully
+ */
 const deleteSkill = async (skillId) => {
     const url = skillBaseUrl + "delete?ids=" + skillId;
     const headers = getHeaders();
@@ -117,6 +139,10 @@ const deleteSkill = async (skillId) => {
     }
 };
 
+/**
+ * Send a Get user education history to the server
+ * @returns user's education history list
+ */
 const getEducationItems = async () => {
     const url = educationBaseUrl + "get-all";
     const headers = getHeaders();
@@ -128,8 +154,13 @@ const getEducationItems = async () => {
                 return {
                     ...item,
                     startDate:
-                        item.startDate === "None" ? null : item.startDate,
-                    endDate: item.endDate === "None" ? null : item.endDate,
+                        item.startDate === "None"
+                            ? null
+                            : moment(item.startDate, DATE_FORMAT).toDate(),
+                    endDate:
+                        item.endDate === "None"
+                            ? null
+                            : moment(item.endDate, DATE_FORMAT).toDate(),
                 };
             });
         } else {
@@ -140,11 +171,17 @@ const getEducationItems = async () => {
     }
 };
 
+/**
+ * Save education histories
+ * @param {*} educationItems
+ */
 const saveEducationHistory = async (educationItems) => {
     try {
+        // Filter the new items (item without id)
         const newItems = educationItems.filter(
             (item) => item.schoolId == null && item.schoolName.length > 0
         );
+        // Filter the items that have id
         const updateItems = educationItems.filter(
             (item) => item.schoolId != null && item.schoolName.length > 0
         );
@@ -158,6 +195,11 @@ const saveEducationHistory = async (educationItems) => {
     }
 };
 
+/**
+ * Send a post request to add new education history items to the server
+ * @param {*} educationItems
+ * @returns post request response
+ */
 const addNewEducationHistory = async (educationItems) => {
     const url = educationBaseUrl + "post-batch";
     const headers = getHeaders();
@@ -188,6 +230,11 @@ const addNewEducationHistory = async (educationItems) => {
     }
 };
 
+/**
+ * Send an update education history items to the server
+ * @param {*} educationItems
+ * @returns the update request response
+ */
 const updateEducationHistory = async (educationItems) => {
     const url = educationBaseUrl + "update";
     const headers = getHeaders();
@@ -219,6 +266,11 @@ const updateEducationHistory = async (educationItems) => {
     }
 };
 
+/**
+ * Send a delete education history item request to the server
+ * @param {*} id
+ * @returns true if the item deleted successfully
+ */
 const deleteEducationHistory = async (id) => {
     const url = educationBaseUrl + "delete?ids=" + id;
     const headers = getHeaders();
@@ -234,6 +286,10 @@ const deleteEducationHistory = async (id) => {
     }
 };
 
+/**
+ * Send a request to get a list of work experience items
+ * @returns a list of work experience items
+ */
 const getWorkHistoryItems = async () => {
     const url = workBaseUrl + "get-all";
     const headers = getHeaders();
@@ -249,8 +305,13 @@ const getWorkHistoryItems = async () => {
                     ...item,
                     currentJob: item.currentJob.toLowerCase() === "true",
                     startDate:
-                        item.startDate === "None" ? null : item.startDate,
-                    endDate: item.endDate === "None" ? null : item.endDate,
+                        item.startDate === "None" || item.startDate === null
+                            ? null
+                            : moment(item.startDate, DATE_FORMAT).toDate(),
+                    endDate:
+                        item.endDate === "None" || item.endDate === null
+                            ? null
+                            : moment(item.endDate, DATE_FORMAT).toDate(),
                 };
             });
         } else {
@@ -261,12 +322,18 @@ const getWorkHistoryItems = async () => {
     }
 };
 
+/**
+ * Update work history items
+ * @param {*} items
+ */
 const saveWorkHistory = async (items) => {
-    console.log(items);
     try {
+        // Filter items that have no ids (for add new)
         const newItems = items.filter(
             (item) => item.id == null && item.position.length > 0
         );
+
+        // Filter items that already have id
         const updateItems = items.filter(
             (item) => item.id != null && item.position.length > 0
         );
@@ -280,6 +347,11 @@ const saveWorkHistory = async (items) => {
     }
 };
 
+/**
+ * Send a post request to add new work history items
+ * @param {*} items
+ * @returns a post request response from the server
+ */
 const addNewWorkHistory = async (items) => {
     const url = workBaseUrl + "post-batch";
     const headers = getHeaders();
@@ -311,6 +383,11 @@ const addNewWorkHistory = async (items) => {
     }
 };
 
+/**
+ * Send a update request to update work history items
+ * @param {*} items
+ * @returns an update request response from the server
+ */
 const updateWorkHistory = async (items) => {
     const url = workBaseUrl + "update";
     const headers = getHeaders();
@@ -343,6 +420,11 @@ const updateWorkHistory = async (items) => {
     }
 };
 
+/**
+ * Send a delete request to delete a work history item
+ * @param {*} id
+ * @returns true if the item deleted successfully
+ */
 const deleteWorkHistory = async (id) => {
     const url = workBaseUrl + "delete?ids=" + id;
     const headers = getHeaders();

@@ -15,6 +15,9 @@ import MailOutlineOutlinedIcon from "@mui/icons-material/MailOutlineOutlined";
 import LocalPhoneOutlinedIcon from "@mui/icons-material/LocalPhoneOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 
+/**
+ * A component to render each Candidate item of the Candidate List
+ */
 function CandidateListItem(props) {
     const { candidateProfile, onCandidateSelected } = props;
     const { profile, skills } = candidateProfile;

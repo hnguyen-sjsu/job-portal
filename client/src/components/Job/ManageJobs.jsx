@@ -16,6 +16,9 @@ import { useTheme } from "@mui/material/styles";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import AppliedCandidateListView from "../Applications/AppliedCandidateListView";
 
+/**
+ * Component to display a list of jobs posted by the user
+ */
 function ManageJobs(props) {
     document.title = "AKKA - Manage Jobs";
 
@@ -26,15 +29,18 @@ function ManageJobs(props) {
     const [selectedJob, setSelectedJob] = useState(null);
     const [jobs, setJobs] = useState([]);
 
+    // Handle event when the close dialog button clicked
     const closeJobViewDialog = () => {
         setJobViewDialog(false);
     };
 
+    // Handle event when a job is selected
     const handleJobSelected = (job) => {
         setSelectedJob(job);
         setJobViewDialog(true);
     };
 
+    // Load all jobs posted by the user
     useEffect(() => {
         JobServices.getPostedJobs().then((response) => {
             if (response) {

@@ -1,11 +1,15 @@
 import React from "react";
 import Avatar from "@mui/material/Avatar";
 
+/**
+ * A component to render the Profile Avatar based on user's first name
+ */
 function ProfileAvatar(props) {
     const { fullName } = props;
     return <Avatar {...stringAvatar(fullName)} />;
 }
 
+// Get a hexademical color value from a string
 function stringToColor(string) {
     let hash = 0;
     let i;

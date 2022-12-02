@@ -2,6 +2,11 @@ import axios from "axios";
 
 const baseUrl = "http://localhost:5000/recruiter/";
 
+/**
+ * Send the update profile request to the server
+ * @param {*} companyProfile
+ * @returns the resposne from the server
+ */
 const updateCompanyProfile = async (companyProfile) => {
     const url = baseUrl + "update";
     const token = document.cookie.split("=")[1];

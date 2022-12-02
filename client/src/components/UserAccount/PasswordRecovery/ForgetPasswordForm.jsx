@@ -80,7 +80,7 @@ function ForgetPasswordForm(props) {
                 <Button type="submit" variant="contained" disableElevation>
                     Reset Password
                 </Button>
-                <Button>Cancel</Button>
+                <Button href="/account/login">Cancel</Button>
             </Stack>
             <ConfirmDialog
                 title="Message"

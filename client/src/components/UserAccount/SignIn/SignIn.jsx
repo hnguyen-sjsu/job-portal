@@ -19,6 +19,9 @@ import { UserContext } from "../../../providers/AuthProvider";
 
 import AuthenticationServices from "../../../services/AuthenticationServices";
 
+/**
+ * A component to display Sign In page
+ */
 function SignIn({ isRecruiter }) {
     const { signIn } = useContext(UserContext);
 
@@ -33,6 +36,7 @@ function SignIn({ isRecruiter }) {
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
+    // Handle event when a text field value changed
     const handleChange = (e) => {
         const { name, value } = e.target;
         setLoginInfo({
@@ -41,6 +45,7 @@ function SignIn({ isRecruiter }) {
         });
     };
 
+    // Handle event when the Login button clicked
     const handleSubmit = (e) => {
         e.preventDefault();
         setLoading(true);

@@ -34,6 +34,7 @@ import BookmarksOutlinedIcon from "@mui/icons-material/BookmarksOutlined";
 import LocalPlayOutlinedIcon from "@mui/icons-material/LocalPlayOutlined";
 import ProfileAvatar from "../Utils/ProfileAvatar";
 
+// Component to render the Menu Bar
 function MenuBar(props) {
     const { user, signOut } = useContext(UserContext);
 
@@ -128,37 +129,6 @@ function MenuBar(props) {
 
     useEffect(() => {}, [user]);
 
-    const container =
-        window !== undefined ? () => window().document.body : undefined;
-
-    const drawer = (
-        <Box onClick={handleDrawerToggle}>
-            <Typography variant="h6" sx={{ my: 2, paddingLeft: 2 }}>
-                Job Portal
-            </Typography>
-            <Divider />
-            <List>
-                {linkItems.map((item, idx) => (
-                    <ListItem key={idx} disablePadding>
-                        <ListItemButton>
-                            <ListItemText primary={item.title} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-                {!user && (
-                    <ListItem disablePadding>
-                        <ListItemButton>Login</ListItemButton>
-                    </ListItem>
-                )}
-                {!user && (
-                    <ListItem disablePadding>
-                        <ListItemButton>Create Account</ListItemButton>
-                    </ListItem>
-                )}
-            </List>
-        </Box>
-    );
-
     return (
         <>
             <AppBar
@@ -217,15 +187,6 @@ function MenuBar(props) {
                                         size="small"
                                         sx={{ ml: 2 }}
                                     >
-                                        {/* {user.role === "candidate" &&
-                                            user.fullName &&
-                                            (user.fullName.length > 0 ? (
-                                                <ProfileAvatar
-                                                    fullName={user.fullName}
-                                                />
-                                            ) : (
-                                                <AccountCircleRoundedIcon />
-                                            ))} */}
                                         {user.role === "candidate" &&
                                             user.fullName &&
                                             user.fullName.length > 0 && (
@@ -317,27 +278,6 @@ function MenuBar(props) {
                     Sign Out
                 </MenuItem>
             </Menu>
-            {/* <Box component="nav">
-				<Drawer
-					container={container}
-					variant="temporary"
-					open={mobileOpen}
-					onClose={handleDrawerToggle}
-					ModalProps={{
-						keepMounted: true, // Better open performance on mobile
-					}}
-					sx={{
-						display: { xs: "block", sm: "none" },
-						"& .MuiDrawer-paper": {
-							boxSizing: "border-box",
-							width: "100vw",
-						},
-						backdropFilter: "blur(50px)",
-					}}
-				>
-					{drawer}
-				</Drawer>
-			</Box> */}
         </>
     );
 }

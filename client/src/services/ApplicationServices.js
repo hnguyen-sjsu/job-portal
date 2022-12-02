@@ -15,6 +15,9 @@ const getHeaders = () => {
     return headers;
 };
 
+/**
+ * Apply a specific job
+ */
 const apply = async (jobId) => {
     const url = baseUrl + "post-one";
     const headers = getHeaders();
@@ -33,6 +36,10 @@ const apply = async (jobId) => {
     }
 };
 
+/**
+ * Get all applications that a user applied.
+ * @returns an array of applied applications.
+ */
 const getApplications = async () => {
     const url = baseUrl + "get-all";
     const headers = getHeaders();
@@ -52,6 +59,11 @@ const getApplications = async () => {
     }
 };
 
+/**
+ * Get all applications that applied to a specific job.
+ * @param jobId
+ * @returns an array of applied applications.
+ */
 const getApplicationsByJobId = async (jobId) => {
     const url = baseUrl + "get-all-by-job-id?job_id=" + jobId;
     const headers = getHeaders();
@@ -72,6 +84,12 @@ const getApplicationsByJobId = async (jobId) => {
     }
 };
 
+/**
+ * Update an application status
+ * @param {*} jobId
+ * @param {*} newStatus
+ * @returns true if the process updated successfully.
+ */
 const updateApplicationStatus = async (jobId, newStatus) => {
     const url = baseUrl + "update";
     const headers = getHeaders();
@@ -93,6 +111,11 @@ const updateApplicationStatus = async (jobId, newStatus) => {
     }
 };
 
+/**
+ * Verify if a user has already applied to a job.
+ * @param {*} jobId
+ * @returns
+ */
 const isJobApplied = async (jobId) => {
     const applications = await getApplications();
     const jobIds = applications.map((app) => app.jobId);

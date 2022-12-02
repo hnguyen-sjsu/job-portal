@@ -17,6 +17,12 @@ const getHeaders = () => {
     return headers;
 };
 
+/**
+ * Send a job search request to the server
+ * @param {*} title - the job's title
+ * @param {*} location - the job's location
+ * @returns an array of job search results
+ */
 const searchJobs = async (title, location) => {
     const url =
         baseUrl + "title-and-location?title=" + title + "&location=" + location;
@@ -37,6 +43,11 @@ const searchJobs = async (title, location) => {
     }
 };
 
+/**
+ * Send a candidate search request to the server
+ * @param {*} skills
+ * @returns an array of candidates
+ */
 const searchCandidates = async (skills) => {
     const arrSkills = skills
         .split(",")

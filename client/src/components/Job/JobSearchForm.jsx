@@ -31,6 +31,9 @@ import SearchServices from "../../services/SearchServices";
 
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
+/**
+ * A component to display the Job Search page.
+ */
 function JobSearchForm(props) {
     document.title = "AKKA - Search Jobs";
 
@@ -59,15 +62,18 @@ function JobSearchForm(props) {
         salaryRange: [0, 500000],
     });
 
+    // Handle event when the close dialog button clicked
     const closeJobViewDialog = () => {
         setJobViewDialog(false);
     };
 
+    // Handle event when a job item is selected
     const handleJobSelected = (job) => {
         setSelectedJob(job);
         setJobViewDialog(true);
     };
 
+    // Search the jobs by the queries
     const handleSearch = (title, location) => {
         SearchServices.searchJobs(title, location).then((response) => {
             setJobs(response);
@@ -75,10 +81,12 @@ function JobSearchForm(props) {
         });
     };
 
+    // Handle event when the Filter button clicked
     const applyFilter = () => {
         filterJobs(jobs);
     };
 
+    // Filter the job list
     const filterJobs = (items) => {
         const selectedTypes = filterOptions.types
             .filter((option) => option.checked)
@@ -105,6 +113,10 @@ function JobSearchForm(props) {
         setOpenDialog(false);
     };
 
+    /**
+     * On component mounted.
+     * Load all jobs and populate to the job list.
+     */
     useEffect(() => {
         JobServices.getJobs().then((response) => {
             if (response) {
@@ -114,6 +126,7 @@ function JobSearchForm(props) {
         });
     }, []);
 
+    // A component to display no search results
     const NoSearchResults = () => {
         return (
             <Stack
@@ -206,6 +219,7 @@ function JobSearchForm(props) {
     );
 }
 
+// A component display the Search Bar
 function SearchBar(props) {
     const { setOpenDialog, handleSearch } = props;
     const [queries, setQueries] = useState({
@@ -295,6 +309,7 @@ function SearchBar(props) {
     );
 }
 
+// A component to display the Filter Dialog
 function FilterDialog(props) {
     let numeral = require("numeral");
 
@@ -403,6 +418,7 @@ function FilterDialog(props) {
     );
 }
 
+// A component to render a group of filter options
 function FilterGroup(props) {
     const { title, options, filterOptions, setFilterOptions, groupName } =
         props;

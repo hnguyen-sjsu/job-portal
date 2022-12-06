@@ -31,7 +31,7 @@ import MembershipServices from "../../services/MembershipServices";
 function CandidateSearchView(props) {
     const [loading, setLoading] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
-    const [candidates, setCandiddates] = useState([]);
+    const [candidates, setCandidates] = useState([]);
     const [displayedCandidates, setDisplayedCandidates] = useState([]);
     const [skills, setSkills] = useState("");
     const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -41,11 +41,11 @@ function CandidateSearchView(props) {
     const [pages, setPages] = useState(1);
     const [currPageIndex, setCurrPageIndex] = useState(1);
 
-    const handleSearch = (skills) => {
+    const loadCandidates = () => {
         setLoading(true);
         SearchServices.searchCandidates(skills).then((response) => {
             setTimeout(() => {
-                setCandiddates(response);
+                setCandidates(response);
                 setLoading(false);
                 paging(response);
             }, 1000);
@@ -80,6 +80,7 @@ function CandidateSearchView(props) {
 
     useEffect(() => {
         loadMembership();
+        loadCandidates();
     }, []);
 
     return (
@@ -88,7 +89,7 @@ function CandidateSearchView(props) {
                 skills={skills}
                 setSkills={setSkills}
                 setOpenDialog={setOpenDialog}
-                handleSearch={handleSearch}
+                handleSearch={loadCandidates}
                 loading={loading}
                 membershipExpired={membershipExpired}
             />

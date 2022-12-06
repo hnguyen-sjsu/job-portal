@@ -6,6 +6,9 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Grid from "@mui/material/Grid";
 import Skeleton from "@mui/material/Skeleton";
 import CandidateListItem from "./CandidateListItem";
+import Typography from "@mui/material/Typography";
+import Avatar from "@mui/material/Avatar";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
 /**
  * A component to display a list of candidates
@@ -21,7 +24,7 @@ function CandidateListView(props) {
                         <SkeletonCandidateListItem key={"skeleton-" + n} />
                     ))}
                 </>
-            ) : (
+            ) : candidates.length > 0 ? (
                 candidates.map((candidate) => (
                     <CandidateListItem
                         key={candidate.profile.id}
@@ -29,7 +32,28 @@ function CandidateListView(props) {
                         onCandidateSelected={onCandidateSelected}
                     />
                 ))
+            ) : (
+                <NoCandidateResults />
             )}
+        </Stack>
+    );
+}
+
+function NoCandidateResults() {
+    return (
+        <Stack
+            className="list-container"
+            sx={{ p: 2, minHeight: "50vh" }}
+            alignItems="center"
+            justifyContent="center"
+        >
+            <Avatar variant="rounded">
+                <SearchOutlinedIcon />
+            </Avatar>
+            <Typography variant="h6">
+                Sorry, we couldn't find any matches your queries.
+            </Typography>
+            <Typography>Please try again with other queries.</Typography>
         </Stack>
     );
 }

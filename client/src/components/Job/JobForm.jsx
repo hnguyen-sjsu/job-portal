@@ -355,7 +355,8 @@ function JobForm(props) {
                                     error={
                                         job.salaryMin !== "" &&
                                         job.salaryMax !== ""
-                                            ? job.salaryMin >= job.salaryMax
+                                            ? parseInt(job.salaryMin) >=
+                                              parseInt(job.salaryMax)
                                             : false
                                     }
                                     fullWidth
@@ -393,7 +394,8 @@ function JobForm(props) {
                                     error={
                                         job.salaryMin !== "" &&
                                         job.salaryMax !== ""
-                                            ? job.salaryMin >= job.salaryMax
+                                            ? parseInt(job.salaryMin) >=
+                                              parseInt(job.salaryMax)
                                             : false
                                     }
                                 />

@@ -160,9 +160,17 @@ const getJobs = async () => {
 
     try {
         const response = await axios.get(url, params, headers);
-        return response.data.jobs;
+        if (response.status === 200) {
+            const jobs = response.data.jobs.filter(
+                (job) =>
+                    moment() >= moment(job.startDate, DATE_FORMAT) &&
+                    moment(job.endDate) <= moment(job.endDate, DATE_FORMAT)
+            );
+            return jobs;
+        } else return [];
     } catch (e) {
         console.error(e);
+        return [];
     }
 };
 

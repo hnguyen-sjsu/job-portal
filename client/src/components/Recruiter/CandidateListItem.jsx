@@ -22,6 +22,7 @@ function CandidateListItem(props) {
     const { candidateProfile, onCandidateSelected } = props;
     const { profile, skills } = candidateProfile;
 
+    // Bind the selected candidate to the list container.
     const handleCandidateSelected = () => {
         onCandidateSelected(candidateProfile);
     };

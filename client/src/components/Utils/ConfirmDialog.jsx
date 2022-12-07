@@ -14,10 +14,12 @@ function ConfirmDialog(props) {
 
     const { title, message, showDialog, actions } = props;
 
+    // Close dialog
     const handleClose = () => {
         setOpen(false);
     };
 
+    // Re-render the component when the showDialog state changed
     useEffect(() => {
         setOpen(showDialog);
     }, [showDialog]);

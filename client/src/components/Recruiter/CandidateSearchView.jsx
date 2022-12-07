@@ -29,6 +29,8 @@ import MembershipServices from "../../services/MembershipServices";
  * A component to display the Candidate Search page
  */
 function CandidateSearchView(props) {
+    document.title = "AKKA - Find Candidates";
+
     const [loading, setLoading] = useState(false);
     const [openDialog, setOpenDialog] = useState(false);
     const [candidates, setCandidates] = useState([]);
@@ -41,9 +43,11 @@ function CandidateSearchView(props) {
     const [pages, setPages] = useState(1);
     const [currPageIndex, setCurrPageIndex] = useState(1);
 
+    // Send the request to search candidates by skills to the server
     const loadCandidates = () => {
         setLoading(true);
         SearchServices.searchCandidates(skills).then((response) => {
+            // Bind the candidates to the list
             setTimeout(() => {
                 setCandidates(response);
                 setLoading(false);
@@ -52,15 +56,18 @@ function CandidateSearchView(props) {
         });
     };
 
+    // Handle event when a candidate is selected
     const handleCandidateSelected = (candidate) => {
         setSelectedCandidate(candidate);
         setOpenDialog(true);
     };
 
+    // Handle event when the current page index changed
     const handlePageIndexChange = (event, value) => {
         setCurrPageIndex(value);
     };
 
+    // Paging
     const paging = (items) => {
         let fromIndex = (currPageIndex - 1) * pageSize;
         let toIndex = currPageIndex * pageSize;
@@ -68,16 +75,23 @@ function CandidateSearchView(props) {
         setDisplayedCandidates(items.slice(fromIndex, toIndex));
     };
 
+    // Load membership information to check for expiration
     const loadMembership = () => {
         MembershipServices.isMembershipExpired().then((response) => {
             setMembershipExpired(response);
         });
     };
 
+    // Re-render the component when the current page index changed
     useEffect(() => {
         paging(candidates);
     }, [currPageIndex]);
 
+    /**
+     * On component mounted
+     * Check membership status
+     * Load candidate list
+     */
     useEffect(() => {
         loadMembership();
         loadCandidates();

@@ -33,26 +33,31 @@ function AppliedCandidateListView(props) {
     const [displayedApplications, setDisplayedApplications] = useState([]);
     const [membershipExpired, setMembershipExpired] = useState(true);
 
+    // Handle event when a list item is selected
     const onListItemSelected = (selectedItem) => {
         setShowDialog(true);
         setSelectedProfile(selectedItem);
     };
 
+    // Handle event when the page index changed
     const handlePageIndexChange = (event, value) => {
         setCurrPageIndex(value);
     };
 
+    // Paging
     const paging = () => {
         let fromIndex = (currPageIndex - 1) * pageSize;
         let toIndex = currPageIndex * pageSize;
         setDisplayedApplications(applications.slice(fromIndex, toIndex));
     };
 
+    // Close dialog
     const closeDialog = () => {
         setShowDialog(false);
         setSelectedProfile(null);
     };
 
+    // Load applications by job id
     const loadApplications = () => {
         setLoading(true);
         setApplications([]);
@@ -81,6 +86,7 @@ function AppliedCandidateListView(props) {
         }
     };
 
+    // Update the candidate's application status after recruiter update the application status
     const updateApplicationStatus = (candidateProfile, newStatus) => {
         setLoading(true);
         ApplicationServices.updateApplicationStatus(
@@ -108,20 +114,27 @@ function AppliedCandidateListView(props) {
         });
     };
 
+    // Get the current user's membership
     const loadMembership = () => {
         MembershipServices.isMembershipExpired().then((response) => {
             setMembershipExpired(response);
         });
     };
 
+    // Reload the applications when the job list changed
     useEffect(() => {
         loadApplications();
     }, [job]);
 
+    // Re-render the list when the current page index/application list changed
     useEffect(() => {
         paging();
     }, [currPageIndex, pages, applications]);
 
+    /**
+     * On component mounted.
+     * Load membership to check if member is expired
+     */
     useEffect(() => {
         loadMembership();
     }, []);

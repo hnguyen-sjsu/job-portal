@@ -31,11 +31,6 @@ function ApplicationListItem(props) {
                             sx={{ m: 1 }}
                         />
                         <Stack sx={{ m: 1, width: "100%" }}>
-                            {/* <Link
-                                href={`/job/jobId:${item.jobId}`}
-                                underline="none"
-                                color="inherit"
-                            > */}
                             <Typography
                                 variant="subtitle1"
                                 noWrap={false}
@@ -43,7 +38,6 @@ function ApplicationListItem(props) {
                             >
                                 {item.jobInfo.title}
                             </Typography>
-                            {/* </Link> */}
                             <Stack
                                 direction="row"
                                 justifyContent="space-between"

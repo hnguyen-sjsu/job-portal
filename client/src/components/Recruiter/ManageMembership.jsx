@@ -21,6 +21,8 @@ import ConfirmDialog from "../Utils/ConfirmDialog";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 function ManageMembership(props) {
+    document.title = "AKKA - Manage Memberships";
+
     const [loading, setLoading] = useState(false);
     const [showConfirmDialog, setShowConfirmDialog] = useState(false);
     const [showMessageDialog, setShowMessageDialog] = useState(false);

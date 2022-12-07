@@ -35,6 +35,7 @@ function ResetPasswordForm(props) {
 
     const [errorMessage, setErrorMessage] = useState("");
 
+    // Toggle show/hide password field
     const handleShowPassword = (currentPassword) => {
         if (currentPassword) {
             setPasswords({
@@ -49,17 +50,20 @@ function ResetPasswordForm(props) {
         }
     };
 
+    // Handle event when the form is submitted
     const handleSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
         setShowDialog(false);
         setErrorMessage("");
         if (validate()) {
+            // Get the change password token from the url
             let token = new URLSearchParams(window.location.search).get(
                 "token"
             );
 
             if (token) {
+                // Send the request to reset password with the token
                 AuthenticationServices.resetPassword(
                     passwords.newPassword,
                     token
@@ -78,6 +82,7 @@ function ResetPasswordForm(props) {
         setLoading(false);
     };
 
+    // Handle event when the passworld fields' values changed
     const handleChange = (e) => {
         const { name, value } = e.target;
         setErrorMessage("");
@@ -87,6 +92,7 @@ function ResetPasswordForm(props) {
         });
     };
 
+    // Validate password fields
     const validate = () => {
         if (passwords.newPassword === passwords.confirmPassword) {
             setErrorMessage("");

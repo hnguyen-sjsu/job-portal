@@ -39,6 +39,7 @@ function CandidateListView(props) {
     );
 }
 
+// A component to display no results
 function NoCandidateResults() {
     return (
         <Stack
@@ -58,6 +59,7 @@ function NoCandidateResults() {
     );
 }
 
+// Skeleton loading animation
 function SkeletonCandidateListItem() {
     return (
         <ListItem

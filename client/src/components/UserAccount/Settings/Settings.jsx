@@ -17,6 +17,7 @@ import DeleteAccountForm from "./DeleteAccountForm";
  * A component to display the user Settings page
  */
 function Settings(props) {
+    document.title = "Settings";
     const options = [
         {
             title: "Update Email Address",

@@ -51,12 +51,14 @@ function DeleteAccountForm(props) {
         setLoading(true);
         setShowDeleteDialog(false);
         setShowDialog(false);
+        // Send delete account request to the server
         AuthenticationServices.deleteAccount(password.value).then(
             (response) => {
-                console.log(response);
+                // Error
                 if (response.status === 401) {
                     setErrorMessage(response.data.message);
                 }
+                // Success
                 if (response.status === 200) {
                     setErrorMessage("");
                     setShowDialog(true);

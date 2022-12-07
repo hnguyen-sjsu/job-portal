@@ -114,6 +114,8 @@ function JobView(props) {
     const applyJob = () => {
         setLoading(true);
         setShowDialog(false);
+        // Send apply job request to the server
+        // Waiting for response
         ApplicationServices.apply(jobInfo.id).then((response) => {
             // Display successful message
             if (response.status === 201) {

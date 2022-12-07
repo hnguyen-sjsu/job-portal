@@ -32,24 +32,32 @@ function ProcessApplicationDialog(props) {
         updateApplicationStatus,
     } = props;
 
+    // Handle event when the Accept button clicked
     const onAcceptButtonClick = () => {
         updateApplicationStatus(candidateProfile, "Accepted");
     };
 
+    // Handle event when the Reject button clicked
     const onRejectButtonClick = () => {
         updateApplicationStatus(candidateProfile, "Rejected");
     };
 
+    // Handle event when the Pending button clicked
     const onPendingButtonClick = () => {
         updateApplicationStatus(candidateProfile, "Pending");
     };
 
+    // Check the current user's membership status
     const loadMembership = () => {
         MembershipServices.isMembershipExpired().then((response) => {
             setMembershipExpired(response);
         });
     };
 
+    /**
+     * On component mounted
+     * Get the current membership status
+     */
     useEffect(() => {
         loadMembership();
     }, []);

@@ -206,6 +206,7 @@ function App() {
     );
 }
 
+// Layout without menu bar
 function NoMenuBarLayout() {
     return (
         <>
@@ -214,6 +215,7 @@ function NoMenuBarLayout() {
     );
 }
 
+// Layout with menu bar
 function WithMenuBarLayout() {
     return (
         <Box
@@ -235,6 +237,7 @@ function WithMenuBarLayout() {
     );
 }
 
+// Home page layout
 function LandingPageLayout() {
     return (
         <Box
@@ -260,6 +263,7 @@ function LandingPageLayout() {
     );
 }
 
+// Layout for recruiter user
 function RecruiterLayout() {
     return (
         <Box

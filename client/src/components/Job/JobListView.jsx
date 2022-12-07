@@ -17,10 +17,12 @@ function JobListView(props) {
     const [currPageIndex, setCurrPageIndex] = useState(1);
     const [displayedJobs, setDisplayedJobs] = useState([]);
 
+    // Handle event when the page index changed
     const handlePageIndexChange = (event, value) => {
         setCurrPageIndex(value);
     };
 
+    // Perform paging
     const paging = (items) => {
         let fromIndex = (currPageIndex - 1) * pageSize;
         let toIndex = currPageIndex * pageSize;

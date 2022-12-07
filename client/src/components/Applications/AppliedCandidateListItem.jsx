@@ -15,6 +15,8 @@ import ProfileAvatar from "../Utils/ProfileAvatar";
 function AppliedCandidateListItem(props) {
     const { candidateProfile, onListItemSelected } = props;
     const { profile, applicationInfo } = candidateProfile;
+
+    // Handle event when a candidate list item is clicked
     const handleClick = () => {
         onListItemSelected(candidateProfile);
     };

@@ -21,8 +21,10 @@ function ForgetPasswordForm(props) {
     const [showDialog, setShowDialog] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
+    // Handle event when the form is submitted
     const handleSubmit = (e) => {
         e.preventDefault();
+        // Send recover password request to the server
         AuthenticationServices.requestRecoverPassword(email).then(
             (response) => {
                 if (response.status === 404) {
@@ -34,6 +36,7 @@ function ForgetPasswordForm(props) {
         );
     };
 
+    // Bind the new email value
     const handleChange = (e) => {
         const { value } = e.target;
         setEmail(value);

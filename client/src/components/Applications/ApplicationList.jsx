@@ -41,6 +41,10 @@ function ApplicationList(props) {
     const [showDialog, setShowDialog] = useState(false);
     const [selectedJob, setSelectedJob] = useState(null);
 
+    /**
+     * On component mounted
+     * Load all applications that were applied by the current user
+     */
     useEffect(() => {
         ApplicationServices.getApplications().then((res) => {
             setJobs(res);
@@ -49,10 +53,14 @@ function ApplicationList(props) {
         });
     }, []);
 
+    /**
+     * Render the list when the status options or page index changed
+     */
     useEffect(() => {
         renderList(jobs);
     }, [statuses, currPageIndex]);
 
+    // Handle event when a Status filter option clicked
     const handleStatusFilterClick = (status) => {
         const updatedItems = statuses.map((item) => {
             return status.title === item.title
@@ -62,10 +70,16 @@ function ApplicationList(props) {
         setStatuses(updatedItems);
     };
 
+    // Handle event when the current page index changed
     const handlePageIndexChange = (event, value) => {
         setCurrPageIndex(value);
     };
 
+    /**
+     * Method to render the list
+     * filter the items based on selected application statuses
+     * then apply paging
+     */
     const renderList = (items) => {
         const selectedStatuses = statuses
             .filter((status) => status.selected)
@@ -81,6 +95,7 @@ function ApplicationList(props) {
         setDisplayedJobs(filteredItems.slice(fromIndex, toIndex));
     };
 
+    // Handle event when the Close button clicked
     const handleCloseDialog = () => {
         setShowDialog(false);
         setSelectedJob(null);

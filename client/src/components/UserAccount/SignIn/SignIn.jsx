@@ -155,13 +155,15 @@ function SignIn({ isRecruiter }) {
                             >
                                 {errorMessage}
                             </Alert>
-                            <Link
-                                to="/account/forgot-password"
-                                className=".uncolored-link"
-                                style={{ textAlign: "right" }}
-                            >
-                                Forgot password?
-                            </Link>
+                            <div style={{ textAlign: "right" }}>
+                                <Link
+                                    to="/account/forgot-password"
+                                    className=".uncolored-link"
+                                >
+                                    Forgot password?
+                                </Link>
+                            </div>
+
                             <Button
                                 type="submit"
                                 variant="contained"

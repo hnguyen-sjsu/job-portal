@@ -20,10 +20,12 @@ function ForgetPasswordForm(props) {
     const [email, setEmail] = useState("");
     const [showDialog, setShowDialog] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
     // Handle event when the form is submitted
     const handleSubmit = (e) => {
         e.preventDefault();
+        setLoading(true);
         // Send recover password request to the server
         AuthenticationServices.requestRecoverPassword(email).then(
             (response) => {
@@ -32,6 +34,7 @@ function ForgetPasswordForm(props) {
                 } else {
                     setShowDialog(true);
                 }
+                setLoading(false);
             }
         );
     };
@@ -71,6 +74,7 @@ function ForgetPasswordForm(props) {
                     onChange={handleChange}
                     required
                     error={errorMessage.length > 0}
+                    disabled={loading}
                 />
                 <Alert
                     severity="error"
@@ -80,7 +84,12 @@ function ForgetPasswordForm(props) {
                 >
                     {errorMessage}
                 </Alert>
-                <Button type="submit" variant="contained" disableElevation>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    disableElevation
+                    disabled={loading}
+                >
                     Reset Password
                 </Button>
                 <Button href="/account/login">Cancel</Button>

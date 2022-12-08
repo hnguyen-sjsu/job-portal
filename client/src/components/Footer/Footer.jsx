@@ -37,10 +37,7 @@ export default function Footer() {
                 return [
                     {
                         title: "About Us",
-                        items: [
-                            { title: "About Us", to: "/about-us" },
-                            { title: "Credits", to: "/credits" },
-                        ],
+                        items: [{ title: "About Us", to: "/about-us" }],
                     },
                     {
                         title: "For Talents",
@@ -59,10 +56,7 @@ export default function Footer() {
                 return [
                     {
                         title: "About Us",
-                        items: [
-                            { title: "About Us", to: "/about-us" },
-                            { title: "Credits", to: "/credits" },
-                        ],
+                        items: [{ title: "About Us", to: "/about-us" }],
                     },
                     {
                         title: "For Recruiters",
@@ -88,10 +82,7 @@ export default function Footer() {
             return [
                 {
                     title: "About Us",
-                    items: [
-                        { title: "About Us", to: "/about-us" },
-                        { title: "Credits", to: "/credits" },
-                    ],
+                    items: [{ title: "About Us", to: "/about-us" }],
                 },
                 {
                     title: "Accounts",

@@ -32,6 +32,7 @@ import CandidateSearchView from "./components/Recruiter/CandidateSearchView";
 import ForgetPasswordForm from "./components/UserAccount/PasswordRecovery/ForgetPasswordForm";
 import ResetPasswordForm from "./components/UserAccount/PasswordRecovery/ResetPasswordForm";
 import ManageMembership from "./components/Recruiter/ManageMembership";
+import AboutUs from "./components/AboutUs/AboutUs";
 
 let theme = createTheme({
     palette: {
@@ -118,6 +119,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<LandingPageLayout />}>
                             <Route index element={<LandingPage />} />
+                            <Route path="about-us" element={<AboutUs />} />
                         </Route>
                         <Route
                             path="/candidate"

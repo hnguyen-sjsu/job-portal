@@ -1,4 +1,4 @@
-# OnlineBanking
+# AKKA Job Finder
 
 Clone the project using this command:
 `git clone https://github.com/lhkhoi95/OnlineBanking.git`

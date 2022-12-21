@@ -1,5 +1,9 @@
 # AKKA Job Finder
 
+## Technologies
+1) ReactJS - Front end
+2) Flask - Back end
+
 Clone the project using this command:
 `git clone https://github.com/hnguyen-sjsu/job-portal`
 
@@ -25,6 +29,7 @@ The (venv) indicates you have activated the virtual environment.
 `python app.py` <br />
 That should start the back-end server.
 
+#### Front-end libraries installation:
 Open another terminal and type the following commands (make sure you are in the root folder):<br />
 `cd client`<br />
 `npm install --legacy-peer-deps`<br />

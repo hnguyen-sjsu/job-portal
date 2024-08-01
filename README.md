@@ -1,11 +1,15 @@
 # AKKA Job Finder
 
+## Screenshots
+
+| <img src="https://res.cloudinary.com/dj1ikymq4/image/upload/v1678241059/knguyen209-portfolio/job-portal/Screenshot_2023-03-07_at_5.58.55_PM_w7jyto.png" > | <img src="https://res.cloudinary.com/dj1ikymq4/image/upload/v1678241060/knguyen209-portfolio/job-portal/Screenshot_2023-03-07_at_5.59.09_PM_mecy6t.png" > |
+| - | - |
+| <img src="https://res.cloudinary.com/dj1ikymq4/image/upload/v1678241060/knguyen209-portfolio/job-portal/Screenshot_2023-03-07_at_5.59.23_PM_jmx52l.png" > | <img src="https://res.cloudinary.com/dj1ikymq4/image/upload/v1678241060/knguyen209-portfolio/job-portal/Screenshot_2023-03-07_at_6.03.14_PM_fu537d.png" > |
+| <img src="https://res.cloudinary.com/dj1ikymq4/image/upload/v1678241271/knguyen209-portfolio/job-portal/Screenshot_2023-03-07_at_6.07.38_PM_mrvqiw.png" > |  |
+
 ## Technologies
 1) ReactJS - Front end
 2) Flask - Back end
-
-Clone the project using this command:
-`git clone https://github.com/hnguyen-sjsu/job-portal`
 
 ## Installation Guide
 ### Softwares Requirements:
